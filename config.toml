@@ -1,0 +1,5 @@
+handle = "Muster"
+port = [5000, 5006]
+whoisport = 4000
+autoreply = "Es tut mir Leid, ich bin gerade leider nicht verfügbar."
+imagepath = "./musterbilder"

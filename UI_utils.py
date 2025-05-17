@@ -12,8 +12,14 @@ KONFIGURATIONSDATEI = "config.toml"
 def lade_config():
     # Prüft, ob die Datei config.toml im aktuellen Verzeichnis existiert
     if os.path.exists(KONFIGURATIONSDATEI):
-        # Falls sie existiert wird sie mit toml.load() eingelesen
-        # Der Inhalt (TOML-Text) wird in ein Python-Objekt umgewandelt
+      
+        """
+    Lädt die TOML-Konfigurationsdatei und gibt sie als Dictionary zurück
+
+    @brief Liest die Datei 'config.toml' ein und parst sie
+    @return dict mit den Konfigurationswerten
+    @raises FileNotFoundError wenn die Datei nicht existiert
+    """
         return toml.load(KONFIGURATIONSDATEI)
     else:
         # Falls die Datei nicht existiert wird ein Fehler ausgelöst

@@ -1,0 +1,36 @@
+/**
+ * @mainpage Chat-Programm – UI_utils.py
+ *
+ * @section Einleitung
+ * Die Datei `UI_utils.py` stellt grundlegende Hilfsfunktionen für die Benutzerinteraktion und Netzwerkinitialisierung bereit. Sie ist Teil des CLI/UI-Moduls und dient als Schnittstelle zur Konfigurationsverarbeitung und Portverwaltung.
+ *
+ * @section Gewählter Ansatz
+ * Um Konfigurationsdaten zentral und benutzerfreundlich zu verwalten, wird eine TOML-Datei (`config.toml`) verwendet. Diese enthält Einstellungen wie den Benutzernamen (handle), Portbereich, Autoreply-Nachricht und Speicherpfade. Die Benutzeroberfläche (CLI) lädt diese Konfiguration beim Start. Die Funktion `finde_freien_port()` durchsucht automatisch den angegebenen Portbereich und gibt den ersten verfügbaren UDP-Port zurück.
+ *
+ * @section Architektur
+ * Die Funktionalität in `UI_utils.py` konzentriert sich auf zwei Hauptbereiche:
+ * - `lade_config()` liest eine Konfigurationsdatei im TOML-Format und stellt den Inhalt als Dictionary bereit.
+ * - `finde_freien_port(config)` nutzt das Socket-Modul, um innerhalb des in der Konfigurationsdatei festgelegten Bereichs den ersten freien Port zu finden.
+ *
+ * Diese Struktur erlaubt eine klare Trennung von Benutzerinteraktion, Konfigurationslogik und Netzwerkfunktionen, die an anderer Stelle im Projekt realisiert sind.
+ *
+ * @section teilprobleme Teilprobleme und Lösungen
+ * - **Portkollision:** Die Funktion `finde_freien_port()` bindet testweise an Ports, um Belegungen zu erkennen und zu umgehen.
+ * - **Fehlende Konfiguration:** `lade_config()` wirft bei fehlender Datei einen `FileNotFoundError`, was vom aufrufenden Code behandelt werden kann.
+ * - **Fehlende Parameter:** Bei fehlenden Schlüsseln in der Konfigurationsdatei werden explizite Exceptions ausgelöst (`ValueError`), um frühe Fehlererkennung zu haben.
+ *
+ * @section erweiterung Erweiterbarkeit
+ * Die klare Trennung von Konfigurationsverarbeitung und Benutzerschnittstelle erlaubt einfache Erweiterungen:
+ * - Unterstützung weiterer Konfigurationsparameter
+ * - Erweiterung auf GUI-Frontend
+ * - Validierung oder Erstellung von Konfigurationsdateien zur Laufzeit
+ *
+ * @section Dateiinhalt
+ * Die Datei `UI_utils.py` enthält:
+ * - Konstante: `KONFIGURATIONSDATEI`
+ * - Funktion: `lade_config()`
+ * - Funktion: `finde_freien_port(config)`
+ *
+ * @section Autor
+ * Erstellt für das Chat-Programm im Kurs Betriebssysteme und Rechnernetze im Sommersemester 2025.
+ */

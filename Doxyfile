@@ -2,7 +2,7 @@
 
 PROJECT_NAME           = "Chat-Programm (SLCP-Projekt)"
 OUTPUT_DIRECTORY       = docs
-INPUT                  = src/ UI.dox
+INPUT                  = doc/
 FILE_PATTERNS          = *.py *.dox *.md
 RECURSIVE              = YES
 EXTENSION_MAPPING      = py=Python

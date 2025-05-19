@@ -1,3 +1,7 @@
+## @file main.py
+#  @brief Start des Programms
+
+## Importiert Methoden aus dem interface.py
 from interface import (
     menue,
     nutzernamen_abfragen,
@@ -6,18 +10,22 @@ from interface import (
     autoreply_umschalten
 )
 
-from UI_utils import lade_config, finde_freien_port#, registriere_neuen_nutzer
+## Importiert Methoden aus dem UI_utils.py
+from UI_utils import lade_config, finde_freien_port, registriere_neuen_nutzer
 
+## Hauptfunktion
+#  @brief ruft funktionen aus den importierten Datei auf
+#  @details lädt das Menü und verwaltet den Ablauf
 def main():
     config = lade_config()
     handle = nutzernamen_abfragen()
-    port = finde_freien_port()
+    port = finde_freien_port(config)
     registriere_neuen_nutzer(handle, port)
-
+    
     print(f"Willkommen, {handle}! Dein Port: {port}")
 
     while True:
-        wahl = zeige_menü()
+        wahl = menue()
 
         if wahl == "1":
             print("→ WHO wird gesendet ...")
@@ -43,5 +51,7 @@ def main():
         else:
             print("Ungültige Eingabe. Bitte erneut versuchen.")
 
+## beginnt das Programm
+#  @note Beim starten wird name durch main ersetzt, erst wenn es stimmt, wird die Main Funktion gestartet
 if __name__ == "__main__":
     main()

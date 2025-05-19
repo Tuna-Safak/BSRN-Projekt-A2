@@ -1,0 +1,3 @@
+# Virtuelle Umgebungen ignorieren
+venv/
+.venv/

@@ -1,0 +1,14 @@
+# Minimal Doxyfile for Python Chat Project
+
+PROJECT_NAME           = "Chat-Programm (SLCP-Projekt)"
+OUTPUT_DIRECTORY       = docs
+INPUT                  = doc/
+FILE_PATTERNS          = *.py *.dox *.md
+RECURSIVE              = YES
+EXTENSION_MAPPING      = py=Python
+EXTRACT_ALL            = YES
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+GENERATE_LATEX         = NO
+OPTIMIZE_FOR_PYTHON    = YES
+USE_MDFILE_AS_MAINPAGE = mainpage.dox

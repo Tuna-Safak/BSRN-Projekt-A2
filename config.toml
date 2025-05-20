@@ -1,4 +1,7 @@
+[network]
 whoisport = 4000
-imagepath = "./empfangene_bilder"
 port_min = 5000
 port_max = 5010
+
+[client]
+imagepath = "./empfangene_bilder"

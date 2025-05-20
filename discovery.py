@@ -8,7 +8,7 @@ known_users = {}
 
 # lädt die Konfigurationsdatei (config.toml) und gibt sie als Wörterbuch zurück
 
-with open("config/config.toml", "r") as f:  
+with open("config.toml", "r") as f: 
     config = toml.load(f)  
 
 # lädt aus dem config-file den Port für den Discovery-Dienst (whoisport)  # NEU
@@ -31,13 +31,13 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 # 1 = aktivieren (True / Ja)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-# Socket soll ab jetzt auf Port 4000 alle eingehenden Nachrichten empfangen
+# ÄNDERNNNN  Socket soll ab jetzt auf Port 4000 alle eingehenden Nachrichten empfangen
 # sock	= Variable, die den UDP-Socket enthält
 # bind()	= Methode, um dem Socket eine Adresse (IP + Port) zu geben
 # ('', 4000) = 	'' = alle lokalen IP-Adressen, 4000 = Port für Discovery-Dienst
 
-sock.bind(('', 4000))
-print("Discovery-Dienst läuft und hört auf Port 4000...")
+sock.bind(('', DISCOVERY_PORT))
+print(f"Discovery-Dienst läuft und hört auf {DISCOVERY_PORT}... ")
 
 while True:
       # recvfrom() = Methode für UDP-Sockets, liefert zwei Werte zurueck, 
@@ -82,7 +82,7 @@ while True:
        # who-block
 
       elif befehl == "WHO" and len(nachrichtTeilen) == 1:
-         antwort = "KNOWNUSERS: "
+         antwort = "KNOWNUSERS "
 
          # join() = alle Elemente in der Liste verbinden zu einem Teilstring 
          # items() =  liste von Tupeln mit Schlüssel und Wert

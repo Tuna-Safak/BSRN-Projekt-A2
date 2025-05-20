@@ -1,6 +1,18 @@
 import socket
+import toml
+import threading
+import os
+
 # woerterbuch zum speichern bekannter teilnehmer (aehnlich wie HashMap)
 known_users = {}  
+
+# lädt die Konfigurationsdatei (config.toml) und gibt sie als Wörterbuch zurück
+
+with open("config/config.toml", "r") as f:  
+    config = toml.load(f)  
+
+# lädt aus dem config-file den Port für den Discovery-Dienst (whoisport)  # NEU
+DISCOVERY_PORT = config["network"]["whoisport"]  # NEU    
 
 # socket erstellen
 # variable namens 'sock', datentyp socket
@@ -46,8 +58,7 @@ while True:
       # nachrichtTeilen = datentyp: list 
       # split() = teilt die nachricht in Teilstrings 
       nachrichtTeilen = message.split()
-
-      # SLCP-Regel: Nachricht muss mindestens 1 Teil enthalten
+       # SLCP-Regel: Nachricht muss mindestens 1 Teil enthalten
       # wenn Liste leer ist, dann überspringe den Rest der Schleife
       # und mache mit nächster empfangenen Nachricht weiter
       if not nachrichtTeilen:
@@ -82,6 +93,7 @@ while True:
          # sendto() = methode zum versenden von UDP-Nachrichten
          # encode() = wandelt string in bytes um
          # absender = IP-Adresse und Port an dem die Nachricht gehen soll
+
          sock.sendto(antwort.encode(), absender)
 
          print(f"[SEND] → {absender}: {antwort}")
@@ -89,17 +101,9 @@ while True:
       elif befehl == "LEAVE" and len(nachrichtTeilen) == 2:
          handle = nachrichtTeilen[1]
          
-        #if handle in known_users:
-         #   del known_users[handle]
-          #  print(f"[INFO] {handle} wurde entfernt (LEAVE empfangen)")
-        #else:
-         #   print(f"[WARNUNG] LEAVE empfangen, aber {handle} war nicht bekannt")
-      
-
+      if handle in known_users:
          
-      
-      
-
-
-
-
+            del known_users[handle]
+            print(f"[INFO] {handle} wurde entfernt (LEAVE empfangen)")
+      else:
+            print(f"[WARNUNG] LEAVE empfangen, aber {handle} war nicht bekannt")

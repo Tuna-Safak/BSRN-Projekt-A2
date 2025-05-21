@@ -6,12 +6,13 @@ from interface import (
     menue,
     nutzernamen_abfragen,
     eingabe_nachricht,
-    eingabe_bild,
+   # eingabe_bild,
     autoreply_umschalten
 )
 
 ## Importiert Methoden aus dem UI_utils.py
-from UI_utils import lade_config, finde_freien_port, registriere_neuen_nutzer
+from UI_utils import lade_config, finde_freien_port
+#registriere_neuen_nutzer
 
 ## Hauptfunktion
 #  @brief ruft funktionen aus den importierten Datei auf
@@ -20,7 +21,7 @@ def main():
     config = lade_config()
     handle = nutzernamen_abfragen()
     port = finde_freien_port(config)
-    registriere_neuen_nutzer(handle, port)
+  #  registriere_neuen_nutzer(handle, port)
     
     print(f"Willkommen, {handle}! Dein Port: {port}")
 

@@ -141,5 +141,59 @@ def receive_MSG(sock):
         elif befehl == "MSG" and len(teile) == 3:
             handle_MSG(teile[1], teile[2])
 
+        elif befehl == "IMG" and len(teile) == 3
+            
+
         else:
             print(f" Unbekannte Nachricht: {text}")
+
+
+# -------------Bild senden-----------------
+# Funktion zum Versenden eines Bildes
+# handle_sender: Benutzername
+# handle_empfaenger: Name der Person, an die das Bild versendet werden soll
+# bildpfad: Pfad zur Bilddatei
+def sendIMG(handle_sender, handle_empfaenger, bildpfad):
+    
+    # Prüfen, ob der Empfänger überhaupt bekannt ist, also ob wir seine IP-Adresse und Port kennen
+    if handle_empfaenger not in known_users:
+        print("Empfänger nicht bekannt.")
+        return  # die Funktion wird beendet, weil Senden nicht möglich ist
+
+    try:
+        # Bilddatei öffnen – "rb" bedeutet:
+        # r = read, b = binary (binär lesen, nicht als Text)
+        # wir brauchen das für Bilder, weil sie keine Textdateien sind
+        with open(bildpfad, "rb") as b:
+            # gesamtes Bild als Binärdaten einlesen
+            bilddaten = b.read()
+    except FileNotFoundError:
+        # Wenn der Pfad falsch ist oder das Bild nicht existiert
+        print("Bild nicht gefunden:", bildpfad)
+        return  # Funktion beenden
+
+    # Bildgröße berechnen (Anzahl der Bytes)
+    # wichtig für den Empfänger damit er weiß wie viele Daten kommen
+    groesse = len(bilddaten)
+
+    # Nachricht im SLCP-Format vorbereiten: IMG <Empfänger> <Größe>
+    # das ist die Steuerzeile, die vor dem Bild gesendet wird
+    # f-String: setzt automatisch die Variablen ein
+    # \n = Zeilenumbruch, wie vom Protokoll gefordert
+    img_header = f"IMG {handle_empfaenger} {groesse}\n"
+
+    # IP-Adresse und Port des Empfängers aus dem Nutzerverzeichnis holen
+    ip, port = known_users[handle_empfaenger]
+
+    # Erste Nachricht senden: den IMG-Befehl mit Empfängername und Bildgröße
+    # encode() wandelt den Text in Bytes um, damit er über das Netzwerk geschickt werden kann
+    sock.sendto(img_header.encode(), (ip, port))
+
+    # Zweite Nachricht: das eigentliche Bild senden (als Binärdaten)
+    sock.sendto(bilddaten, (ip, port))
+
+    # Bestätigung ausgeben, dass das Bild erfolgreich gesendet wurde
+    print(f"Bild an {handle_empfaenger} gesendet ({groesse} Bytes)")
+
+
+

@@ -110,49 +110,12 @@ def handle_leave(name):
         print(f"{name} hat den Chat verlassen")
     else:
         print(f"LEAVE von unbekanntem Nutzer erhalten: {name}")
-
-# -------------Nachricht empfangen-----------------
-def receive_MSG(sock):
-    # implementieren einer Funktion für das Nachrichten empfangen                  
-    while True:
-        daten, addr = sock.recvfrom(1024)
-        # daten: wandelt die empfangene Nachricht in eine Bytefolge um (noch nicht lesbarer Text)
-        # addr: enthält die Adresse des Absenders – ein Tupel wie ('192.168.1.42', 5000)
-
-        text = daten.decode().strip()
-        # Nachricht decodieren: in einen lesbaren Text umwandeln
-
-        print(f"Nachricht von {addr}: {text}")
-        # erhaltene Nachricht wird ausgegeben
-
-        teile = text.split(' ', 2)
-        if len(teile) == 0:
-            print("Leere Nachricht")
-            continue
-
-        befehl = teile[0]
-
-        if befehl == "JOIN" and len(teile) == 3:
-            handle_join(teile[1], teile[2], addr)
-
-        elif befehl == "LEAVE" and len(teile) == 2:
-            handle_leave(teile[1])
-
-        elif befehl == "MSG" and len(teile) == 3:
-            handle_MSG(teile[1], teile[2])
-
-        elif befehl == "IMG" and len(teile) == 3
-            
-
-        else:
-            print(f" Unbekannte Nachricht: {text}")
-
-
+       
 # -------------Bild senden-----------------
 # Funktion zum Versenden eines Bildes
-# handle_sender: Benutzername
-# handle_empfaenger: Name der Person, an die das Bild versendet werden soll
-# bildpfad: Pfad zur Bilddatei
+# @param handle_sender: Benutzername des Absenders 
+# @param handle_empfaenger: Benutzername des Empfängers
+# @param bildpfad: Pfad zur Bilddatei
 def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     
     # Prüfen, ob der Empfänger überhaupt bekannt ist, also ob wir seine IP-Adresse und Port kennen
@@ -194,6 +157,97 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
 
     # Bestätigung ausgeben, dass das Bild erfolgreich gesendet wurde
     print(f"Bild an {handle_empfaenger} gesendet ({groesse} Bytes)")
+
+# -------------Bild empfangen-----------------
+# @brief verarbeitet eine IMG-Nachricht: liest Bilddaten ein und speichert sie
+# @param sock Der Socket, über den das Bild empfangen wird
+# @param teile Die Teile der empfangenen Textnachricht (z. B. ["IMG", "Ziel", "Größe"])
+# @param addr Die Adresse (IP, Port) des Absenders
+def handle_IMG(sock, teile, addr):
+    # Prüfen, ob genug Teile in der Nachricht sind
+    if len(teile) != 3:
+        print("Nachricht ist nicht vollständig.")
+        return
+
+    empfaenger = teile[1]
+
+    try:
+        # Die Bildgröße aus dem Text in eine Zahl umwandeln
+        groesse = int(teile[2])
+    except ValueError:
+        # Wenn keine Zahl übergeben wurde
+        print("Ungültige Bildgröße.")
+        return
+
+    # Die eigentlichen Bilddaten empfangen (zweites Paket)
+    bilddaten, addr2 = sock.recvfrom(groesse + 1024)  # etwas Puffer
+
+    # IP-Adresse vom Absender herausfinden
+    sender_ip = addr[0]
+
+    # Absendernamen aus der IP-Adresse ermitteln
+    sender_name = None
+    for name, (ip, _) in known_users.items():
+        if ip == sender_ip:
+            sender_name = name
+            break
+
+    # Wenn kein Name gefunden wurde, "Unbekannt" setzen
+    if sender_name is None:
+        sender_name = "Unbekannt"
+
+    # Speicherordner erstellen, falls noch nicht vorhanden
+    os.makedirs("empfangene_bilder", exist_ok = True)
+
+    # Bild speichern mit einfachem Namen z.B. büsra_bild.jpg
+    dateiname = f"{sender_name}_bild.jpg"
+    pfad = os.path.join("empfangene_bilder", dateiname)
+
+    # Bild speichern
+    # w = write, b = binary
+    with open(pfad, "wb") as f:
+        f.write(bilddaten)
+
+    # Info ausgeben, dass Bild gespeichert wurde
+    print(f"Bild von {sender_name} empfangen und gespeichert unter: {pfad}")
+
+
+# -------------Nachricht empfangen-----------------
+def receive_MSG(sock):
+    # implementieren einer Funktion für das Nachrichten empfangen                  
+    while True:
+        daten, addr = sock.recvfrom(1024)
+        # daten: wandelt die empfangene Nachricht in eine Bytefolge um (noch nicht lesbarer Text)
+        # addr: enthält die Adresse des Absenders – ein Tupel wie ('192.168.1.42', 5000)
+
+        text = daten.decode().strip()
+        # Nachricht decodieren: in einen lesbaren Text umwandeln
+
+        print(f"Nachricht von {addr}: {text}")
+        # erhaltene Nachricht wird ausgegeben
+
+        teile = text.split(' ', 2)
+        if len(teile) == 0:
+            print("Leere Nachricht")
+            continue
+
+        befehl = teile[0]
+
+        if befehl == "JOIN" and len(teile) == 3:
+            handle_join(teile[1], teile[2], addr)
+
+        elif befehl == "LEAVE" and len(teile) == 2:
+            handle_leave(teile[1])
+
+        elif befehl == "MSG" and len(teile) == 3:
+            handle_MSG(teile[1], teile[2])
+            
+        elif befehl == "IMG" and len(teile) == 3:
+            handle_IMG(sock, teile, addr)
+
+        else:
+            print(f" Unbekannte Nachricht: {text}")
+
 
 
 

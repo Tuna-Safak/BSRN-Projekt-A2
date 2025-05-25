@@ -14,12 +14,12 @@
  *
  * Diese Struktur erlaubt eine klare Trennung von Benutzerinteraktion, Konfigurationslogik und Netzwerkfunktionen, die an anderer Stelle im Projekt realisiert sind.
  *
- * @section teilprobleme Teilprobleme und Lösungen
+ * @section Teilprobleme und Lösungen
  * - **Portkollision:** Die Funktion `finde_freien_port()` bindet testweise an Ports, um Belegungen zu erkennen und zu umgehen.
  * - **Fehlende Konfiguration:** `lade_config()` wirft bei fehlender Datei einen `FileNotFoundError`, was vom aufrufenden Code behandelt werden kann.
  * - **Fehlende Parameter:** Bei fehlenden Schlüsseln in der Konfigurationsdatei werden explizite Exceptions ausgelöst (`ValueError`), um frühe Fehlererkennung zu haben.
  *
- * @section erweiterung Erweiterbarkeit
+ * @section Erweiterbarkeit
  * Die klare Trennung von Konfigurationsverarbeitung und Benutzerschnittstelle erlaubt einfache Erweiterungen:
  * - Unterstützung weiterer Konfigurationsparameter
  * - Erweiterung auf GUI-Frontend

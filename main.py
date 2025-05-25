@@ -11,7 +11,12 @@ from interface import (
 )
 
 ## Importiert Methoden aus dem UI_utils.py
-from UI_utils import lade_config, finde_freien_port, registriere_neuen_nutzer
+from UI_utils import lade_config, finde_freien_port
+from message_handler import send_join, send_leave, sendMSG, sendIMG
+
+#registriere_neuen_nutzer
+def registriere_neuen_nutzer(handle, port):
+    send_join(handle, port)
 
 ## Hauptfunktion
 #  @brief ruft funktionen aus den importierten Datei auf
@@ -30,14 +35,17 @@ def main():
         if wahl == "1":
             print("→ WHO wird gesendet ...")
             # hier später Netzwerkfunktion einbinden
+            send_who()
         elif wahl == "2":
             empfänger, text = eingabe_nachricht()
             print(f"→ MSG an {empfänger}: {text}")
             # hier später Nachricht senden
+            sendMSG(handle, empfaenger, text)
         elif wahl == "3":
             empfänger, pfad = eingabe_bild()
             print(f"→ Bild wird an {empfänger} gesendet: {pfad}")
             # hier später Bildversand einbinden
+            sendIMG(handle, empfaenger, pfad)
         elif wahl == "4":
             config = autoreply_umschalten(config)
             print("→ Autoreply aktualisiert.")

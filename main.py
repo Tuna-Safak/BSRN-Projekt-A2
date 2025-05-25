@@ -6,12 +6,12 @@ from interface import (
     menue,
     nutzernamen_abfragen,
     eingabe_nachricht,
-    eingabe_bild,
+    #eingabe_bild,
     autoreply_umschalten
 )
 
 ## Importiert Methoden aus dem UI_utils.py
-from UI_utils import lade_config, finde_freien_port
+#from UI_utils import lade_config, finde_freien_port
 from message_handler import send_join, send_leave, sendMSG, sendIMG
 
 #registriere_neuen_nutzer

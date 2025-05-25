@@ -6,7 +6,7 @@ from interface import (
     menue,
     nutzernamen_abfragen,
     eingabe_nachricht,
-    eingabe_bild,
+    #eingabe_bild,
     autoreply_umschalten
 )
 
@@ -22,7 +22,6 @@ from message_handler import (
     sendMSG,
     sendIMG
 )
-
 #registriere_neuen_nutzer
 def registriere_neuen_nutzer(handle, port):
     send_join(handle, port)

@@ -6,13 +6,13 @@ from interface import (
     menue,
     nutzernamen_abfragen,
     eingabe_nachricht,
-    #eingabe_bild,
+    eingabe_bild,
     autoreply_umschalten
 )
 
 ## Importiert Methoden aus dem UI_utils.py
-#from UI_utils import lade_config, finde_freien_port
-from message_handler import send_join, send_leave, sendMSG, sendIMG
+from UI_utils import lade_config, finde_freien_port
+from message_handler import send_who, send_join, send_leave, sendMSG, sendIMG, receive_MSG
 
 #registriere_neuen_nutzer
 def registriere_neuen_nutzer(handle, port):
@@ -37,12 +37,12 @@ def main():
             # hier später Netzwerkfunktion einbinden
             send_who()
         elif wahl == "2":
-            empfänger, text = eingabe_nachricht()
-            print(f"→ MSG an {empfänger}: {text}")
+            empfaenger, text = eingabe_nachricht()
+            print(f"→ MSG an {empfaenger}: {text}")
             # hier später Nachricht senden
-            sendMSG(handle, empfaenger, text)
+            sendMSG(handle)
         elif wahl == "3":
-            empfänger, pfad = eingabe_bild()
+            empfaenger, pfad = eingabe_bild()
             print(f"→ Bild wird an {empfänger} gesendet: {pfad}")
             # hier später Bildversand einbinden
             sendIMG(handle, empfaenger, pfad)

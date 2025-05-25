@@ -11,8 +11,17 @@ from interface import (
 )
 
 ## Importiert Methoden aus dem UI_utils.py
-from UI_utils import lade_config, finde_freien_port
-from message_handler import send_join, send_leave, sendMSG, sendIMG
+from UI_utils import (
+    lade_config,
+    finde_freien_port
+)
+## Importiert Methoden aus dem message_handler
+from message_handler import (
+    send_join,
+    send_leave,
+    sendMSG,
+    sendIMG
+)
 
 #registriere_neuen_nutzer
 def registriere_neuen_nutzer(handle, port):
@@ -30,30 +39,30 @@ def main():
     print(f"Willkommen, {handle}! Dein Port: {port}")
 
     while True:
-        wahl = menue()
+        auswahl = menue()
 
-        if wahl == "1":
+        if auswahl == "Teilnehmer anzeigen":
             print("→ WHO wird gesendet ...")
             # hier später Netzwerkfunktion einbinden
             send_who()
-        elif wahl == "2":
+        elif auswahl == "Nachricht senden":
             empfänger, text = eingabe_nachricht()
             print(f"→ MSG an {empfänger}: {text}")
             # hier später Nachricht senden
             sendMSG(handle, empfaenger, text)
-        elif wahl == "3":
+        elif auswahl == "Bild senden":
             empfänger, pfad = eingabe_bild()
             print(f"→ Bild wird an {empfänger} gesendet: {pfad}")
             # hier später Bildversand einbinden
             sendIMG(handle, empfaenger, pfad)
-        elif wahl == "4":
+        elif auswahl == "Autoreply ändern":
             config = autoreply_umschalten(config)
             print("→ Autoreply aktualisiert.")
-        elif wahl == "5":
+        elif auswahl == "Konfiguration":
             print("→ Aktuelle Konfiguration:")
             for k, v in config.items():
                 print(f"  {k}: {v}")
-        elif wahl == "6":
+        elif auswahl == "Beenden":
             print(f"→ LEAVE {handle}")
             break
         else:

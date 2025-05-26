@@ -149,5 +149,14 @@ def nutzerspeichern():
         else:
              print(f"[WARNUNG] LEAVE empfangen, aber {handle} war nicht bekannt")
 
+        # ✳️ NEU: Nutzer ausgeben
+def zeige_bekannte_nutzer():
+    print(" Bekannte Nutzer:")
+    for handle, (ip, port) in known_users.items():
+        print(f"  {handle} → {ip}:{port}")     
+
+
+
+
 
      

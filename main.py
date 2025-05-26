@@ -1,7 +1,7 @@
 ## @file main.py
 #  @brief Start des Programms
 
-## Importiert Methoden aus dem interface.py
+## Importiert Methoden aus dem interface.py hallo
 from interface import (
     menue,
     nutzernamen_abfragen,

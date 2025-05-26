@@ -40,8 +40,8 @@ def finde_freien_port(config):
     @raises ValueError Wenn 'port_min' oder 'port_max' in der Konfiguration fehlen
     @raises RuntimeError wenn kein freier Port im Bereich gefunden wird
     """
-    port_min = config.get("port_min")
-    port_max = config.get("port_max")
+    port_min = config["network"].get("port_min")
+    port_max = config["network"].get("port_max")
 #Holt die Konfigurationswerte port_min und port_max aus dem config-Dictionary.
 
     if port_min is None or port_max is None:

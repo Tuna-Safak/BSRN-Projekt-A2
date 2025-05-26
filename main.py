@@ -11,8 +11,21 @@ from interface import (
 )
 
 ## Importiert Methoden aus dem UI_utils.py
-from UI_utils import lade_config, finde_freien_port, registriere_neuen_nutzer
- 
+
+from UI_utils import lade_config, finde_freien_port
+from message_handler import send_who, send_join, send_leave, sendMSG, sendIMG, receive_MSG
+
+
+'''from UI_utils import (
+    lade_config,
+    finde_freien_port
+)'''
+
+
+#registriere_neuen_nutzer
+def registriere_neuen_nutzer(handle, port):
+    send_join(handle, port)
+
 ## Hauptfunktion
 #  @brief ruft funktionen aus den importierten Datei auf
 #  @details lädt das Menü und verwaltet den Ablauf
@@ -25,31 +38,39 @@ def main():
     print(f"Willkommen, {handle}! Dein Port: {port}")
 
     while True:
-        wahl = menue()
+        auswahl = menue()
 
-        if wahl == "1":
+        if auswahl == "1":
             print("→ WHO wird gesendet ...")
             # hier später Netzwerkfunktion einbinden
-        elif wahl == "2":
-            empfänger, text = eingabe_nachricht()
-            print(f"→ MSG an {empfänger}: {text}")
+            send_who()
+            continue
+        elif auswahl == "2":
+            empfaenger, text = eingabe_nachricht()
+            print(f"→ MSG an {empfaenger}: {text}")
             # hier später Nachricht senden
-        elif wahl == "3":
-            empfänger, pfad = eingabe_bild()
-            print(f"→ Bild wird an {empfänger} gesendet: {pfad}")
+            sendMSG(handle)
+            continue
+        elif auswahl == "3":
+            empfaenger, pfad = eingabe_bild()
+            print(f"→ Bild wird an {empfaenger} gesendet: {pfad}")
             # hier später Bildversand einbinden
-        elif wahl == "4":
+            sendIMG(handle, empfaenger, pfad)
+            continue
+        elif auswahl == "4":
             config = autoreply_umschalten(config)
             print("→ Autoreply aktualisiert.")
-        elif wahl == "5":
+            continue
+        elif auswahl == "5":
             print("→ Aktuelle Konfiguration:")
             for k, v in config.items():
                 print(f"  {k}: {v}")
-        elif wahl == "6":
+            continue    
+        elif auswahl == "6":
             print(f"→ LEAVE {handle}")
             break
-        else:
-            print("Ungültige Eingabe. Bitte erneut versuchen.")
+        print(f"DEBUG: Auswahl = {auswahl}")  
+       
 
 ## beginnt das Programm
 #  @note Beim starten wird name durch main ersetzt, erst wenn es stimmt, wird die Main Funktion gestartet

@@ -1,4 +1,5 @@
 import sys
+import questionary
 ## @file interface.py
 # @brief interface der Kommmandozeile für das Chat-Programm
 # @details Menüauswahl und Eingaben über das Terminal
@@ -6,7 +7,7 @@ import sys
 ## Fragte eine Auswahl ab
 # @return Auswahl des Benutzers als String
 def menue():
-    #print("\n===== Simple Chat CLI =====")
+    print("\n===== Simple Chat CLI =====")
     print("1. Teilnehmer anzeigen")
     print("2. Nachricht senden")
     print("3. Bild senden")
@@ -14,6 +15,21 @@ def menue():
     print("5. Konfiguration anzeigen/bearbeiten")
     print("6. Chat verlassen")
     return input("> Bitte wählen: ")
+    
+
+'''wahl= questionary.select(
+    "Was möchtest du tun?",
+    choices=[
+        "Teilnehmer anzeigen",
+        "Nachricht senden",
+        "Bild senden",
+        "Autoreply ändern",
+        "Konfiguration",
+        "Beenden"
+    ]
+).ask()
+
+print("Du hast gewählt:", wahl)'''
 
 ## Eingabe des Benutzernames
 # @return Benutzername (Handle) als String

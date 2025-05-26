@@ -71,7 +71,7 @@ def finde_freien_port(config):
 #Wenn der Bind-Vorgang fehlschlägt wird ein OSError ausgelöst und die Schleife wird fortgesetzt
 
     raise RuntimeError("Kein freier UDP-Port im Bereich {}–{} gefunden.".format(port_min, port_max))
-#Wenn kein einziger Port im angegebenen Bereich verfügbar war, bricht die Funktion mit einem RuntimeError ab 
+# Wenn kein einziger Port im angegebenen Bereich verfügbar war, bricht die Funktion mit einem RuntimeError ab 
 
 
 

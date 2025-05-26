@@ -11,7 +11,7 @@ from interface import (
 )
 
 ## Importiert Methoden aus dem UI_utils.py
-
+from discovery import sende_join, sende_leave, sende_who, nutzerspeichern
 from UI_utils import lade_config, finde_freien_port
 from message_handler import send_who, send_join, send_leave, sendMSG, sendIMG, receive_MSG
 

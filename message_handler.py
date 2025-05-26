@@ -40,7 +40,7 @@ sock.bind(('', port))
 # 5000 ist der Port, auf dem das Programm auf eingehende Nachrichten wartet
 
 # Startet Empfangsfunktion im Hintergrund
-#threading.Thread(target=receive_MSG, args=(sock,), daemon=True).start()
+    #threading.Thread(target=receive_MSG, args=(sock,), daemon=True).start()
 # ein neuer Thread wird gestartet, der die Funktion receive_MSG ausführt
 # dadurch läuft das Nachrichten-Empfangen "nebenbei", während man z. B. selbst schreibt
 # daemon=True → dieser Thread wird automatisch beendet, wenn das Hauptprogramm beendet wird

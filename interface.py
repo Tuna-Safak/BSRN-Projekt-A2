@@ -1,4 +1,6 @@
+#Argumente aus der Kommandozeile auslesen --handel
 import sys
+#für schönere eingabeauffordungen, muss zuerst installiert werden
 import questionary
 ## @file interface.py
 # @brief interface der Kommmandozeile für das Chat-Programm
@@ -6,6 +8,7 @@ import questionary
 
 ## Fragte eine Auswahl ab
 # @return Auswahl des Benutzers als String
+#wird in der main aufgerufen
 def menue():
     print("\n===== Simple Chat CLI =====")
     print("1. Teilnehmer anzeigen")
@@ -40,7 +43,7 @@ def nutzernamen_abfragen():
             return sys.argv[index]
     return input("Bitte Benutzernamen eingeben: ")
 
-## Eingabe der zu versendend Nachricht an eine bestimmten Empfänger
+'''## Eingabe der zu versendend Nachricht an eine bestimmten Empfänger
 # @return 
 def eingabe_nachricht():
     empfänger = input("Empfänger-Handle: ")
@@ -52,7 +55,7 @@ def eingabe_nachricht():
 def eingabe_bild():
     empfänger = input("Empfänger-Handle: ")
     bildpfad = input("Pfad zum Bild: ")
-    return empfänger, bildpfad
+    return empfänger, bildpfad'''
 
 ## Eingabe der Autoreply Nachricht
 # @return Die Config-Datei wird verändert

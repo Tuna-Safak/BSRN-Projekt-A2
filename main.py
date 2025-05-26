@@ -1,7 +1,7 @@
 ## @file main.py
 #  @brief Start des Programms
 
-## Importiert Methoden aus dem interface.py hallo
+## Importiert Methoden aus dem interface.py
 from interface import (
     menue,
     nutzernamen_abfragen,
@@ -50,13 +50,7 @@ def main():
             print("→ WHO wird gesendet ...")
             # hier später Netzwerkfunktion einbinden
             send_who()
-        elif auswahl == "2":
-            empfaenger, text = eingabe_nachricht()
-            print(f"→ MSG an {empfaenger}: {text}")
-            # hier später Nachricht senden
-            sendMSG(handle)
-        elif auswahl == "3":
-            empfaenger, pfad = eingabe_bild()
+        
 
         elif auswahl == "Nachricht senden":
             empfänger, text = eingabe_nachricht()

@@ -37,10 +37,10 @@ print("Du hast gewählt:", wahl)'''
 ## Eingabe des Benutzernames
 # @return Benutzername (Handle) als String
 def nutzernamen_abfragen():
-    if '--handle' in sys.argv:
+    '''if '--handle' in sys.argv:
         index = sys.argv.index('--handle') + 1
         if index < len(sys.argv):
-            return sys.argv[index]
+            return sys.argv[index]'''
     return input("Bitte Benutzernamen eingeben: ")
 
 '''## Eingabe der zu versendend Nachricht an eine bestimmten Empfänger
@@ -59,9 +59,11 @@ def eingabe_bild():
 
 ## Eingabe der Autoreply Nachricht
 # @return Die Config-Datei wird verändert
+#gibt erst die aktuelle nachricht aus und fragt dann nach einer neuen
+#nachricht in der Config einsehbar
 def autoreply_umschalten(config):
     aktuell = config.get("autoreply", "")
     print(f"Aktueller Autoreply-Text: '{aktuell}'")
     neu = input("Neuer Autoreply-Text (leer für deaktivieren): ")
-    config["autoreply"] = neu
+    config["autoreply"] = neu#greift auf die zeile autoreply in der config zu und ändert sie
     return config

@@ -16,17 +16,11 @@ from UI_utils import lade_config, finde_freien_port
 from message_handler import send_who, send_join, send_leave, sendMSG, sendIMG, receive_MSG
 
 
-from UI_utils import (
+'''from UI_utils import (
     lade_config,
     finde_freien_port
-)
-## Importiert Methoden aus dem message_handler
-from message_handler import (
-    send_join,
-    send_leave,
-    sendMSG,
-    sendIMG
-)
+)'''
+
 
 #registriere_neuen_nutzer
 def registriere_neuen_nutzer(handle, port):
@@ -46,34 +40,37 @@ def main():
     while True:
         auswahl = menue()
 
-        if auswahl == "Teilnehmer anzeigen":
+        if auswahl == "1":
             print("→ WHO wird gesendet ...")
             # hier später Netzwerkfunktion einbinden
             send_who()
-        
-
-        elif auswahl == "Nachricht senden":
-            empfänger, text = eingabe_nachricht()
-            print(f"→ MSG an {empfänger}: {text}")
+            continue
+        elif auswahl == "2":
+            empfaenger, text = eingabe_nachricht()
+            print(f"→ MSG an {empfaenger}: {text}")
             # hier später Nachricht senden
-            sendMSG(handle, empfaenger, text)
-        elif auswahl == "Bild senden":
-            empfänger, pfad = eingabe_bild()
-            print(f"→ Bild wird an {empfänger} gesendet: {pfad}")
+            sendMSG(handle)
+            continue
+        elif auswahl == "3":
+            empfaenger, pfad = eingabe_bild()
+            print(f"→ Bild wird an {empfaenger} gesendet: {pfad}")
             # hier später Bildversand einbinden
             sendIMG(handle, empfaenger, pfad)
-        elif auswahl == "Autoreply ändern":
+            continue
+        elif auswahl == "4":
             config = autoreply_umschalten(config)
             print("→ Autoreply aktualisiert.")
-        elif auswahl == "Konfiguration":
+            continue
+        elif auswahl == "5":
             print("→ Aktuelle Konfiguration:")
             for k, v in config.items():
                 print(f"  {k}: {v}")
-        elif auswahl == "Beenden":
+            continue    
+        elif auswahl == "6":
             print(f"→ LEAVE {handle}")
             break
-        else:
-            print("Ungültige Eingabe. Bitte erneut versuchen.")
+        print(f"DEBUG: Auswahl = {auswahl}")  
+       
 
 ## beginnt das Programm
 #  @note Beim starten wird name durch main ersetzt, erst wenn es stimmt, wird die Main Funktion gestartet

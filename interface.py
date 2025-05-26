@@ -7,17 +7,17 @@ import questionary
 ## Fragte eine Auswahl ab
 # @return Auswahl des Benutzers als String
 def menue():
-    '''#print("\n===== Simple Chat CLI =====")
+    print("\n===== Simple Chat CLI =====")
     print("1. Teilnehmer anzeigen")
     print("2. Nachricht senden")
     print("3. Bild senden")
     print("4. Autoreply aktivieren/deaktivieren")
     print("5. Konfiguration anzeigen/bearbeiten")
     print("6. Chat verlassen")
-    return input("> Bitte wählen: ")'''
+    return input("> Bitte wählen: ")
     
 
-wahl = questionary.select(
+'''wahl= questionary.select(
     "Was möchtest du tun?",
     choices=[
         "Teilnehmer anzeigen",
@@ -29,7 +29,7 @@ wahl = questionary.select(
     ]
 ).ask()
 
-print("Du hast gewählt:", wahl)
+print("Du hast gewählt:", wahl)'''
 
 ## Eingabe des Benutzernames
 # @return Benutzername (Handle) als String

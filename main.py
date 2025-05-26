@@ -1,5 +1,5 @@
 ## @file main.py
-#  @brief Start des Programms
+##  @brief Start des Programms
 
 ## Importiert Methoden aus dem interface.py
 from interface import (

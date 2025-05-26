@@ -130,23 +130,25 @@ def nutzerspeichern():
           antwort += ", ".join(
             f"{handle} {ip} {port}" for handle, (ip, port) in known_users.items()
          )
+        elif befehl == "KNOWNUSERS":
+            print(f"[RECV] KNOWNUSERS von {absender}: {message}")
 
          ## sendto() = methode zum versenden von UDP-Nachrichten
          ## encode() = wandelt string in bytes um
          ## absender = IP-Adresse und Port an dem die Nachricht gehen soll
 
-          sock.sendto(antwort.encode(), absender)
+            sock.sendto(antwort.encode(), absender)
 
-          print(f"[SEND] → {absender}: {antwort}")
+            print(f"[SEND] → {absender}: {antwort}")
 
         elif befehl == "LEAVE" and len(nachrichtTeilen) == 2:
           handle = nachrichtTeilen[1]
          
-        if handle in known_users:
+          if handle in known_users:
          
               del known_users[handle]
               print(f"[INFO] {handle} wurde entfernt (LEAVE empfangen)")
-        else:
+          else:
              print(f"[WARNUNG] LEAVE empfangen, aber {handle} war nicht bekannt")
 
         # ✳️ NEU: Nutzer ausgeben

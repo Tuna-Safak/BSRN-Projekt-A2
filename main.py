@@ -50,12 +50,12 @@ def main():
             print("→ WHO wird gesendet ...")
             # hier später Netzwerkfunktion einbinden
             send_who()
-        elif wahl == "2":
+        elif auswahl == "2":
             empfaenger, text = eingabe_nachricht()
             print(f"→ MSG an {empfaenger}: {text}")
             # hier später Nachricht senden
             sendMSG(handle)
-        elif wahl == "3":
+        elif auswahl == "3":
             empfaenger, pfad = eingabe_bild()
 
         elif auswahl == "Nachricht senden":

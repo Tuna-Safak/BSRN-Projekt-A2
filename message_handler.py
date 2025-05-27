@@ -217,11 +217,10 @@ def handle_IMG(sock, teile, addr):
 
 # -------------Nachricht empfangen-----------------
 def receive_MSG(sock, config):
-    print("✅ Empfang läuft…")  # Zeigt an, dass der Empfang aktiv ist
     while True:
         daten, addr = sock.recvfrom(1024)
         text = daten.decode().strip()
-        print(f"📥 Nachricht von {addr}: {text}")  # Debug-Ausgabe
+        print(f"Nachricht von {addr}: {text}")
 
         teile = text.split(' ', 2)
         if len(teile) == 0:
@@ -250,7 +249,6 @@ def receive_MSG(sock, config):
                 handle_IMG(teile, addr)
             except Exception as e:
                 print(f"Fehler beim Bildempfang: {e}")
-
         elif befehl == "KNOWNUSERS":
             eintraege = text[len("KNOWNUSERS "):].split(", ")
             for eintrag in eintraege:
@@ -260,3 +258,5 @@ def receive_MSG(sock, config):
                     print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
                 except:
                     print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
+        else:
+            print(f" Unbekannte Nachricht: {text}")

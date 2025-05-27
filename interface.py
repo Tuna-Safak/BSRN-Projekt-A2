@@ -11,6 +11,7 @@ import questionary
 #wird in der main aufgerufen
 def menue():
     print("\n===== Simple Chat CLI =====")
+    print("0. Join")
     print("1. Teilnehmer anzeigen")
     print("2. Nachricht senden")
     print("3. Bild senden")

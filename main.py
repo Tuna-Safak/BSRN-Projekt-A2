@@ -17,11 +17,15 @@ from discovery import sende_join, sende_leave, sende_who,nutzerspeichern, zeige_
 from UI_utils import lade_config, finde_freien_port
 from message_handler import send_who, send_join, send_leave, sendMSG, sendIMG, receive_MSG, get_socket
 
-
+#message_handler
 sock = get_socket()
-
+#ui_utels
 config = lade_config()
-
+#message_handler
+# @para sock
+# @para config
+# programm läuft im hintergrund
+## daemon=true schließt die funktion automatisch nach schließung des Programms
 threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
 
 
@@ -37,6 +41,7 @@ def main():
     handle = nutzernamen_abfragen()
     port = finde_freien_port(config)
     registriere_neuen_nutzer(handle, port)
+    #discovery dienst
     threading.Thread(target=nutzerspeichern, daemon=True).start()
     
     print(f"Willkommen, {handle}! Dein Port: {port}")
@@ -54,22 +59,27 @@ def main():
             send_who()
             continue
         elif auswahl == "2":
+            #interface
             empfaenger, text = eingabe_nachricht()
             print(f"→ MSG an {empfaenger}: {text}")
             sendMSG(sock, handle, empfaenger, text)
             continue
         elif auswahl == "3":
-        #    empfaenger, pfad = eingabe_bild()
-        #    print(f"→ Bild wird an {empfaenger} gesendet: {pfad}")
+        #  empfaenger, pfad = eingabe_bild()
+        #  print(f"→ Bild wird an {empfaenger} gesendet: {pfad}")
             # hier später Bildversand einbinden
             sendIMG(handle, empfaenger, pfad)
             continue
         elif auswahl == "4":
+            #interface
             config = autoreply_umschalten(config)
             print("→ Autoreply aktualisiert.")
             continue
         elif auswahl == "5":
             print("→ Aktuelle Konfiguration:")
+            # config hat schlüssel und wert paare
+            # k=kex(schlüssel) --> autoreply
+            # v=(value)Wert --> text
             for k, v in config.items():
                 print(f"  {k}: {v}")
             continue    

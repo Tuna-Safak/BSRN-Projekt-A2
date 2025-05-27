@@ -16,18 +16,13 @@ from interface import (
 from discovery import sende_join, sende_leave, sende_who,nutzerspeichern, zeige_bekannte_nutzer
 from UI_utils import lade_config, finde_freien_port
 from message_handler import send_who, send_join, send_leave, sendMSG, sendIMG, receive_MSG, get_socket
-from UI_utils import lade_config
+
 
 sock = get_socket()
 
 config = lade_config()
 
 threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
-
-'''from UI_utils import (
-    lade_config,
-    finde_freien_port
-)'''
 
 
 #registriere_neuen_nutzer

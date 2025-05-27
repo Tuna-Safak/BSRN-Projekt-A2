@@ -3,7 +3,7 @@
 
 ## Importiert Methoden aus dem interface.py
 import threading
-
+## Importiert Methoden aus dem interface.py
 from interface import (
     menue,
     nutzernamen_abfragen,
@@ -12,7 +12,7 @@ from interface import (
     autoreply_umschalten
 )
 
-## Importiert Methoden aus dem UI_utils.py
+## Importiert Methoden aus dem UI_utils.py, discovery und message_handler
 from discovery import sende_join, sende_leave, sende_who,nutzerspeichern, zeige_bekannte_nutzer
 from UI_utils import lade_config, finde_freien_port
 from message_handler import send_who, send_join, send_leave, sendMSG, sendIMG, receive_MSG, get_socket

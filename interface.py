@@ -1,7 +1,6 @@
 #Argumente aus der Kommandozeile auslesen --handel
 import sys
-#für schönere eingabeauffordungen, muss zuerst installiert werden
-import questionary
+## import questionary
 ## @file interface.py
 # @brief interface der Kommmandozeile für das Chat-Programm
 # @details Menüauswahl und Eingaben über das Terminal

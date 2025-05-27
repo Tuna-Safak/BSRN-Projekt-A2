@@ -66,13 +66,15 @@ def send_who():
 # -------------Nachricht senden-----------------
 def sendMSG(sock, absender_handle, empfaenger_handle, text):
     if empfaenger_handle not in known_users:
-        print(" Nutzer nicht bekannt. Warte auf JOIN oder WHO.")
+        print("Empfänger nicht bekannt.")
+        print(f"Bekannte Nutzer: {known_users}")
         return
 
-    empfaenger_ip, empfaenger_port = known_users[empfaenger_handle]
-    nachricht = f"MSG {absender_handle} {text}"
-    sock.sendto(nachricht.encode(), (empfaenger_ip, empfaenger_port))
-    print(f"[SEND] → {empfaenger_handle} @ {empfaenger_ip}:{empfaenger_port}: {text}")
+    nachricht = f'MSG {absender_handle} "{text}"\n'
+    ip, port = known_users[empfaenger_handle]
+    print(f"[SEND] → an {empfaenger_handle} @ {ip}:{port} → {text}")
+    sock.sendto(nachricht.encode(), (ip, port))
+
 
 # -------------Nachricht verarbeiten und formatieren-----------------
 def handle_MSG(sender, text):
@@ -215,10 +217,11 @@ def handle_IMG(sock, teile, addr):
 
 # -------------Nachricht empfangen-----------------
 def receive_MSG(sock, config):
+    print("✅ Empfang läuft…")  # Zeigt an, dass der Empfang aktiv ist
     while True:
         daten, addr = sock.recvfrom(1024)
         text = daten.decode().strip()
-        print(f"Nachricht von {addr}: {text}")
+        print(f"📥 Nachricht von {addr}: {text}")  # Debug-Ausgabe
 
         teile = text.split(' ', 2)
         if len(teile) == 0:
@@ -247,6 +250,7 @@ def receive_MSG(sock, config):
                 handle_IMG(teile, addr)
             except Exception as e:
                 print(f"Fehler beim Bildempfang: {e}")
+
         elif befehl == "KNOWNUSERS":
             eintraege = text[len("KNOWNUSERS "):].split(", ")
             for eintrag in eintraege:
@@ -256,5 +260,3 @@ def receive_MSG(sock, config):
                     print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
                 except:
                     print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
-        else:
-            print(f" Unbekannte Nachricht: {text}")

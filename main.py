@@ -7,8 +7,8 @@ import threading
 from interface import (
     menue,
     nutzernamen_abfragen,
-   # eingabe_nachricht,
-  #  eingabe_bild,
+    eingabe_nachricht,
+    eingabe_bild,
     autoreply_umschalten
 )
 

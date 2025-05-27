@@ -133,17 +133,15 @@ def nutzerspeichern():
          ## items() =  liste von Tupeln mit Schlüssel und Wert
           antwort += ", ".join(
             f"{handle} {ip} {port}" for handle, (ip, port) in known_users.items()
-         )
-        elif befehl == "KNOWNUSERS":
-            print(f"[RECV] KNOWNUSERS von {absender}: {message}")
-
+          )
          ## sendto() = methode zum versenden von UDP-Nachrichten
          ## encode() = wandelt string in bytes um
          ## absender = IP-Adresse und Port an dem die Nachricht gehen soll
 
-            sock.sendto(antwort.encode(), absender)
-
-            print(f"[SEND] → {absender}: {antwort}")
+          sock.sendto(antwort.encode(), absender)
+         
+        elif befehl == "KNOWNUSERS":
+            print(f"[RECV] KNOWNUSERS von {absender}: {message}")
 
         elif befehl == "LEAVE" and len(nachrichtTeilen) == 2:
           handle = nachrichtTeilen[1]
@@ -161,10 +159,3 @@ def zeige_bekannte_nutzer():
     for handle, (ip, port) in known_users.items():
         print(f"  {handle} → {ip}:{port}")     
 
-
-
-
-
-
-
-     

@@ -1,7 +1,8 @@
 ## @file main.py
 ##  @brief Start des Programms
-
 ## Importiert Methoden aus dem interface.py
+import threading
+
 from interface import (
     menue,
     nutzernamen_abfragen,
@@ -13,8 +14,14 @@ from interface import (
 ## Importiert Methoden aus dem UI_utils.py
 from discovery import sende_join, sende_leave, sende_who,nutzerspeichern, zeige_bekannte_nutzer
 from UI_utils import lade_config, finde_freien_port
-from message_handler import send_who, send_join, send_leave, sendMSG, sendIMG, receive_MSG
+from message_handler import send_who, send_join, send_leave, sendMSG, sendIMG, receive_MSG, get_socket
+from UI_utils import lade_config
 
+sock = get_socket()
+
+config = lade_config()
+
+threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
 
 '''from UI_utils import (
     lade_config,
@@ -48,8 +55,7 @@ def main():
         elif auswahl == "2":
             empfaenger, text = eingabe_nachricht()
             print(f"→ MSG an {empfaenger}: {text}")
-            # hier später Nachricht senden
-            sendMSG(handle)
+            sendMSG(sock, handle, empfaenger, text)
             continue
         elif auswahl == "3":
             empfaenger, pfad = eingabe_bild()

@@ -22,7 +22,7 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 # option: auf welche Einstellung der Socket gesetzt werden soll (z.B Broadcast)
 # beugt Fehler vor : PermissionError: [Errno 13] Permission denied
-# weil einige Optionen erst explizit freigeschaltet werden müssen (--> Port mehrfach benutzen, Broadcast)
+# weil einige Optionen erst explizit freigeschaltet werden müssen (--> Port mehrfach benutzen, Broadcast)
 # Broadcast: ermöglicht es, dass der Socket erlaubt, dass der Nutzer an alle Computer im Netzwerk senden darf
 
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -32,19 +32,14 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 # Port nochmal verwenden kann (z.B nach einem Absturz des Programms)
 # --> beugt diesem Fehler vor: OSError: [Errno 98] Address already in use
 
-port = 5000
-sock.bind(('', port))
+def get_socket():
+    return sock
+
+sock.bind(('', 5000))
 # bind(...) verknüpft den Socket mit einer IP-Adresse und Portnummer
 # socket auf Port 5000 öffnen (alle IPs erlauben), sorgt dafür, dass der UDP-Socket auf diesem Port lauscht
 # '' bedeutet, dass der Socket auf allen verfügbaren IP-Adressen lauscht
 # 5000 ist der Port, auf dem das Programm auf eingehende Nachrichten wartet
-
-# Startet Empfangsfunktion im Hintergrund
-    #threading.Thread(target=receive_MSG, args=(sock,), daemon=True).start()
-# ein neuer Thread wird gestartet, der die Funktion receive_MSG ausführt
-# dadurch läuft das Nachrichten-Empfangen "nebenbei", während man z. B. selbst schreibt
-# daemon=True → dieser Thread wird automatisch beendet, wenn das Hauptprogramm beendet wird
-# args=(sock,) → übergibt dem Thread den Socket als Argument
 
 # -----------JOIN-Nachricht versenden------------------
 def send_join(handle_nutzername, port):
@@ -69,19 +64,15 @@ def send_who():
     print("[WHO] Gesendet")
 
 # -------------Nachricht senden-----------------
-def sendMSG(handle_nutzername):
-    # Nachrichten senden
-    while True:
-        target = input("Empfänger (Handle): ").strip()
-        if target not in known_users:
-            print("Nutzer nicht bekannt. Warte auf JOIN oder WHO.")
-            continue
+def sendMSG(sock, absender_handle, empfaenger_handle, text):
+    if empfaenger_handle not in known_users:
+        print(" Nutzer nicht bekannt. Warte auf JOIN oder WHO.")
+        return
 
-        text = input(" Nachricht: ").strip()
-        msg = f'MSG {handle_nutzername} "{text}"\n'
-        ip, target_port = known_users[target]
-        sock.sendto(msg.encode(), (ip, target_port))
-        print(f"[MSG] Gesendet an {target}: {text}")
+    nachricht = f'MSG {absender_handle} "{text}"\n'
+    ip, port = known_users[empfaenger_handle]
+    sock.sendto(nachricht.encode(), (ip, port))
+    print(f"[SEND] → {empfaenger_handle}: {text}")
 
 # -------------Nachricht verarbeiten und formatieren-----------------
 def handle_MSG(sender, text):
@@ -110,7 +101,7 @@ def handle_leave(name):
         print(f"{name} hat den Chat verlassen")
     else:
         print(f"LEAVE von unbekanntem Nutzer erhalten: {name}")
-       
+
 # -------------Bild senden-----------------
 # Funktion zum Versenden eines Bildes
 # @param handle_sender: Benutzername des Absenders 
@@ -139,6 +130,10 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     # wichtig für den Empfänger damit er weiß wie viele Daten kommen
     groesse = len(bilddaten)
 
+    if groesse > 1400:
+        print("Bild zu groß für eine UDP-Nachricht max 1400 Bytes")
+        return
+
     # Nachricht im SLCP-Format vorbereiten: IMG <Empfänger> <Größe>
     # das ist die Steuerzeile, die vor dem Bild gesendet wird
     # f-String: setzt automatisch die Variablen ein
@@ -159,9 +154,9 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     print(f"Bild an {handle_empfaenger} gesendet ({groesse} Bytes)")
 
 # -------------Bild empfangen-----------------
-# @brief verarbeitet eine IMG-Nachricht: liest Bilddaten ein und speichert sie
-# @param sock Der Socket, über den das Bild empfangen wird
-# @param teile Die Teile der empfangenen Textnachricht (z. B. ["IMG", "Ziel", "Größe"])
+# @brief verarbeitet eine IMG-Nachricht: liest Bilddaten ein und speichert sie als datei
+# @param sock Der UDP-Socket, über den das Bild empfangen wird
+# @param teile Die Teile der empfangenen Textnachricht (z. B. ["IMG", "empfänger", "Größe"])
 # @param addr Die Adresse (IP, Port) des Absenders
 def handle_IMG(sock, teile, addr):
     # Prüfen, ob genug Teile in der Nachricht sind
@@ -169,23 +164,28 @@ def handle_IMG(sock, teile, addr):
         print("Nachricht ist nicht vollständig.")
         return
 
+    # ist der name also an wen das Bild gesendet werden soll
     empfaenger = teile[1]
 
     try:
         # Die Bildgröße aus dem Text in eine Zahl umwandeln
         groesse = int(teile[2])
     except ValueError:
-        # Wenn keine Zahl übergeben wurde
+        # Wenn keine Zahl übergeben wurde sondern was anders
         print("Ungültige Bildgröße.")
         return
 
-    # Die eigentlichen Bilddaten empfangen (zweites Paket)
+    # Die eigentlichen Bilddaten empfangen 
+    # recvfrom() wartet auf ein weiteres UDP-Paket
+    # Die Anzahl groesse + 1024 gibt einen Puffer mit dazu, falls z. B. mehr Daten ankommen
+    # bilddaten enthält die empfangenen Binärdaten 
     bilddaten, addr2 = sock.recvfrom(groesse + 1024)  # etwas Puffer
 
-    # IP-Adresse vom Absender herausfinden
+    # IP-Adresse vom Absender herausfinden bzw speichern
     sender_ip = addr[0]
 
     # Absendernamen aus der IP-Adresse ermitteln
+    # durchsucht known_users
     sender_name = None
     for name, (ip, _) in known_users.items():
         if ip == sender_ip:
@@ -200,31 +200,25 @@ def handle_IMG(sock, teile, addr):
     os.makedirs("empfangene_bilder", exist_ok = True)
 
     # Bild speichern mit einfachem Namen z.B. büsra_bild.jpg
+    # es wird ein vollständiger pfad gebaut
     dateiname = f"{sender_name}_bild.jpg"
     pfad = os.path.join("empfangene_bilder", dateiname)
 
     # Bild speichern
     # w = write, b = binary
+    # öffnet die datei im wb und schreibt alle empfangenen Bytes in die Datei
     with open(pfad, "wb") as f:
         f.write(bilddaten)
 
-    # Info ausgeben, dass Bild gespeichert wurde
+    # Info ausgeben, dass das Bild gespeichert wurde
     print(f"Bild von {sender_name} empfangen und gespeichert unter: {pfad}")
 
-
 # -------------Nachricht empfangen-----------------
-def receive_MSG(sock):
-    # implementieren einer Funktion für das Nachrichten empfangen                  
+def receive_MSG(sock, config):
     while True:
         daten, addr = sock.recvfrom(1024)
-        # daten: wandelt die empfangene Nachricht in eine Bytefolge um (noch nicht lesbarer Text)
-        # addr: enthält die Adresse des Absenders – ein Tupel wie ('192.168.1.42', 5000)
-
         text = daten.decode().strip()
-        # Nachricht decodieren: in einen lesbaren Text umwandeln
-
         print(f"Nachricht von {addr}: {text}")
-        # erhaltene Nachricht wird ausgegeben
 
         teile = text.split(' ', 2)
         if len(teile) == 0:
@@ -240,13 +234,19 @@ def receive_MSG(sock):
             handle_leave(teile[1])
 
         elif befehl == "MSG" and len(teile) == 3:
-            handle_MSG(teile[1], teile[2])
-            
+            absender_handle = teile[1]
+            nachricht = teile[2]
+            print(f"\n📨 Nachricht von {absender_handle}: {nachricht}\n> ", end="")
+
+            if config.get("autoreply_aktiv", False):
+                autoreply_text = config.get("autoreply", "Ich bin gerade nicht da.")
+                sendMSG(config["handle"], absender_handle, autoreply_text)
+
         elif befehl == "IMG" and len(teile) == 3:
-            handle_IMG(sock, teile, addr)
+            try:
+                handle_IMG(teile, addr)
+            except Exception as e:
+                print(f"Fehler beim Bildempfang: {e}")
 
         else:
             print(f" Unbekannte Nachricht: {text}")
-
-threading.Thread(target=receive_MSG, args=(sock,), daemon=True).start()
-

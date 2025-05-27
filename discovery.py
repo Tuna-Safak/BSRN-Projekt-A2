@@ -46,31 +46,27 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 ## 1 = aktivieren (True / Ja)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-# ✳️ NEU: Funktionen exportieren
+
 ## Liste die nur erlaubt, dass diese 3 Funktionen importiert werden
-__all__ = ["sende_join", "sende_leave", "sende_who"]  # ✳️ NEU
+__all__ = ["sende_join", "sende_leave", "sende_who"] 
 
 ...
 
-
-# ✳️ NEU: JOIN senden Funktion
 ## 255.255.255.255 broadcast adresse (Sendet Nachricht an alle Geräte im lokalen Netzwerk egal welche IP)
-def sende_join(handle, port):  # ✳️ NEU
+def sende_join(handle, port):  
     nachricht = f"JOIN {handle} {port}"
     sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))  # Broadcast
-    print(f"[SEND] → JOIN gesendet: {nachricht}")  # ✳️ NEU
+    print(f"[SEND] → JOIN gesendet: {nachricht}")
 
-# ✳️ NEU: LEAVE senden Funktion
-def sende_leave(handle):  # ✳️ NEU
+def sende_leave(handle):  
     nachricht = f"LEAVE {handle}"
     sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
-    print(f"[SEND] → LEAVE gesendet: {nachricht}")  # ✳️ NEU
+    print(f"[SEND] → LEAVE gesendet: {nachricht}") 
 
-# ✳️ NEU: WHO senden Funktion
-def sende_who():  # ✳️ NEU
+def sende_who():  
     nachricht = "WHO"
     sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
-    print("[SEND] → WHO gesendet")  # ✳️ NEU
+    print("[SEND] → WHO gesendet") 
 
 ## zusammenfassen des codes für den import 
 
@@ -153,7 +149,6 @@ def nutzerspeichern():
           else:
              print(f"[WARNUNG] LEAVE empfangen, aber {handle} war nicht bekannt")
 
-        # ✳️ NEU: Nutzer ausgeben
 def zeige_bekannte_nutzer():
     print(" Bekannte Nutzer:")
     for handle, (ip, port) in known_users.items():

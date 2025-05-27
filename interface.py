@@ -1,5 +1,5 @@
 import sys
-import questionary
+## import questionary
 ## @file interface.py
 # @brief interface der Kommmandozeile für das Chat-Programm
 # @details Menüauswahl und Eingaben über das Terminal

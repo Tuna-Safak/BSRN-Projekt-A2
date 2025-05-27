@@ -103,58 +103,114 @@ def handle_leave(name):
         print(f"LEAVE von unbekanntem Nutzer erhalten: {name}")
 
 # -------------Bild senden-----------------
+# Funktion zum Versenden eines Bildes
+# @param handle_sender: Benutzername des Absenders 
+# @param handle_empfaenger: Benutzername des Empfängers
+# @param bildpfad: Pfad zur Bilddatei
 def sendIMG(handle_sender, handle_empfaenger, bildpfad):
+    
+    # Prüfen, ob der Empfänger überhaupt bekannt ist, also ob wir seine IP-Adresse und Port kennen
     if handle_empfaenger not in known_users:
         print("Empfänger nicht bekannt.")
-        return
+        return  # die Funktion wird beendet, weil Senden nicht möglich ist
 
     try:
+        # Bilddatei öffnen – "rb" bedeutet:
+        # r = read, b = binary (binär lesen, nicht als Text)
+        # wir brauchen das für Bilder, weil sie keine Textdateien sind
         with open(bildpfad, "rb") as b:
+            # gesamtes Bild als Binärdaten einlesen
             bilddaten = b.read()
     except FileNotFoundError:
+        # Wenn der Pfad falsch ist oder das Bild nicht existiert
         print("Bild nicht gefunden:", bildpfad)
+        return  # Funktion beenden
+
+    # Bildgröße berechnen (Anzahl der Bytes)
+    # wichtig für den Empfänger damit er weiß wie viele Daten kommen
+    groesse = len(bilddaten)
+
+    if groesse > 1400:
+        print("Bild zu groß für eine UDP-Nachricht max 1400 Bytes")
         return
 
-    groesse = len(bilddaten)
+    # Nachricht im SLCP-Format vorbereiten: IMG <Empfänger> <Größe>
+    # das ist die Steuerzeile, die vor dem Bild gesendet wird
+    # f-String: setzt automatisch die Variablen ein
+    # \n = Zeilenumbruch, wie vom Protokoll gefordert
     img_header = f"IMG {handle_empfaenger} {groesse}\n"
+
+    # IP-Adresse und Port des Empfängers aus dem Nutzerverzeichnis holen
     ip, port = known_users[handle_empfaenger]
+
+    # Erste Nachricht senden: den IMG-Befehl mit Empfängername und Bildgröße
+    # encode() wandelt den Text in Bytes um, damit er über das Netzwerk geschickt werden kann
     sock.sendto(img_header.encode(), (ip, port))
+
+    # Zweite Nachricht: das eigentliche Bild senden (als Binärdaten)
     sock.sendto(bilddaten, (ip, port))
+
+    # Bestätigung ausgeben, dass das Bild erfolgreich gesendet wurde
     print(f"Bild an {handle_empfaenger} gesendet ({groesse} Bytes)")
 
 # -------------Bild empfangen-----------------
-def handle_IMG(teile, addr):
+# @brief verarbeitet eine IMG-Nachricht: liest Bilddaten ein und speichert sie als datei
+# @param sock Der UDP-Socket, über den das Bild empfangen wird
+# @param teile Die Teile der empfangenen Textnachricht (z. B. ["IMG", "empfänger", "Größe"])
+# @param addr Die Adresse (IP, Port) des Absenders
+def handle_IMG(sock, teile, addr):
+    # Prüfen, ob genug Teile in der Nachricht sind
     if len(teile) != 3:
         print("Nachricht ist nicht vollständig.")
         return
 
+    # ist der name also an wen das Bild gesendet werden soll
     empfaenger = teile[1]
 
     try:
+        # Die Bildgröße aus dem Text in eine Zahl umwandeln
         groesse = int(teile[2])
     except ValueError:
+        # Wenn keine Zahl übergeben wurde sondern was anders
         print("Ungültige Bildgröße.")
         return
 
-    bilddaten, addr2 = sock.recvfrom(groesse + 1024)
+    # Die eigentlichen Bilddaten empfangen 
+    # recvfrom() wartet auf ein weiteres UDP-Paket
+    # Die Anzahl groesse + 1024 gibt einen Puffer mit dazu, falls z. B. mehr Daten ankommen
+    # bilddaten enthält die empfangenen Binärdaten 
+    bilddaten, addr2 = sock.recvfrom(groesse + 1024)  # etwas Puffer
+
+    # IP-Adresse vom Absender herausfinden bzw speichern
     sender_ip = addr[0]
 
+    # Absendernamen aus der IP-Adresse ermitteln
+    # durchsucht known_users
     sender_name = None
     for name, (ip, _) in known_users.items():
         if ip == sender_ip:
             sender_name = name
             break
 
+    # Wenn kein Name gefunden wurde, "Unbekannt" setzen
     if sender_name is None:
         sender_name = "Unbekannt"
 
-    os.makedirs("empfangene_bilder", exist_ok=True)
+    # Speicherordner erstellen, falls noch nicht vorhanden
+    os.makedirs("empfangene_bilder", exist_ok = True)
+
+    # Bild speichern mit einfachem Namen z.B. büsra_bild.jpg
+    # es wird ein vollständiger pfad gebaut
     dateiname = f"{sender_name}_bild.jpg"
     pfad = os.path.join("empfangene_bilder", dateiname)
 
+    # Bild speichern
+    # w = write, b = binary
+    # öffnet die datei im wb und schreibt alle empfangenen Bytes in die Datei
     with open(pfad, "wb") as f:
         f.write(bilddaten)
 
+    # Info ausgeben, dass das Bild gespeichert wurde
     print(f"Bild von {sender_name} empfangen und gespeichert unter: {pfad}")
 
 # -------------Nachricht empfangen-----------------

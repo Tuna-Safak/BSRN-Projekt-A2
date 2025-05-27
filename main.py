@@ -7,8 +7,8 @@ import threading
 from interface import (
     menue,
     nutzernamen_abfragen,
-    eingabe_nachricht,
-    eingabe_bild,
+   # eingabe_nachricht,
+  #  eingabe_bild,
     autoreply_umschalten
 )
 
@@ -42,6 +42,8 @@ def main():
     print(f"Willkommen, {handle}! Dein Port: {port}")
 
     while True:
+        ## aufrufen der Main methode
+        #kommt aus dem interface
         auswahl = menue()
 
         if auswahl == "1":
@@ -55,8 +57,8 @@ def main():
             sendMSG(sock, handle, empfaenger, text)
             continue
         elif auswahl == "3":
-            empfaenger, pfad = eingabe_bild()
-            print(f"→ Bild wird an {empfaenger} gesendet: {pfad}")
+        #    empfaenger, pfad = eingabe_bild()
+        #    print(f"→ Bild wird an {empfaenger} gesendet: {pfad}")
             # hier später Bildversand einbinden
             sendIMG(handle, empfaenger, pfad)
             continue
@@ -72,7 +74,7 @@ def main():
         elif auswahl == "6":
             print(f"→ LEAVE {handle}")
             break
-        print(f"DEBUG: Auswahl = {auswahl}")  
+            
        
 
 ## beginnt das Programm

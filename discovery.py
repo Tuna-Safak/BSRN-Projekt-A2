@@ -57,21 +57,21 @@ def sende_join(handle, port):
     nachricht = f"JOIN {handle} {port}"
     send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     send_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))  # Broadcast
+    send_sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))  # Broadcast
     print(f"[SEND] → JOIN gesendet: {nachricht}")
 
 def sende_leave(handle):  
     nachricht = f"LEAVE {handle}"
-    sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
     send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     send_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    send_sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
     print(f"[SEND] → LEAVE gesendet: {nachricht}") 
 
 def sende_who():  
     nachricht = "WHO"
     send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     send_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
+    send_sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
     print("[SEND] → WHO gesendet") 
 
 ## zusammenfassen des codes für den import 

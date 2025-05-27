@@ -69,10 +69,10 @@ def sendMSG(sock, absender_handle, empfaenger_handle, text):
         print(" Nutzer nicht bekannt. Warte auf JOIN oder WHO.")
         return
 
-    nachricht = f'MSG {absender_handle} "{text}"\n'
-    ip, port = known_users[empfaenger_handle]
-    sock.sendto(nachricht.encode(), (ip, port))
-    print(f"[SEND] → {empfaenger_handle}: {text}")
+    empfaenger_ip, empfaenger_port = known_users[empfaenger_handle]
+    nachricht = f"MSG {absender_handle} {text}"
+    sock.sendto(nachricht.encode(), (empfaenger_ip, empfaenger_port))
+    print(f"[SEND] → {empfaenger_handle} @ {empfaenger_ip}:{empfaenger_port}: {text}")
 
 # -------------Nachricht verarbeiten und formatieren-----------------
 def handle_MSG(sender, text):

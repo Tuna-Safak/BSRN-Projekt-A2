@@ -1,5 +1,6 @@
 ## @file main.py
 ##  @brief Start des Programms
+
 ## Importiert Methoden aus dem interface.py
 import threading
 
@@ -41,6 +42,7 @@ def main():
     handle = nutzernamen_abfragen()
     port = finde_freien_port(config)
     registriere_neuen_nutzer(handle, port)
+    threading.Thread(target=nutzerspeichern, daemon=True).start()
     
     print(f"Willkommen, {handle}! Dein Port: {port}")
 

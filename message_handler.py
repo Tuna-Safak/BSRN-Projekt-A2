@@ -247,6 +247,14 @@ def receive_MSG(sock, config):
                 handle_IMG(teile, addr)
             except Exception as e:
                 print(f"Fehler beim Bildempfang: {e}")
-
+        elif befehl == "KNOWNUSERS":
+            eintraege = text[len("KNOWNUSERS "):].split(", ")
+            for eintrag in eintraege:
+                try:
+                    handle, ip, port = eintrag.split(" ")
+                    known_users[handle] = (ip, int(port))
+                    print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
+                except:
+                    print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
         else:
             print(f" Unbekannte Nachricht: {text}")

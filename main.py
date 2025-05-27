@@ -19,7 +19,7 @@ from message_handler import send_who, send_join, send_leave, sendMSG, sendIMG, r
 
 #message_handler
 sock = get_socket()
-#ui_utels
+#ui_utils
 config = lade_config()
 #message_handler
 # @para sock
@@ -37,9 +37,13 @@ def registriere_neuen_nutzer(handle, port):
 #  @brief ruft funktionen aus den importierten Datei auf
 #  @details lädt das Menü und verwaltet den Ablauf
 def main():
+    #ui_utils
     config = lade_config()
+    #interface
     handle = nutzernamen_abfragen()
+    #ui_utils
     port = finde_freien_port(config)
+    #main
     registriere_neuen_nutzer(handle, port)
     #discovery dienst
     threading.Thread(target=nutzerspeichern, daemon=True).start()

@@ -45,8 +45,10 @@ def main():
         ## aufrufen der Main methode
         #kommt aus dem interface
         auswahl = menue()
-
-        if auswahl == "1":
+        if auswahl=="0":
+            send_join(handle,port)
+            continue
+        elif auswahl == "1":
             print("→ WHO wird gesendet ...")
             # hier später Netzwerkfunktion einbinden
             send_who()

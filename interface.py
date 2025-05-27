@@ -62,7 +62,7 @@ def eingabe_bild():
 #gibt erst die aktuelle nachricht aus und fragt dann nach einer neuen
 #nachricht in der Config einsehbar
 def autoreply_umschalten(config):
-    aktuell = config.get("autoreply", "")
+    aktuell = config.get("autoreply", "")#ließt den Wert von autoreply aus. Wenn er nicht vorhalen ist, kommt ein leerer
     print(f"Aktueller Autoreply-Text: '{aktuell}'")
     neu = input("Neuer Autoreply-Text (leer für deaktivieren): ")
     config["autoreply"] = neu#greift auf die zeile autoreply in der config zu und ändert sie

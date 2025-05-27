@@ -80,6 +80,7 @@ def main():
             # config hat schlüssel und wert paare
             # k=kex(schlüssel) --> autoreply
             # v=(value)Wert --> text
+            # gibt die schlüssel/Wert paare aus
             for k, v in config.items():
                 print(f"  {k}: {v}")
             continue    

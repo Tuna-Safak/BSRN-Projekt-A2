@@ -20,7 +20,7 @@ known_users = {}
 ## Schließt die Datei automatisch wieder, sobald der Block fertig ist
 
 
-with open("config.toml", "r") as f: 
+with open("Konfigurationsdateien/config.toml", "r") as f: 
     config = toml.load(f)  
 
 ## lädt aus dem config-file den Port für den Discovery-Dienst (whoisport) 

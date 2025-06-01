@@ -11,7 +11,7 @@ import toml
 
 #: @var KONFIGURATIONSDATEI
 #: @brief Pfad zur standardmäßigen Konfigurationsdatei, wird großgeschrieben da Konstante 
-KONFIGURATIONSDATEI = "config.toml"
+KONFIGURATIONSDATEI = "Konfigurationsdateien/config.toml"
 
 def lade_config():
     """

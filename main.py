@@ -69,9 +69,8 @@ def main():
             sendMSG(sock, handle, empfaenger, text)
             continue
         elif auswahl == "3":
-        #  empfaenger, pfad = eingabe_bild()
-        #  print(f"→ Bild wird an {empfaenger} gesendet: {pfad}")
-            # hier später Bildversand einbinden
+            empfaenger, pfad = eingabe_bild()
+            print(f"→ Bild wird an {empfaenger} gesendet: {pfad}")
             sendIMG(handle, empfaenger, pfad)
             continue
         elif auswahl == "4":

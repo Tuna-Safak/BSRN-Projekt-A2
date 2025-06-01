@@ -246,7 +246,7 @@ def receive_MSG(sock, config):
 
         elif befehl == "IMG" and len(teile) == 3:
             try:
-                handle_IMG(teile, addr)
+                handle_IMG(sock, teile, addr)
             except Exception as e:
                 print(f"Fehler beim Bildempfang: {e}")
         elif befehl == "KNOWNUSERS":

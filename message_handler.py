@@ -32,10 +32,29 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 # Port nochmal verwenden kann (z.B nach einem Absturz des Programms)
 # --> beugt diesem Fehler vor: OSError: [Errno 98] Address already in use
 
+import socket
+from UI_utils import lade_config, finde_freien_port
+
+# Lade die Konfiguration aus config.toml
+config = lade_config()
+
+# Finde einen freien Port im definierten Bereich
+port = finde_freien_port(config)
+
+# Erstelle den UDP-Socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+
+# Binde an den freien Port
+sock.bind(('', port))
+print(f"[INFO] Socket gebunden an Port {port}")
+
+# Gib den Socket an andere Module zurück, falls gewünscht
 def get_socket():
     return sock
 
-sock.bind(('', 5000))
+
 # bind(...) verknüpft den Socket mit einer IP-Adresse und Portnummer
 # socket auf Port 5000 öffnen (alle IPs erlauben), sorgt dafür, dass der UDP-Socket auf diesem Port lauscht
 # '' bedeutet, dass der Socket auf allen verfügbaren IP-Adressen lauscht

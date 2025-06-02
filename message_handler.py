@@ -8,8 +8,6 @@ import sys
 # ermöglicht den Zugriff aus Systemfunktionen
 from discovery import gebe_nutzerliste_zurück
 
-# Wörterbuch zum Speichern bekannter Teilnehmer (ähnlich wie HashMap)
-known_users = {}
 
 # ------------Erstellen eines globalen UDP-Sockets-----------------
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -36,11 +34,27 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 def get_socket():
     return sock
 
-sock.bind(('', 5000))
-# bind(...) verknüpft den Socket mit einer IP-Adresse und Portnummer
-# socket auf Port 5000 öffnen (alle IPs erlauben), sorgt dafür, dass der UDP-Socket auf diesem Port lauscht
-# '' bedeutet, dass der Socket auf allen verfügbaren IP-Adressen lauscht
-# 5000 ist der Port, auf dem das Programm auf eingehende Nachrichten wartet
+import socket
+from UI_utils import lade_config, finde_freien_port
+
+# Lade die Konfiguration aus config.toml
+config = lade_config()
+
+# Finde einen freien Port im definierten Bereich
+port = finde_freien_port(config)
+
+# Erstelle den UDP-Socket
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+
+# Binde an den freien Port
+sock.bind(('', port))
+print(f"[INFO] Socket gebunden an Port {port}")
+
+# Gib den Socket an andere Module zurück, falls gewünscht
+def get_socket():
+    return sock
 
 # -----------JOIN-Nachricht versenden------------------
 def send_join(handle_nutzername, port):
@@ -66,13 +80,13 @@ def send_who():
 
 # -------------Nachricht senden-----------------
 def sendMSG(sock, absender_handle, empfaenger_handle, text):
-    if empfaenger_handle not in known_users:
+    if empfaenger_handle not in gebe_nutzerliste_zurück:
         print("Empfänger nicht bekannt.")
-        print(f"Bekannte Nutzer: {known_users}")
+        print(f"Bekannte Nutzer: {gebe_nutzerliste_zurück}")
         return
 
     nachricht = f'MSG {absender_handle} "{text}"\n'
-    ip, port = known_users[empfaenger_handle]
+    ip, port = gebe_nutzerliste_zurück[empfaenger_handle]
     print(f"[SEND] → an {empfaenger_handle} @ {ip}:{port} → {text}")
     sock.sendto(nachricht.encode(), (ip, port))
 
@@ -89,7 +103,7 @@ def handle_join(name, port, addr):
     ip = addr[0]
     port = int(port)
 
-    if name not in known_users:
+    if name not in gebe_nutzerliste_zurück:
         known_users[name] = (ip, port)
         print(f"{name} ist dem Chat beigetreten – {ip}:{port}")
     else:
@@ -99,8 +113,8 @@ def handle_join(name, port, addr):
 # -------------LEAVE verarbeiten-----------------
 def handle_leave(name):
     # Verarbeitung einer LEAVE-Nachricht, um Nutzer aus der Liste zu entfernen
-    if name in known_users:
-        del known_users[name]
+    if name in gebe_nutzerliste_zurück:
+        del gebe_nutzerliste_zurück[name]
         print(f"{name} hat den Chat verlassen")
     else:
         print(f"LEAVE von unbekanntem Nutzer erhalten: {name}")
@@ -113,7 +127,7 @@ def handle_leave(name):
 def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     
     # Prüfen, ob der Empfänger überhaupt bekannt ist, also ob wir seine IP-Adresse und Port kennen
-    if handle_empfaenger not in known_users:
+    if handle_empfaenger not in gebe_nutzerliste_zurück():
         print("Empfänger nicht bekannt.")
         return  # die Funktion wird beendet, weil Senden nicht möglich ist
 
@@ -144,7 +158,7 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     img_header = f"IMG {handle_empfaenger} {groesse}\n"
 
     # IP-Adresse und Port des Empfängers aus dem Nutzerverzeichnis holen
-    ip, port = known_users[handle_empfaenger]
+    ip, port = gebe_nutzerliste_zurück[handle_empfaenger]
 
     # Erste Nachricht senden: den IMG-Befehl mit Empfängername und Bildgröße
     # encode() wandelt den Text in Bytes um, damit er über das Netzwerk geschickt werden kann
@@ -190,7 +204,7 @@ def handle_IMG(sock, teile, addr):
     # Absendernamen aus der IP-Adresse ermitteln
     # durchsucht known_users
     sender_name = None
-    for name, (ip, _) in known_users.items():
+    for name, (ip, _) in gebe_nutzerliste_zurück.items():
         if ip == sender_ip:
             sender_name = name
             break
@@ -239,7 +253,7 @@ def receive_MSG(sock, config):
         elif befehl == "MSG" and len(teile) == 3:
             absender_handle = teile[1]
             nachricht = teile[2]
-            print(f"\n📨 Nachricht von {absender_handle}: {nachricht}\n> ", end="")
+            print(f"Nachricht von {absender_handle}: {nachricht}\n> ", end="")
 
             if config.get("autoreply_aktiv", False):
                 autoreply_text = config.get("autoreply", "Ich bin gerade nicht da.")
@@ -256,7 +270,7 @@ def receive_MSG(sock, config):
             for eintrag in eintraege:
                 try:
                     handle, ip, port = eintrag.split(" ")
-                    known_users[handle] = (ip, int(port))
+                    gebe_nutzerliste_zurück(handle) = (ip, int(port))
                     print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
                 except:
                    print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")

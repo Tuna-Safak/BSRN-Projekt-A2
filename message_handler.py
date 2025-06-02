@@ -6,6 +6,7 @@ import threading
 # ermöglicht das gleichzeitige Ausführen von mehreren Threads
 import sys
 # ermöglicht den Zugriff aus Systemfunktionen
+from discovery import gebe_nutzerliste_zurück
 
 # Wörterbuch zum Speichern bekannter Teilnehmer (ähnlich wie HashMap)
 known_users = {}
@@ -32,29 +33,10 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 # Port nochmal verwenden kann (z.B nach einem Absturz des Programms)
 # --> beugt diesem Fehler vor: OSError: [Errno 98] Address already in use
 
-import socket
-from UI_utils import lade_config, finde_freien_port
-
-# Lade die Konfiguration aus config.toml
-config = lade_config()
-
-# Finde einen freien Port im definierten Bereich
-port = finde_freien_port(config)
-
-# Erstelle den UDP-Socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-
-# Binde an den freien Port
-sock.bind(('', port))
-print(f"[INFO] Socket gebunden an Port {port}")
-
-# Gib den Socket an andere Module zurück, falls gewünscht
 def get_socket():
     return sock
 
-
+sock.bind(('', 5000))
 # bind(...) verknüpft den Socket mit einer IP-Adresse und Portnummer
 # socket auf Port 5000 öffnen (alle IPs erlauben), sorgt dafür, dass der UDP-Socket auf diesem Port lauscht
 # '' bedeutet, dass der Socket auf allen verfügbaren IP-Adressen lauscht
@@ -257,7 +239,7 @@ def receive_MSG(sock, config):
         elif befehl == "MSG" and len(teile) == 3:
             absender_handle = teile[1]
             nachricht = teile[2]
-            print(f"\n Nachricht von {absender_handle}: {nachricht}\n> ", end="")
+            print(f"\n📨 Nachricht von {absender_handle}: {nachricht}\n> ", end="")
 
             if config.get("autoreply_aktiv", False):
                 autoreply_text = config.get("autoreply", "Ich bin gerade nicht da.")
@@ -268,14 +250,15 @@ def receive_MSG(sock, config):
                 handle_IMG(sock, teile, addr)
             except Exception as e:
                 print(f"Fehler beim Bildempfang: {e}")
+                
         elif befehl == "KNOWNUSERS":
-            eintraege = text[len("KNOWNUSERS "):].split(", ")
+            eintraege = gebe_nutzerliste_zurück()
             for eintrag in eintraege:
                 try:
                     handle, ip, port = eintrag.split(" ")
                     known_users[handle] = (ip, int(port))
                     print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
                 except:
-                    print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
+                   print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
         else:
             print(f" Unbekannte Nachricht: {text}")

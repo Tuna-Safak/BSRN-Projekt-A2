@@ -160,3 +160,5 @@ def zeige_bekannte_nutzer():
     for handle, (ip, port) in known_users.items():
         print(f"  {handle} → {ip}:{port}")     
 
+def gebe_nutzerliste_zurück():
+   return known_users

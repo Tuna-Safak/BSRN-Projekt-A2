@@ -265,7 +265,7 @@ def receive_MSG(sock, config):
             except Exception as e:
                 print(f"Fehler beim Bildempfang: {e}")
                 
-        elif befehl == "KNOWNUSERS":
+     """   elif befehl == "KNOWNUSERS":
             eintraege = gebe_nutzerliste_zurück()
             for eintrag in eintraege:
                 try:
@@ -273,6 +273,6 @@ def receive_MSG(sock, config):
                     gebe_nutzerliste_zurück()[handle] = (ip, int(port))
                     print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
                 except:
-                   print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
+                   print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")"""
         else:
             print(f" Unbekannte Nachricht: {text}")

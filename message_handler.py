@@ -50,7 +50,7 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 # Binde an den freien Port
 sock.bind(('', port))
-print(f"[INFO] Socket gebunden an Port {port}")
+print(f"[INFO] (Discovery-) Socket gebunden an Port {port}")
 
 # Gib den Socket an andere Module zurück, falls gewünscht
 def get_socket():
@@ -264,8 +264,9 @@ def receive_MSG(sock, config):
                 handle_IMG(sock, teile, addr)
             except Exception as e:
                 print(f"Fehler beim Bildempfang: {e}")
-                
-     """   elif befehl == "KNOWNUSERS":
+   
+   
+        elif befehl == "KNOWNUSERS":
             eintraege = gebe_nutzerliste_zurück()
             for eintrag in eintraege:
                 try:
@@ -273,6 +274,6 @@ def receive_MSG(sock, config):
                     gebe_nutzerliste_zurück()[handle] = (ip, int(port))
                     print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
                 except:
-                   print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")"""
+                   print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
         else:
             print(f" Unbekannte Nachricht: {text}")

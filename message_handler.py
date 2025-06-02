@@ -257,7 +257,7 @@ def receive_MSG(sock, config):
         elif befehl == "MSG" and len(teile) == 3:
             absender_handle = teile[1]
             nachricht = teile[2]
-            print(f"\n📨 Nachricht von {absender_handle}: {nachricht}\n> ", end="")
+            print(f"\n Nachricht von {absender_handle}: {nachricht}\n> ", end="")
 
             if config.get("autoreply_aktiv", False):
                 autoreply_text = config.get("autoreply", "Ich bin gerade nicht da.")

@@ -104,10 +104,10 @@ def handle_join(name, port, addr):
     port = int(port)
 
     if name not in gebe_nutzerliste_zurück:
-        known_users[name] = (ip, port)
+        gebe_nutzerliste_zurück[name] = (ip, port)
         print(f"{name} ist dem Chat beigetreten – {ip}:{port}")
     else:
-        known_users[name] = (ip, port)
+        gebe_nutzerliste_zurück[name] = (ip, port)
         print(f"{name} erneut beigetreten – Daten aktualisiert: {ip}:{port}")
 
 # -------------LEAVE verarbeiten-----------------
@@ -270,7 +270,7 @@ def receive_MSG(sock, config):
             for eintrag in eintraege:
                 try:
                     handle, ip, port = eintrag.split(" ")
-                    gebe_nutzerliste_zurück(handle) = (ip, int(port))
+                    gebe_nutzerliste_zurück()[handle] = (ip, int(port))
                     print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
                 except:
                    print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")

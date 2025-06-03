@@ -9,6 +9,7 @@ import socket
 import toml        
 #Modul zum Parsen von .toml-Dateien
 
+
 #: @var KONFIGURATIONSDATEI
 #: @brief Pfad zur standardmäßigen Konfigurationsdatei, wird großgeschrieben da Konstante 
 KONFIGURATIONSDATEI = "Konfigurationsdateien/config.toml"

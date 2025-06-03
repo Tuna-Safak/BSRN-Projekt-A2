@@ -41,7 +41,8 @@ def nutzernamen_abfragen():
         index = sys.argv.index('--handle') + 1
         if index < len(sys.argv):
             return sys.argv[index]'''
-    return input("Bitte Benutzernamen eingeben: ")
+    benutzername=input("Bitte Benutzernamen eingeben: ")
+    return benutzername
 
 ## Eingabe der zu versendend Nachricht an eine bestimmten Empfänger
 # @return 

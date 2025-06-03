@@ -1,5 +1,5 @@
 [network]
-whoisport = 4000 ##für Discovery-Dienst
+whoisdiscoveryport = 4000 ##für Discovery-Dienst
 port_min = 5000
 port_max = 5010
 

@@ -23,11 +23,11 @@ known_users = {}
 with open("Konfigurationsdateien/config.toml", "r") as f: 
     config = toml.load(f)  
 
-## lädt aus dem config-file den Port für den Discovery-Dienst (whoisport) 
+## lädt aus dem config-file den Port für den Discovery-Dienst (whoisdiscoveryport) 
 ## DISCOVERY_PORT = die neue Variable, in der der Port gespeichert wird
-## config["network"]["whoisport"] = der Wert, der aus config.toml herausgelesen wird
+## config["network"]["whoisdiscoveryport"] = der Wert, der aus config.toml herausgelesen wird
 
-DISCOVERY_PORT = config["network"]["whoisport"] 
+DISCOVERY_PORT = config["network"]["whoisdiscoveryport"] 
 
 ## socket erstellen
 ## variable namens 'sock', datentyp socket

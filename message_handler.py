@@ -8,7 +8,7 @@ import sys
 # ermöglicht den Zugriff aus Systemfunktionen
 from discovery import gebe_nutzerliste_zurück
 # ermöglicht das Laden der Konfigdatei
-from UI_utils import lade_config
+from UI_utils import lade_config, finde_freien_port
 
 # Lade die Konfiguration aus config.toml
 config = lade_config()
@@ -30,9 +30,10 @@ def get_socket():
     return sock
 
 # -----------JOIN-Nachricht versenden------------------
-def send_join(handle_nutzername, DISCOVERY_PORT):
+def send_join(handle_nutzername):
     # allen im Chat wird mitgeteilt, dass ich mich im Chat befinde
-    nachricht = f"JOIN {handle_nutzername} {DISCOVERY_PORT}\n"
+    port = finde_freien_port
+    nachricht = f"JOIN {handle_nutzername} {port}\n"
     # JOIN: ist der Befehl, der an alle anderen Computer im Netzwerk gesendet wird
     sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
     print(f"[JOIN] Gesendet: {nachricht.strip()}")

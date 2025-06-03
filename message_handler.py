@@ -30,10 +30,10 @@ def get_socket():
     return sock
 
 # -----------JOIN-Nachricht versenden------------------
-def send_join(handle_nutzername):
+def send_join(handle):
     # allen im Chat wird mitgeteilt, dass ich mich im Chat befinde
     port = finde_freien_port
-    nachricht = f"JOIN {handle_nutzername} {port}\n"
+    nachricht = f"JOIN {handle} {port}\n"
     # JOIN: ist der Befehl, der an alle anderen Computer im Netzwerk gesendet wird
     sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
     print(f"[JOIN] Gesendet: {nachricht.strip()}")

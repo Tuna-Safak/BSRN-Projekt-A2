@@ -48,29 +48,29 @@ def finde_freien_port(config):
 
     if port_min is None or port_max is None:
         raise ValueError("Konfigurationswerte 'port_min' und 'port_max' fehlen.")
-#Fehlermeldung, falls einer der benötigten Ports in der Konfigurationsdatei fehlen.
+    # Fehlermeldung, falls einer der benötigten Ports in der Konfigurationsdatei fehlen.
 
     for port in range(port_min, port_max + 1):
-#Schleife über alle Ports im Bereich.
-#range(... + 1) ist notwendig, weil range die letzte Position nicht einbezieht.
+    # Schleife über alle Ports im Bereich.
+    # range(... + 1) ist notwendig, weil range die letzte Position nicht einbezieht.
 
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-#Erstellt einen Socket mit IPv4 (Adressfamilie= AF_INET) und UDP_Socket (Sockettyp= SOCK_DGRAM).
-#with sorgt dafür, dass der Socket nach dem Block automatisch wieder geschlossen wird.
-#Das ist wichtig, um Ports nicht versehentlich belegt zu lassen.
+      try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        # Erstellt einen Socket mit IPv4 (Adressfamilie = AF_INET) und UDP (Sockettyp = SOCK_DGRAM).
+        # Kein 'with', damit der Socket erhalten bleibt und der Port reserviert bleibt.
 
-            try:
-                sock.bind(("", port))
-                return port
-# Versucht, den Socket an einen bestimmten Port zu binden:
+        sock.bind(("", port))
+        # Versucht, den Socket an einen bestimmten Port zu binden:
+        # "" steht für „alle Netzwerk-Interfaces“ (z. B. localhost und LAN).
+        # port ist der aktuell getestete Port.
+        # Wenn das gelingt, ist der Port frei – also wird er sofort zurückgegeben.
 
-    #steht für „alle Netzwerk-Interfaces“ (z. B. localhost und LAN).
-    #port ist der aktuell getestete Port.
-    #Wenn das gelingt, ist der Port frei – also wird er sofort zurückgegeben.
+        return port, sock
 
-            except OSError:
-                continue
-#Wenn der Bind-Vorgang fehlschlägt wird ein OSError ausgelöst und die Schleife wird fortgesetzt
+      except OSError:
+        continue
+        # Wenn der Bind-Vorgang fehlschlägt, wird ein OSError ausgelöst und die Schleife wird fortgesetzt.
+
 
     raise RuntimeError("Kein freier UDP-Port im Bereich {}–{} gefunden.".format(port_min, port_max))
 # Wenn kein einziger Port im angegebenen Bereich verfügbar war, bricht die Funktion mit einem RuntimeError ab 

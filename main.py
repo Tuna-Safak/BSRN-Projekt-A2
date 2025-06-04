@@ -17,21 +17,15 @@ from discovery import nutzerspeichern, zeige_bekannte_nutzer
 from UI_utils import lade_config, finde_freien_port
 from message_handler import send_who, send_join, send_leave, sendMSG, sendIMG, receive_MSG, get_socket
 
-#message_handler
-sock = get_socket()
 #ui_utils
 config = lade_config()
-#message_handler
-# @para sock
-# @para config
-# programm läuft im hintergrund
-## daemon=true schließt die funktion automatisch nach schließung des Programms
-threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
-
 
 #registriere_neuen_nutzer
-def registriere_neuen_nutzer(handle):
-    send_join(handle)
+#, _ heißt socket wird ignoriert
+def registriere_neuen_nutzer(handle,config):
+    port, nutzer_sock = finde_freien_port(config)
+    send_join(handle,port)
+    return port, nutzer_sock
 
 ## Hauptfunktion
 #  @brief ruft funktionen aus den importierten Datei auf
@@ -41,13 +35,15 @@ def main():
     config = lade_config()
     #interface
     handle = nutzernamen_abfragen()
-    #ui_utils
-    port = finde_freien_port(config)
     #main
-    registriere_neuen_nutzer(handle)
-    #discovery dienst
-    threading.Thread(target=nutzerspeichern, daemon=True).start()
-    
+    port, nutzer_sock = registriere_neuen_nutzer(handle,config)
+    #message_handler
+    # @para sock
+    # @para config
+    # programm läuft im hintergrund
+    ## daemon=true schließt die funktion automatisch nach schließung des Programms
+    threading.Thread(target=receive_MSG, args=(nutzer_sock, config), daemon=True).start()
+  
     print(f"Willkommen, {handle}! Dein Port: {port}")
 
     while True:

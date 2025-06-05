@@ -1,5 +1,6 @@
 #Argumente aus der Kommandozeile auslesen --handel
 import sys
+import toml
 ## import questionary
 ## @file interface.py
 # @brief interface der Kommmandozeile für das Chat-Programm
@@ -66,5 +67,7 @@ def autoreply_umschalten(config):
     aktuell = config.get("autoreply", "")#ließt den Wert von autoreply aus. Wenn er nicht vorhalen ist, kommt ein leerer
     print(f"Aktueller Autoreply-Text: '{aktuell}'")
     neu = input("Neuer Autoreply-Text (leer für deaktivieren): ")
-    config["autoreply"] = neu#greift auf die zeile autoreply in der config zu und ändert sie
+    config["autoreply"] = neu #greift auf die zeile autoreply in der config zu und ändert sie
+    with open("Konfigurationsdateien/config.toml", "w") as f:
+        toml.dump(config, f)
     return config

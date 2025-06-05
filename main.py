@@ -3,6 +3,12 @@
 
 ## Importiert Methoden aus dem interface.py
 import threading
+## importiert socket
+import socket
+## importiert
+import multiprocessing
+#
+from netzwerkprozess import netzwerkprozess
 ## Importiert Methoden aus dem interface.py
 from interface import (
     menue,
@@ -24,10 +30,31 @@ def registriere_neuen_nutzer(handle,config):
     send_join(handle,port)
     return port, nutzer_sock
 
+## @brief Sendet einen Steuerbefehl über einen lokalen TCP-Socket an den Netzwerkprozess.
+#  @details Diese Funktion wird vom UI-Prozess verwendet, um Nachrichten- oder Bildbefehle
+#           (z. B. MSG oder IMG) an den Netzwerkprozess weiterzuleiten. Der Netzwerkprozess
+#           übernimmt dann das eigentliche Senden per UDP an andere Chat-Teilnehmer.
+#           Die Kommunikation erfolgt über eine TCP-Verbindung zu localhost:6001.
+#
+#  @param befehl Der SLCP-kompatible Befehl, z. B. "MSG Bob Hallo" oder "IMG Bob pfad/zum/bild.jpg".
+#  @note Wenn der Netzwerkprozess nicht läuft oder der Socket nicht erreichbar ist,
+#        wird eine Fehlermeldung ausgegeben.
+def sende_befehl_an_netzwerkprozess(befehl: str):
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect(("localhost", 6001))
+        sock.sendall(befehl.encode())
+        sock.close()
+    except ConnectionRefusedError:
+        print("Netzwerkprozess läuft nicht!")
+
+
+
 ## Hauptfunktion
 #  @brief ruft funktionen aus den importierten Datei auf
 #  @details lädt das Menü und verwaltet den Ablauf
 def main():
+    netzwerkprozess()
     #ui_utils
     config = lade_config()
     #interface
@@ -40,6 +67,9 @@ def main():
     # programm läuft im hintergrund
     ## daemon=true schließt die funktion automatisch nach schließung des Programms
     threading.Thread(target=receive_MSG, args=(nutzer_sock, config), daemon=True).start()
+    # NEU FÜR TCP-KOMMUNIKATION
+    netzwerk_p = multiprocessing.Process(target=netzwerkprozess)
+    netzwerk_p.start()
   
     print(f"Willkommen, {handle}! Dein Port: {port}")
 
@@ -55,17 +85,17 @@ def main():
             # hier später Netzwerkfunktion einbinden
             send_who()
             continue
+        #NEU FÜR TCP
         elif auswahl == "2":
-            #interface
-            empfaenger, text = eingabe_nachricht()
-            print(f"→ MSG an {empfaenger}: {text}")
-            sendMSG(nutzer_sock, handle, empfaenger, text)
-            continue
+         empfaenger, text = eingabe_nachricht()
+         befehl = f"MSG {empfaenger} {text}"
+         sende_befehl_an_netzwerkprozess(befehl)
+
         elif auswahl == "3":
-            empfaenger, pfad = eingabe_bild()
-            print(f"→ Bild wird an {empfaenger} gesendet: {pfad}")
-            sendIMG(handle, empfaenger, pfad)
-            continue
+         empfaenger, pfad = eingabe_bild()
+         befehl = f"IMG {empfaenger} {pfad}"
+         sende_befehl_an_netzwerkprozess(befehl)
+
         elif auswahl == "4":
             #interface
             config = autoreply_umschalten(config)

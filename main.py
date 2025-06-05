@@ -17,9 +17,6 @@ from discovery import nutzerspeichern, zeige_bekannte_nutzer
 from UI_utils import lade_config, finde_freien_port
 from message_handler import send_who, send_join, send_leave, sendMSG, sendIMG, receive_MSG, get_socket
 
-#ui_utils
-config = lade_config()
-
 #registriere_neuen_nutzer
 #, _ heißt socket wird ignoriert
 def registriere_neuen_nutzer(handle,config):
@@ -62,7 +59,7 @@ def main():
             #interface
             empfaenger, text = eingabe_nachricht()
             print(f"→ MSG an {empfaenger}: {text}")
-            sendMSG(sock, handle, empfaenger, text)
+            sendMSG(nutzer_sock, handle, empfaenger, text)
             continue
         elif auswahl == "3":
             empfaenger, pfad = eingabe_bild()

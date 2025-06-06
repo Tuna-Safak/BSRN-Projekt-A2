@@ -6,8 +6,11 @@
 #           und nutzt die Methoden aus `message_handler`, um SLCP-konforme Nachrichten zu versenden.
 
 import socket
-from message_handler import sendMSG, sendIMG
+from message_handler import sendMSG, sendIMG, send_join
 from UI_utils import lade_config
+from discovery import nutzerspeichern 
+# damit TCP und UDP seperat laufen können 
+import threading
 
 ## @brief Startet den Netzwerkprozess und lauscht auf Befehle vom UI-Prozess.
 #  @details Stellt einen TCP-Server auf localhost:6001 bereit, über den der UI-Prozess Kommandos
@@ -19,6 +22,8 @@ def netzwerkprozess():
     ## @var config
     #  @brief Lädt Konfigurationsparameter wie Handle und Netzwerkports aus config.toml.
     config = lade_config()
+    # startet den Discovery-Dienst im Hintergrund
+    threading.Thread(target=nutzerspeichern, daemon=True).start()
 
     ## @var tcp_server
     #  @brief Lokaler TCP-Server-Socket für IPC zwischen UI und Netzwerkprozess.
@@ -54,3 +59,13 @@ def netzwerkprozess():
             elif teile[0] == "IMG":
                 _, empfaenger, pfad = teile
                 sendIMG(config["handle"], empfaenger, pfad)
+
+            # behandelt den JOIN-Befehl und leitet es Broadcast per UDP weiter 
+            # wird von Discovery-Dienst empfangen
+            elif teile[0] == "JOIN":
+                _, handle, port = teile
+                send_join(handle, port)
+
+
+if __name__ == "__main__":
+    netzwerkprozess()

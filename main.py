@@ -41,12 +41,11 @@ def registriere_neuen_nutzer(handle,config):
 #        wird eine Fehlermeldung ausgegeben.
 def sende_befehl_an_netzwerkprozess(befehl: str):
     try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect(("localhost", 6001))
-        sock.sendall(befehl.encode())
-        sock.close()
+        with socket.create_connection(("localhost", 6001)) as sock:
+            sock.sendall(befehl.encode())
     except ConnectionRefusedError:
         print("Netzwerkprozess läuft nicht!")
+
 
 
 
@@ -54,7 +53,6 @@ def sende_befehl_an_netzwerkprozess(befehl: str):
 #  @brief ruft funktionen aus den importierten Datei auf
 #  @details lädt das Menü und verwaltet den Ablauf
 def main():
-    netzwerkprozess()
     #ui_utils
     config = lade_config()
     #interface
@@ -67,10 +65,7 @@ def main():
     # programm läuft im hintergrund
     ## daemon=true schließt die funktion automatisch nach schließung des Programms
     threading.Thread(target=receive_MSG, args=(nutzer_sock, config), daemon=True).start()
-    # NEU FÜR TCP-KOMMUNIKATION
-    netzwerk_p = multiprocessing.Process(target=netzwerkprozess)
-    netzwerk_p.start()
-  
+
     print(f"Willkommen, {handle}! Dein Port: {port}")
 
     while True:
@@ -78,8 +73,8 @@ def main():
         #kommt aus dem interface
         auswahl = menue()
         if auswahl=="0":
-            send_join(handle,port)
-            continue
+           sende_befehl_an_netzwerkprozess(f"JOIN {handle} {port}")
+           continue
         elif auswahl == "1":
             print("→ WHO wird gesendet ...")
             # hier später Netzwerkfunktion einbinden

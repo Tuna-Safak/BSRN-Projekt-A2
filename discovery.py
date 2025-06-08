@@ -122,9 +122,6 @@ def nutzerspeichern():
 
           sock.sendto(antwort.encode(), absender)
          
-        elif befehl == "KNOWNUSERS":
-            print(f"[RECV] KNOWNUSERS von {absender}: {message}")
-
         elif befehl == "LEAVE" and len(nachrichtTeilen) == 2:
           handle = nachrichtTeilen[1]
          

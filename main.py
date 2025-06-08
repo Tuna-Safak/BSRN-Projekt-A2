@@ -75,22 +75,55 @@ def main():
         if auswahl=="0":
            sende_befehl_an_netzwerkprozess(f"JOIN {handle} {port}")
            continue
+        
+                ## @brief Behandelt Menüauswahl "1" – WHO-Befehl senden und bekannte Nutzer anzeigen.
+        #  @details Diese Funktion sendet den WHO-Befehl über eine TCP-Verbindung an den
+        #           Netzwerkprozess (localhost:6001). Der Netzwerkprozess führt den WHO-Broadcast
+        #           im LAN aus, sammelt die Antworten (KNOWNUSERS) und sendet sie per TCP zurück.
+        #           Diese Rückmeldung wird hier analysiert und im UI ausgegeben.
         elif auswahl == "1":
             print("→ WHO wird gesendet ...")
-            # hier später Netzwerkfunktion einbinden
-            send_who()
-            continue
+            try:
+                # Öffnet eine TCP-Verbindung zum lokalen Netzwerkprozess (Port 6001)
+                with socket.create_connection(("localhost", 6001)) as sock:
+                    # Sendet den WHO-Befehl (als Bytefolge)
+                    sock.sendall(b"WHO")
+
+                    # Wartet auf Antwort (z. B. "KNOWNUSERS Alice 192.168.0.2 5000, Bob ...")
+                    antwort = sock.recv(4096).decode().strip()
+
+                    if antwort.startswith("KNOWNUSERS"):
+                        print("Bekannte Nutzer:")
+                        teile = antwort.split(" ", 1)
+
+                        if len(teile) == 2:
+                            eintraege = teile[1].split(", ")
+
+                            # Iteriert über alle bekannten Nutzer und gibt sie formatiert aus
+                            for eintrag in eintraege:
+                                try:
+                                    handle, ip, port = eintrag.strip().split(" ")
+                                    print(f"  {handle} → {ip}:{port}")
+                                except ValueError:
+                                    print("❌ Fehler beim Eintrag:", eintrag)
+                    else:
+                        print("⚠️ Unerwartete Antwort vom Netzwerkprozess:", antwort)
+
+            except ConnectionRefusedError:
+                print("Netzwerkprozess läuft nicht!")
+
+
         #NEU FÜR TCP
         elif auswahl == "2":
          empfaenger, text = eingabe_nachricht()
          befehl = f"MSG {empfaenger} {text}"
          sende_befehl_an_netzwerkprozess(befehl)
-
+         continue
         elif auswahl == "3":
          empfaenger, pfad = eingabe_bild()
          befehl = f"IMG {empfaenger} {pfad}"
          sende_befehl_an_netzwerkprozess(befehl)
-
+         continue
         elif auswahl == "4":
             #interface
             config = autoreply_umschalten(config)

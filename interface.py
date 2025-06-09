@@ -1,5 +1,6 @@
 #Argumente aus der Kommandozeile auslesen --handel
 import sys
+import toml
 ## import questionary
 ## @file interface.py
 # @brief interface der Kommmandozeile für das Chat-Programm
@@ -9,7 +10,7 @@ import sys
 # @return Auswahl des Benutzers als String
 #wird in der main aufgerufen
 def menue():
-    print("\n===== Simple Chat CLI =====")
+    print("\nMenü\n")
     print("0. Join")
     print("1. Teilnehmer anzeigen")
     print("2. Nachricht senden")
@@ -41,7 +42,8 @@ def nutzernamen_abfragen():
         index = sys.argv.index('--handle') + 1
         if index < len(sys.argv):
             return sys.argv[index]'''
-    return input("Bitte Benutzernamen eingeben: ")
+    benutzername=input("Bitte Benutzernamen eingeben: ")
+    return benutzername
 
 ## Eingabe der zu versendend Nachricht an eine bestimmten Empfänger
 # @return 
@@ -65,5 +67,7 @@ def autoreply_umschalten(config):
     aktuell = config.get("autoreply", "")#ließt den Wert von autoreply aus. Wenn er nicht vorhalen ist, kommt ein leerer
     print(f"Aktueller Autoreply-Text: '{aktuell}'")
     neu = input("Neuer Autoreply-Text (leer für deaktivieren): ")
-    config["autoreply"] = neu#greift auf die zeile autoreply in der config zu und ändert sie
+    config["autoreply"] = neu #greift auf die zeile autoreply in der config zu und ändert sie
+    with open("Konfigurationsdateien/config.toml", "w") as f:
+        toml.dump(config, f)
     return config

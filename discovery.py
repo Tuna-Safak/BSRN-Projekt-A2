@@ -21,14 +21,14 @@ known_users = {}
 ## Schließt die Datei automatisch wieder, sobald der Block fertig ist
 
 
-with open("config.toml", "r") as f: 
+with open("Konfigurationsdateien/config.toml", "r") as f: 
     config = toml.load(f)  
 
-## lädt aus dem config-file den Port für den Discovery-Dienst (whoisport) 
+## lädt aus dem config-file den Port für den Discovery-Dienst (whoisdiscoveryport) 
 ## DISCOVERY_PORT = die neue Variable, in der der Port gespeichert wird
-## config["network"]["whoisport"] = der Wert, der aus config.toml herausgelesen wird
+## config["network"]["whoisdiscoveryport"] = der Wert, der aus config.toml herausgelesen wird
 
-DISCOVERY_PORT = config["network"]["whoisport"] 
+DISCOVERY_PORT = config["network"]["whoisdiscoveryport"] 
 
 ## socket erstellen
 ## variable namens 'sock', datentyp socket
@@ -52,26 +52,6 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 __all__ = ["sende_join", "sende_leave", "sende_who"] 
 
 ## 255.255.255.255 broadcast adresse (Sendet Nachricht an alle Geräte im lokalen Netzwerk egal welche IP)
-def sende_join(handle, port):  
-    nachricht = f"JOIN {handle} {port}"
-    send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    send_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    send_sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))  # Broadcast
-    print(f"[SEND] → JOIN gesendet: {nachricht}")
-
-def sende_leave(handle):  
-    nachricht = f"LEAVE {handle}"
-    send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    send_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    send_sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
-    print(f"[SEND] → LEAVE gesendet: {nachricht}") 
-
-def sende_who():  
-    nachricht = "WHO"
-    send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    send_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-    send_sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
-    print("[SEND] → WHO gesendet") 
 
 ## zusammenfassen des codes für den import 
 
@@ -142,9 +122,6 @@ def nutzerspeichern():
 
           sock.sendto(antwort.encode(), absender)
          
-        elif befehl == "KNOWNUSERS":
-            print(f"[RECV] KNOWNUSERS von {absender}: {message}")
-
         elif befehl == "LEAVE" and len(nachrichtTeilen) == 2:
           handle = nachrichtTeilen[1]
          
@@ -160,3 +137,5 @@ def zeige_bekannte_nutzer():
     for handle, (ip, port) in known_users.items():
         print(f"  {handle} → {ip}:{port}")     
 
+def gebe_nutzerliste_zurück():
+   return known_users

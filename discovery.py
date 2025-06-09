@@ -5,6 +5,7 @@
 import socket
 import toml
 import threading
+#Für Datei- und Pfadprüfung (z. B. ob config.toml existiert)
 import os
 
 ## woerterbuch zum speichern bekannter teilnehmer (aehnlich wie HashMap)
@@ -49,8 +50,6 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 ## Liste die nur erlaubt, dass diese 3 Funktionen importiert werden
 __all__ = ["sende_join", "sende_leave", "sende_who"] 
-
-...
 
 ## 255.255.255.255 broadcast adresse (Sendet Nachricht an alle Geräte im lokalen Netzwerk egal welche IP)
 def sende_join(handle, port):  
@@ -136,6 +135,7 @@ def nutzerspeichern():
           antwort += ", ".join(
             f"{handle} {ip} {port}" for handle, (ip, port) in known_users.items()
           )
+          
          ## sendto() = methode zum versenden von UDP-Nachrichten
          ## encode() = wandelt string in bytes um
          ## absender = IP-Adresse und Port an dem die Nachricht gehen soll

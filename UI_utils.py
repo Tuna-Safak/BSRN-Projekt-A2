@@ -12,9 +12,10 @@ import toml
 
 #: @var KONFIGURATIONSDATEI
 #: @brief Pfad zur standardmäßigen Konfigurationsdatei, wird großgeschrieben da Konstante 
-KONFIGURATIONSDATEI = "Konfigurationsdateien/config.toml"
+#KONFIGURATIONSDATEI = "Konfigurationsdateien/config.toml"
 
-def lade_config(pfad = None):
+
+def lade_config():
     """
     @brief lädt die TOML-Konfigurationsdatei und gibt sie als Dictionary zurück (Parsing).
 
@@ -27,8 +28,6 @@ def lade_config(pfad = None):
         return toml.load(KONFIGURATIONSDATEI)
     else:
         raise FileNotFoundError("config.toml nicht gefunden.") 
-
-
 
 def finde_freien_port(config):
 

@@ -12,6 +12,7 @@ from discovery import nutzerspeichern, gebe_nutzerliste_zurück
 # damit TCP und UDP seperat laufen können 
 import threading
 
+
 ## @brief Startet den Netzwerkprozess und lauscht auf Befehle vom UI-Prozess.
 #  @details Stellt einen TCP-Server auf localhost:6001 bereit, über den der UI-Prozess Kommandos
 #           wie MSG und IMG senden kann. Diese werden analysiert und mit UDP an die Ziel-Peers
@@ -19,6 +20,8 @@ import threading
 #  @note Diese Funktion blockiert dauerhaft. Sie sollte in einem separaten Prozess ausgeführt werden.
 def netzwerkprozess():
  
+    aktueller_handle = None
+
     ## @var config
     #  @brief Lädt Konfigurationsparameter wie Handle und Netzwerkports aus config.toml.
     config = lade_config()
@@ -59,12 +62,14 @@ def netzwerkprozess():
             elif teile[0] == "IMG":
                 _, empfaenger, pfad = teile
                 sendIMG(config["handle"], empfaenger, pfad)
+                
 
             # behandelt den JOIN-Befehl und leitet es Broadcast per UDP weiter 
             # wird von Discovery-Dienst empfangen
             elif teile[0] == "JOIN":
                 _, handle, port = teile
                 send_join(handle, port)
+                
 
             ## @brief Behandelt den WHO-Befehl vom UI-Prozess über TCP.
             #  @details Führt einen UDP-Broadcast mit "WHO" an alle Peers im LAN durch. 

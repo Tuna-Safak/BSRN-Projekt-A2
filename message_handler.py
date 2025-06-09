@@ -6,6 +6,7 @@ import threading
 # ermöglicht das gleichzeitige Ausführen von mehreren Threads
 import sys
 # ermöglicht den Zugriff aus Systemfunktionen
+import time 
 from discovery import gebe_nutzerliste_zurück
 # ermöglicht das Laden der Konfigdatei
 from UI_utils import lade_config, finde_freien_port
@@ -99,7 +100,7 @@ def handle_leave(name):
 # @param bildpfad: Pfad zur Bilddatei
 def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     
-    # Prüfen, ob der Empfänger überhaupt bekannt ist, also ob wir seine IP-Adresse und DISCOVERY_PORT kennen
+    # Prüft ob der Empfänger überhaupt in der Liste bekannt ist, also ob wir seine IP-Adresse und DISCOVERY_PORT kennen
     if handle_empfaenger not in gebe_nutzerliste_zurück():
         print("Empfänger nicht bekannt.")
         return  # die Funktion wird beendet, weil Senden nicht möglich ist
@@ -109,7 +110,7 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
         # r = read, b = binary (binär lesen, nicht als Text)
         # wir brauchen das für Bilder, weil sie keine Textdateien sind
         with open(bildpfad, "rb") as b:
-            # gesamtes Bild als Binärdaten einlesen
+            # gesamtes Bild als Binärdaten einlesen in die Variable bilddaten
             bilddaten = b.read()
     except FileNotFoundError:
         # Wenn der Pfad falsch ist oder das Bild nicht existiert
@@ -122,7 +123,7 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
 
     if groesse > 1400:
         print("Bild zu groß für eine UDP-Nachricht max 1400 Bytes")
-        return
+        return # Wenn die Bildgröße größer als 1400 Bytes ist wird das Bild nicht gesendet
 
     # Nachricht im SLCP-Format vorbereiten: IMG <Empfänger> <Größe>
     # das ist die Steuerzeile, die vor dem Bild gesendet wird
@@ -133,10 +134,15 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     # IP-Adresse und DISCOVERY_PORT des Empfängers aus dem Nutzerverzeichnis holen
     ip, DISCOVERY_PORT = gebe_nutzerliste_zurück()[handle_empfaenger]
 
+    # erstes Paket
     # Erste Nachricht senden: den IMG-Befehl mit Empfängername und Bildgröße
     # encode() wandelt den Text in Bytes um, damit er über das Netzwerk geschickt werden kann
     sock.sendto(img_header.encode(), (ip, DISCOVERY_PORT))
 
+    # wartet 0.1 sekunden damit das erste Paket vor dem zweiten Paket sicher ankommt
+    time.sleep(0.1)
+
+    # zweites Paket
     # Zweite Nachricht: das eigentliche Bild senden (als Binärdaten)
     sock.sendto(bilddaten, (ip, DISCOVERY_PORT))
 
@@ -152,28 +158,38 @@ def handle_IMG(sock, teile, addr):
     # Prüfen, ob genug Teile in der Nachricht sind
     if len(teile) != 3:
         print("Nachricht ist nicht vollständig.")
-        return
+        return # falls nicht bricht die Verarbeitung ab
 
-    # ist der name also an wen das Bild gesendet werden soll
+    # der empfäger ist in position 1 bei den teilen 
     empfaenger = teile[1]
 
     try:
-        # Die Bildgröße aus dem Text in eine Zahl umwandeln
+        # Die Bildgröße aus dem dritten Teil (position 2) in eine Zahl umwandeln
         groesse = int(teile[2])
     except ValueError:
         # Wenn keine Zahl übergeben wurde sondern was anders
         print("Ungültige Bildgröße.")
         return
 
+    # setzt einen timeout von 2 Sekunden auf den Socket damit recvfrom() nicht ewig wartet
+    sock.settimeout(2)
+
     # Die eigentlichen Bilddaten empfangen 
     # recvfrom() wartet auf ein weiteres UDP-Paket
     # Die Anzahl groesse + 1024 gibt einen Puffer mit dazu, falls z. B. mehr Daten ankommen
     # bilddaten enthält die empfangenen Binärdaten 
-    bilddaten, addr2 = sock.recvfrom(groesse + 1024)  # etwas Puffer
+    try:
+        bilddaten, addr2 = sock.recvfrom(groesse + 1024)  # etwas Puffer
+    except socket.timeout:
+        print("Timeout beim Empfang des Bildes")
+        return # falls kein Paket kommt gibt es eine Timeout Meldung
+    finally:
+        sock.settimeout(None) # hebt den Timeout wieder auf
 
     # IP-Adresse vom Absender herausfinden bzw speichern
     sender_ip = addr[0]
 
+    # Variable sender_name = Absender
     # Absendernamen aus der IP-Adresse ermitteln
     # durchsucht known_users
     sender_name = None
@@ -186,12 +202,13 @@ def handle_IMG(sock, teile, addr):
     if sender_name is None:
         sender_name = "Unbekannt"
 
-    # Speicherordner erstellen, falls noch nicht vorhanden
+    # Speicherordner erstellen, falls noch nicht vorhanden um den Bild zu speichern
     os.makedirs("empfangene_bilder", exist_ok = True)
 
     # Bild speichern mit einfachem Namen z.B. büsra_bild.jpg
-    # es wird ein vollständiger pfad gebaut
     dateiname = f"{sender_name}_bild.jpg"
+
+    # es wird ein vollständiger pfad gebaut zum speicherort des bildes
     pfad = os.path.join("empfangene_bilder", dateiname)
 
     # Bild speichern

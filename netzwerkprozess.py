@@ -20,7 +20,7 @@ import threading
 #  @note Diese Funktion blockiert dauerhaft. Sie sollte in einem separaten Prozess ausgeführt werden.
 def netzwerkprozess():
  
-    aktueller_handle = None
+   
 
     ## @var config
     #  @brief Lädt Konfigurationsparameter wie Handle und Netzwerkports aus config.toml.

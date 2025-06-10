@@ -26,10 +26,10 @@ sock.bind(('', DISCOVERY_PORT))
 print(f"[INFO] (Discovery-) Socket gebunden an DISCOVERY_PORT {DISCOVERY_PORT}")
 
 
-port = finde_freien_port(config)
-sock.bind(('', port))
-print(f"[INFO] Socket gebunden an Port {port}")
-port = finde_freien_port(config)
+#port = finde_freien_port(config)
+#sock.bind(('', port))
+#print(f"[INFO] Socket gebunden an Port {port}")
+#port = finde_freien_port(config)
 
 
 # Gib den Socket an andere Module zurück, falls gewünscht

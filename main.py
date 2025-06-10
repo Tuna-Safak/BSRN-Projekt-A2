@@ -140,7 +140,8 @@ def main():
             continue    
         elif auswahl == "6":
             print(f"→ LEAVE {handle}")
-            break
+            befehl = f"LEAVE {handle}"
+            sende_befehl_an_netzwerkprozess(befehl)
             
        
 

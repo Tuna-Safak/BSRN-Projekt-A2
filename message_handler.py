@@ -25,22 +25,15 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 sock.bind(('', DISCOVERY_PORT))
 print(f"[INFO] (Discovery-) Socket gebunden an DISCOVERY_PORT {DISCOVERY_PORT}")
 
-
-#port = finde_freien_port(config)
-#sock.bind(('', port))
-#print(f"[INFO] Socket gebunden an Port {port}")
-#port = finde_freien_port(config)
-
-
 # Gib den Socket an andere Module zurück, falls gewünscht
 def get_socket():
     return sock
 
 # -----------JOIN-Nachricht versenden------------------
-def send_join(handle_nutzername, port):
+def send_join(handle, port):
     # allen im Chat wird mitgeteilt, dass ich mich im Chat befinde
     
-    nachricht = f"JOIN {handle_nutzername} {port}\n"
+    nachricht = f"JOIN {handle} {port}\n"
     # JOIN: ist der Befehl, der an alle anderen Computer im Netzwerk gesendet wird
     sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
     print(f"[JOIN] Gesendet: {nachricht.strip()}")

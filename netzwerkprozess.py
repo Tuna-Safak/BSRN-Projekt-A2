@@ -6,7 +6,7 @@
 #           und nutzt die Methoden aus `message_handler`, um SLCP-konforme Nachrichten zu versenden.
 
 import socket
-from message_handler import sendMSG, sendIMG, send_join
+from message_handler import sendMSG, sendIMG, send_join, send_leave
 from UI_utils import lade_config
 from discovery import nutzerspeichern, gebe_nutzerliste_zurück
 # damit TCP und UDP seperat laufen können 
@@ -69,7 +69,11 @@ def netzwerkprozess():
             elif teile[0] == "JOIN":
                 _, handle, port = teile
                 send_join(handle, port)
-                
+
+            elif teile[0] == "LEAVE": 
+                send_leave(handle)
+            
+
 
             ## @brief Behandelt den WHO-Befehl vom UI-Prozess über TCP.
             #  @details Führt einen UDP-Broadcast mit "WHO" an alle Peers im LAN durch. 
@@ -83,7 +87,7 @@ def netzwerkprozess():
 
                 who_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
                 who_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-                who_sock.settimeout(2)
+                who_sock.settimeout(2) 
 
                 try:
                     # Broadcast-Nachricht an alle Peers senden

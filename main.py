@@ -129,7 +129,7 @@ def main():
          continue
         elif auswahl == "4":
             #interface
-            config = autoreply_umschalten(config)
+            config = autoreply_umschalten(config, handle)
             print("→ Autoreply aktualisiert.")
             continue
         elif auswahl == "5":

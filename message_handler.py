@@ -70,16 +70,6 @@ def handle_leave(name):
         print(f"LEAVE von unbekanntem Nutzer erhalten: {name}")
 
 
-
-# -------------WHO-Nachricht versenden-----------------
-def send_who():
-    # es wird erfragt, wer gerade im Chat online ist
-    nachricht = "WHO\n"
-    sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
-    print("[WHO] Gesendet")
-
-
-
 # -------------Nachricht senden-----------------
 def sendMSG (sock, config, handle, empfaenger_handle, text):
     if empfaenger_handle not in gebe_nutzerliste_zurück():

@@ -1,6 +1,6 @@
 import socket
 
-SERVER_IP = '192.168.1.100'  # Replace with the server's IP address
+SERVER_IP = '172.20.10.6'  # Replace with the server's IP address
 PORT = 5000
 BUFFER_SIZE = 1024
 

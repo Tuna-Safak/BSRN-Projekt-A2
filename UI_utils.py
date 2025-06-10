@@ -15,17 +15,19 @@ import toml
 KONFIGURATIONSDATEI = "Konfigurationsdateien/config.toml"
 
 
-def lade_config():
+def lade_config(pfad=None):
     """
     @brief lädt die TOML-Konfigurationsdatei und gibt sie als Dictionary zurück (Parsing).
 
     @return dict mit den Konfigurationswerten
     @raises FileNotFoundError wenn die Datei nicht existiert
     """
+    if pfad is None:
+        pfad = "Konfigurationsdateien/config.toml"
 
-    if os.path.exists(KONFIGURATIONSDATEI):
+    if os.path.exists(pfad):
        
-        return toml.load(KONFIGURATIONSDATEI)
+        return toml.load(pfad)
     else:
         raise FileNotFoundError("config.toml nicht gefunden.") 
 

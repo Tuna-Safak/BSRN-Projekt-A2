@@ -53,10 +53,13 @@ def sende_befehl_an_netzwerkprozess(befehl: str):
 #  @brief ruft funktionen aus den importierten Datei auf
 #  @details lädt das Menü und verwaltet den Ablauf
 def main():
-    #ui_utils
-    config = lade_config()
-    #interface
     handle = nutzernamen_abfragen()
+    # Dateipfad zusammenbauen
+    konfig_pfad = f"Konfigurationsdateien/config_{handle.lower()}.toml" 
+    #ui_utils
+    config = lade_config(konfig_pfad)
+    #interface
+    
     #main
     port, nutzer_sock = registriere_neuen_nutzer(handle,config)
     #message_handler
@@ -142,6 +145,7 @@ def main():
             print(f"→ LEAVE {handle}")
             befehl = f"LEAVE {handle}"
             sende_befehl_an_netzwerkprozess(befehl)
+            break
             
        
 

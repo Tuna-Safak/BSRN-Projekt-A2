@@ -1,13 +1,9 @@
-import questionary
+# Benutzername abfragen
+benutzername = input("Wie heißt du? ")
 
-wahl = questionary.select(
-    "Was möchtest du tun?",
-    choices=[
-        "Nachricht senden",
-        "Bild senden",
-        "Autoreply ändern",
-        "Beenden"
-    ]
-).ask()
+# Dateipfad zusammenbauen
+konfig_pfad = f"Konfigurationsdateien/config_{benutzername.lower()}.toml"
 
-print("Du hast gewählt:", wahl)
+
+# Debug-Ausgabe zur Kontrolle
+print(f"[INFO] Konfiguration geladen aus: {konfig_pfad}")

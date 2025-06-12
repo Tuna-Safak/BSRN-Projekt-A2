@@ -10,7 +10,6 @@ import sys
 # ermöglicht den Zugriff aus Systemfunktionen
 import threading 
 # ermöglicht das gleichzeitige Ausführen von mehreren Threads
-import sendMSG, sendIMG, send_join, send_leave
 import toml
 import os
 from UI_utils import lade_config, finde_freien_port

@@ -1,15 +1,14 @@
 ## @file main.py
 ##  @brief Start des Programms
 
-## Importiert Methoden aus dem interface.py
+## mehrere Aufgaben gleichzeitig im selben Prozess: eigehende Nachrichten, senden von Nachrichten ermöglichen 
 import threading
 ## importiert socket
 import socket
-## importiert
+## hat eigenen Speicher für jeden einzelnen Prozess des Projektes: e.g Netzwerkprozess und Discovery gleichzeitig laufen lassen
 import multiprocessing
-
 #
-from netzwerkprozess3 import netzwerkprozess
+# alles wird gut
 
 ## Importiert Methoden aus dem interface.py
 from interface import (
@@ -21,11 +20,36 @@ from interface import (
 )
 
 ## Importiert Methoden aus dem UI_utils.py, discovery und message_handler
-from discovery import nutzerspeichern, zeige_bekannte_nutzer
-from UI_utils import lade_config, finde_freien_port
-from netzwerkprozess3 import send_join, send_leave, sendMSG, sendIMG, receive_MSG, get_socket
+from discovery import (
+    nutzerspeichern, 
+    zeige_bekannte_nutzer
+)
+
+from UI_utils import (
+    lade_config, 
+    finde_freien_port
+)
+
+from netzwerkprozess import (
+    send_join, 
+    send_leave, 
+    sendMSG, 
+    sendIMG, 
+    receive_MSG, 
+    get_socket 
+)
+
+from alternativen.netzwerkprozess2 import (
+send_join, 
+send_leave, 
+sendMSG, 
+sendIMG, 
+receive_MSG, 
+get_socket
+)
+
 #registriere_neuen_nutzer
-#, _ heißt socket wird ignoriert
+
 def registriere_neuen_nutzer(handle,config):
     port, nutzer_sock = finde_freien_port(config)
     send_join(handle,port)
@@ -35,8 +59,7 @@ def registriere_neuen_nutzer(handle,config):
 #  @details Diese Funktion wird vom UI-Prozess verwendet, um Nachrichten- oder Bildbefehle
 #           (z. B. MSG oder IMG) an den Netzwerkprozess weiterzuleiten. Der Netzwerkprozess
 #           übernimmt dann das eigentliche Senden per UDP an andere Chat-Teilnehmer.
-#           Die Kommunikation erfolgt über eine TCP-Verbindung zu localhost:6001.
-#
+#           Die Kommunikation erfolgt über eine TCP-Verbindung zu localhost:6001
 #  @param befehl Der SLCP-kompatible Befehl, z. B. "MSG Bob Hallo" oder "IMG Bob pfad/zum/bild.jpg".
 #  @note Wenn der Netzwerkprozess nicht läuft oder der Socket nicht erreichbar ist,
 #        wird eine Fehlermeldung ausgegeben.
@@ -44,17 +67,14 @@ def sende_befehl_an_netzwerkprozess(befehl: str):
     try:
         with socket.create_connection(("localhost", 6001)) as sock:
             sock.sendall(befehl.encode())
-            antwort = sock.recv(1024).decode().strip()
-            print(f"[ANTWORT vom Netzwerkprozess] {antwort}")
     except ConnectionRefusedError:
-        print("⚠️ Netzwerkprozess läuft nicht!")
-
+        print("Netzwerkprozess läuft nicht!")
 
 
 
 
 ## Hauptfunktion
-#  @brief ruft funktionen aus den importierten Datei auf
+#  @brief ruft Funktionen aus den importierten Datei auf
 #  @details lädt das Menü und verwaltet den Ablauf
 def main():
     handle = nutzernamen_abfragen()
@@ -112,9 +132,9 @@ def main():
                                     handle, ip, port = eintrag.strip().split(" ")
                                     print(f"  {handle} → {ip}:{port}")
                                 except ValueError:
-                                    print("❌ Fehler beim Eintrag:", eintrag)
+                                    print(" Fehler beim Eintrag:", eintrag)
                     else:
-                        print("⚠️ Unerwartete Antwort vom Netzwerkprozess:", antwort)
+                        print("Unerwartete Antwort vom Netzwerkprozess:", antwort)
 
             except ConnectionRefusedError:
                 print("Netzwerkprozess läuft nicht!")

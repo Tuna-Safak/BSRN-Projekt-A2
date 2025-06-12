@@ -93,7 +93,7 @@ def nutzerspeichern():
       ## erstes Wort aus der Nachricht holen, also den Befehl, den der Absender geschickt hat
         befehl = nachrichtTeilen[0]
 
-        if befehl == "JOIN" and len(nachrichtTeilen) == 3:
+        if befehl == "JOIN" and len(nachrichtTeilen) == 4:
        ## handle = benutzername
           handle = nachrichtTeilen[1]
           port = nachrichtTeilen[2]

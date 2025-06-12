@@ -7,8 +7,10 @@ import threading
 import socket
 ## importiert
 import multiprocessing
+
 #
 from netzwerkprozess3 import netzwerkprozess
+
 ## Importiert Methoden aus dem interface.py
 from interface import (
     menue,
@@ -22,7 +24,6 @@ from interface import (
 from discovery import nutzerspeichern, zeige_bekannte_nutzer
 from UI_utils import lade_config, finde_freien_port
 from netzwerkprozess3 import send_join, send_leave, sendMSG, sendIMG, receive_MSG, get_socket
-
 #registriere_neuen_nutzer
 #, _ heißt socket wird ignoriert
 def registriere_neuen_nutzer(handle,config):
@@ -43,8 +44,11 @@ def sende_befehl_an_netzwerkprozess(befehl: str):
     try:
         with socket.create_connection(("localhost", 6001)) as sock:
             sock.sendall(befehl.encode())
+            antwort = sock.recv(1024).decode().strip()
+            print(f"[ANTWORT vom Netzwerkprozess] {antwort}")
     except ConnectionRefusedError:
-        print("Netzwerkprozess läuft nicht!")
+        print("⚠️ Netzwerkprozess läuft nicht!")
+
 
 
 

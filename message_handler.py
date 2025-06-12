@@ -1,14 +1,5 @@
-import socket
-# Bibliothek, ermöglicht Netzwerkomunikation
-import toml
-import os
-import threading
-# ermöglicht das gleichzeitige Ausführen von mehreren Threads
-import sys
-# ermöglicht den Zugriff aus Systemfunktionen
-from discovery import gebe_nutzerliste_zurück
-# ermöglicht das Laden der Konfigdatei
-from UI_utils import lade_config, finde_freien_port
+
+
 
 def finde_lokale_ip():
     """Ermittelt die echte lokale IP-Adresse (z. B. WLAN) durch Verbindung zu 8.8.8.8."""

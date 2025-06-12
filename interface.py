@@ -48,16 +48,16 @@ def nutzernamen_abfragen():
 ## Eingabe der zu versendend Nachricht an eine bestimmten Empfänger
 # @return 
 def eingabe_nachricht():
-    empfänger = input("Empfänger-Handle: ")
+    empfaenger = input("Empfänger-Handle: ")
     nachricht = input("Nachricht: ")
-    return empfänger, nachricht
+    return empfaenger, nachricht
 
 ## Eingabe des Bildpfads und des Empfängers
 # @return 
 def eingabe_bild():
-    empfänger = input("Empfänger-Handle: ")
+    empfaenger = input("Empfänger-Handle: ")
     bildpfad = input("Pfad zum Bild: ")
-    return empfänger, bildpfad
+    return empfaenger, bildpfad
 
 ## Eingabe der Autoreply Nachricht
 # @return Die Config-Datei wird verändert

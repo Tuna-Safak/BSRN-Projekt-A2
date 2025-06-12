@@ -1,8 +1,8 @@
 [client]
-handle = "Jana"              # Benutzername im Chat
+handle = "Mozda"              # Benutzername im Chat
 port = 5000                       # Portbereich, auf dem der Client Nachrichten empfängt
 whoisport = 4000                  # Port für Broadcasts vom Discovery-Dienst
-autoreply = "Ich bin gerade nicht da."  # Automatische Antwort im Abwesenheitsmodus
+autoreply = "Bin arbeiten."  # Automatische Antwort im Abwesenheitsmodus
 imagepath = "images/" 
 [network]
 whoisdiscoveryport = 4000

@@ -10,6 +10,18 @@ from discovery import gebe_nutzerliste_zurück
 # ermöglicht das Laden der Konfigdatei
 from UI_utils import lade_config, finde_freien_port
 
+def finde_lokale_ip():
+    """Ermittelt die echte lokale IP-Adresse (z. B. WLAN) durch Verbindung zu 8.8.8.8."""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception as e:
+        print(f"[WARNUNG] Lokale IP konnte nicht ermittelt werden: {e}")
+        return "127.0.0.1"
+
 # Lade die Konfiguration aus config.toml
 config = lade_config()
 
@@ -32,16 +44,23 @@ def get_socket():
 # -----------JOIN-Nachricht versenden------------------
 def send_join(handle, port):
     # allen im Chat wird mitgeteilt, dass ich mich im Chat befinde
-    
-    nachricht = f"JOIN {handle} {port}\n"
-    # JOIN: ist der Befehl, der an alle anderen Computer im Netzwerk gesendet wird
+    ip = finde_lokale_ip()
+    nachricht = f"JOIN {handle} {port} {ip}\n"
     sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
     print(f"[JOIN] Gesendet: {nachricht.strip()}")
+    
+   # nachricht = f"JOIN {handle} {port}\n"
+    # JOIN: ist der Befehl, der an alle anderen Computer im Netzwerk gesendet wird
+    #sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
+    #print(f"[JOIN] Gesendet: {nachricht.strip()}")
 
 # -------------JOIN verarbeiten-----------------
-def handle_join(name, DISCOVERY_PORT, addr):
+def handle_join(name, DISCOVERY_PORT, addr, ip=None):
+    if ip is None:
+        ip = addr[0]
+#def handle_join(name, DISCOVERY_PORT, addr):
     # Verarbeitung einer JOIN-Nachricht, um neuen Nutzer zu speichern
-    ip = addr[0]
+   # ip = addr[0]
     DISCOVERY_PORT = int(DISCOVERY_PORT)
 
     if name not in gebe_nutzerliste_zurück():
@@ -103,8 +122,11 @@ def receive_MSG(sock, config):
 
         befehl = teile[0]
 
-        if befehl == "JOIN" and len(teile) == 3:
-            handle_join(teile[1], teile[2], addr)
+        if befehl == "JOIN" and len(teile) >= 3:
+            name = teile[1]
+            port = teile[2]
+            ip = teile[3] if len(teile) == 4 else None
+            handle_join(name, port, addr, ip)
 
         elif befehl == "LEAVE" and len(teile) == 2:
             handle_leave(teile[1])

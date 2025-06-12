@@ -1,5 +1,0 @@
-handle = "Mozda"
-port = 5000
-whoisport = 4000
-autoreply = "Ich bin nicht da."
-imagepath = "received_images"

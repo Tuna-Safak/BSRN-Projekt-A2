@@ -8,7 +8,7 @@ import socket
 ## importiert
 import multiprocessing
 #
-from netzwerkprozess import netzwerkprozess
+from netzwerkprozess3 import netzwerkprozess
 ## Importiert Methoden aus dem interface.py
 from interface import (
     menue,
@@ -21,7 +21,7 @@ from interface import (
 ## Importiert Methoden aus dem UI_utils.py, discovery und message_handler
 from discovery import nutzerspeichern, zeige_bekannte_nutzer
 from UI_utils import lade_config, finde_freien_port
-from netzwerkprozess import send_join, send_leave, sendMSG, sendIMG, receive_MSG, get_socket
+from netzwerkprozess3 import send_join, send_leave, sendMSG, sendIMG, receive_MSG, get_socket
 
 #registriere_neuen_nutzer
 #, _ heißt socket wird ignoriert

@@ -37,7 +37,7 @@ def send_join(handle, port):
     # allen im Chat wird mitgeteilt, dass ich mich im Chat befinde
     ip = finde_lokale_ip()
     nachricht = f"JOIN {handle} {port} {ip}\n"
-    sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
+    sock.sendto(nachricht.encode(), ("172.20.10.255", DISCOVERY_PORT))
     print(f"[JOIN] Gesendet: {nachricht.strip()}")
     
    # nachricht = f"JOIN {handle} {port}\n"

@@ -43,8 +43,11 @@ def sende_befehl_an_netzwerkprozess(befehl: str):
     try:
         with socket.create_connection(("localhost", 6001)) as sock:
             sock.sendall(befehl.encode())
+            antwort = sock.recv(1024).decode().strip()
+            print(f"[ANTWORT vom Netzwerkprozess] {antwort}")
     except ConnectionRefusedError:
-        print("Netzwerkprozess läuft nicht!")
+        print("⚠️ Netzwerkprozess läuft nicht!")
+
 
 
 

@@ -1,8 +1,8 @@
-6[client]
+[client]
 handle = "Jana"
 port = 5000
 whoisport = 4000
-autoreply = "bitte nicht st�ren"
+autoreply = "bitte nicht stoeren"
 imagepath = "images/"
 
 [network]

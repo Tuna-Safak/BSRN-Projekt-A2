@@ -7,7 +7,7 @@
 
 import socket
 import sys
-import threading
+import threading 
 import toml
 import os
 from UI_utils import lade_config, finde_freien_port
@@ -26,9 +26,6 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 sock.bind(('', DISCOVERY_PORT))
 print(f"[INFO] (Discovery-) Socket gebunden an DISCOVERY_PORT {DISCOVERY_PORT}")
 
-# Starte den Nachricht-Empfangs-Thread
-threading.Thread(target=lambda: receive_MSG(sock, config), daemon=True).start()
-
 def finde_lokale_ip():
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -43,12 +40,14 @@ def finde_lokale_ip():
 def get_socket():
     return sock
 
+# -----------JOIN-Nachricht versenden------------------
 def send_join(handle, port):
     ip = finde_lokale_ip()
     nachricht = f"JOIN {handle} {port} {ip}\n"
     sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
     print(f"[JOIN] Gesendet: {nachricht.strip()}")
 
+# -------------JOIN verarbeiten-----------------
 def handle_join(name, DISCOVERY_PORT, addr, ip=None):
     if ip is None:
         ip = addr[0]
@@ -60,11 +59,13 @@ def handle_join(name, DISCOVERY_PORT, addr, ip=None):
         gebe_nutzerliste_zurück()[name] = (ip, DISCOVERY_PORT)
         print(f"{name} erneut beigetreten – Daten aktualisiert: {ip}:{DISCOVERY_PORT}")
 
+# -------------Leave-Nachricht versenden-----------------
 def send_leave(handle_nutzername):
     nachricht = f"LEAVE {handle_nutzername}\n"
     sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
     print(f"[LEAVE] Gesendet: {nachricht.strip()}")
 
+# -------------LEAVE verarbeiten-----------------
 def handle_leave(name):
     if name in gebe_nutzerliste_zurück():
         del gebe_nutzerliste_zurück()[name]
@@ -72,6 +73,7 @@ def handle_leave(name):
     else:
         print(f"LEAVE von unbekanntem Nutzer erhalten: {name}")
 
+# -------------Nachricht senden-----------------
 def sendMSG(sock, config, handle, empfaenger_handle, text):
     if empfaenger_handle not in gebe_nutzerliste_zurück():
         print("Empfänger nicht bekannt.")
@@ -85,10 +87,12 @@ def sendMSG(sock, config, handle, empfaenger_handle, text):
     print(f"[SEND] → an {empfaenger_handle} @ {ip}:{DISCOVERY_PORT} → {text}")
     sock.sendto(nachricht.encode(), (ip, DISCOVERY_PORT))
 
+# -------------Nachricht verarbeiten und formatieren-----------------
 def handle_MSG(sender, text):
     clean_text = text.strip('"')
     print(f" Nachricht von {sender}: {clean_text}")
 
+# -------------Nachricht empfangen-----------------
 def receive_MSG(sock, config):
     while True:
         daten, addr = sock.recvfrom(1024)
@@ -129,7 +133,15 @@ def receive_MSG(sock, config):
         else:
             print(f" Unbekannte Nachricht: {text}")
 
-# sendIMG, handle_IMG und netzwerkprozess bleiben unverändert – siehe Original für vollständige Umsetzung.
+# Starte den Nachricht-Empfangs-Thread nach der Definition
+def start_receiver_thread():
+    threading.Thread(target=lambda: receive_MSG(sock, config), daemon=True).start()
 
+# Dummy-Definition der Funktion netzwerkprozess() zum Beheben des Fehlers
+def netzwerkprozess():
+    print("[INFO] Dummy netzwerkprozess gestartet. Bitte mit echter Logik ersetzen.")
+
+# Hauptprogramm
 if __name__ == "__main__":
+    start_receiver_thread()
     netzwerkprozess()

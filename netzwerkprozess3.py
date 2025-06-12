@@ -97,7 +97,7 @@ def handle_leave(name):
 def sendMSG (sock, config, handle, empfaenger_handle, text):
     if empfaenger_handle not in gebe_nutzerliste_zurück():
         print("Empfänger nicht bekannt.")
-        print(f"Bekannte Nutzer: {gebe_nutzerliste_zurück()()}")
+        print(f"Bekannte Nutzer: {gebe_nutzerliste_zurück()}")
         return
 
     nachricht = f'MSG {config[handle]} "{text}"\n'

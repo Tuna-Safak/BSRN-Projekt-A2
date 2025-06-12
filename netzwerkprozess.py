@@ -17,6 +17,15 @@ from discovery import nutzerspeichern, gebe_nutzerliste_zurück
 # damit TCP und UDP seperat laufen können 
 import threading
 
+# Lade die Konfiguration aus config.toml
+config = lade_config()
+
+# Discovery DISCOVERY_PORT aus Konfig
+DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
+
+
+threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
+
 def finde_lokale_ip():
     """Ermittelt die echte lokale IP-Adresse (z. B. WLAN) durch Verbindung zu 8.8.8.8."""
     try:
@@ -29,11 +38,6 @@ def finde_lokale_ip():
         print(f"[WARNUNG] Lokale IP konnte nicht ermittelt werden: {e}")
         return "127.0.0.1"
 
-# Lade die Konfiguration aus config.toml
-config = lade_config()
-
-# Discovery DISCOVERY_PORT aus Konfig
-DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
 
 # Erstelle den UDP-Socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -103,7 +107,7 @@ def sendMSG (sock, config, handle, empfaenger_handle, text):
         print(f"Bekannte Nutzer: {gebe_nutzerliste_zurück()()}")
         return
 
-    nachricht = f'MSG {config[handle]} "{text}"\n'
+    nachricht = f'MSG {handle} \"{text}\"\n'
     ip, DISCOVERY_PORT = gebe_nutzerliste_zurück()[empfaenger_handle]
     print(f"[SEND] → an {empfaenger_handle} @ {ip}:{DISCOVERY_PORT} → {text}")
     sock.sendto(nachricht.encode(), (ip, DISCOVERY_PORT))

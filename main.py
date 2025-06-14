@@ -9,6 +9,7 @@ import socket
 import multiprocessing
 #
 # alles wird gut
+from multiprocessing import Process
 
 ## Importiert Methoden aus dem interface.py
 from interface import (
@@ -21,8 +22,8 @@ from interface import (
 
 ## Importiert Methoden aus dem UI_utils.py, discovery und message_handler
 from discovery import (
-    nutzerspeichern, 
-    zeige_bekannte_nutzer
+    zeige_bekannte_nutzer,
+    discovery_main
 )
 
 from UI_utils import (
@@ -37,15 +38,6 @@ from netzwerkprozess import (
     sendIMG, 
     receive_MSG, 
     get_socket 
-)
-
-from alternativen.netzwerkprozess2 import (
-send_join, 
-send_leave, 
-sendMSG, 
-sendIMG, 
-receive_MSG, 
-get_socket
 )
 
 #registriere_neuen_nutzer
@@ -77,6 +69,9 @@ def sende_befehl_an_netzwerkprozess(befehl: str):
 #  @brief ruft Funktionen aus den importierten Datei auf
 #  @details lädt das Menü und verwaltet den Ablauf
 def main():
+    # 1. Starte Discovery separat
+    discovery_process = Process(target=discovery_main)
+    discovery_process.start()
     handle = nutzernamen_abfragen()
     # Dateipfad zusammenbauen
     konfig_pfad = f"Konfigurationsdateien/config_{handle.lower()}.toml" 

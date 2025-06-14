@@ -55,6 +55,11 @@ __all__ = ["sende_join", "sende_leave", "sende_who"]
 
 ## zusammenfassen des codes für den import 
 
+## discovery prozess starten
+def discovery_main():
+    print("[INFO] Discovery-Prozess gestartet.")
+    nutzerspeichern()
+
 def nutzerspeichern(): 
 ## bindet den Socket an eine IP-Adresse und einen Port
 ## sock	= Variable, die den UDP-Socket enthält
@@ -139,3 +144,7 @@ def zeige_bekannte_nutzer():
 
 def gebe_nutzerliste_zurück():
    return known_users
+
+
+if __name__ == "__main__":
+    discovery_main()

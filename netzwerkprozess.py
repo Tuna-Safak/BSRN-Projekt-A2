@@ -23,9 +23,6 @@ config = lade_config()
 # Discovery DISCOVERY_PORT aus Konfig
 DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
 
-
-threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
-
 def finde_lokale_ip():
     """Ermittelt die echte lokale IP-Adresse (z. B. WLAN) durch Verbindung zu 8.8.8.8."""
     try:
@@ -85,10 +82,16 @@ def handle_join(name, DISCOVERY_PORT, addr, ip=None):
 
 # -------------Leave-Nachricht versenden-----------------
 def send_leave(handle_nutzername):
-    # allen im Chat wird mitgeteilt, dass ich den Chat verlasse
+    # allen im Chat wird mitgeteilt, dass ich den Chat verlasse (Nur Discovery)
     nachricht = f"LEAVE {handle_nutzername}\n"
     sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
     print(f"[LEAVE] Gesendet: {nachricht.strip()}")
+
+    # allen per Unicast zeigen das ich leave
+    bekannte_nutzer = gebe_nutzerliste_zurück()
+    for anderer_handle, (ip, port) in bekannte_nutzer.items():
+     sock.sendto(nachricht.encode(), (ip, int(port)))
+     print(f"[LEAVE] Gesendet (Unicast) an {anderer_handle} @ {ip}:{port}")
 
 # -------------LEAVE verarbeiten-----------------
 def handle_leave(name):
@@ -407,4 +410,5 @@ def netzwerkprozess():
 
 
 if __name__ == "__main__":
+    threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
     netzwerkprozess()

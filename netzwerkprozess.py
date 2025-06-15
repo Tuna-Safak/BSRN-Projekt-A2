@@ -234,14 +234,15 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     img_header = f"IMG {handle_empfaenger} {groesse}\n"
 
     # IP-Adresse und DISCOVERY_PORT des Empfängers aus dem Nutzerverzeichnis holen
-    ip, DISCOVERY_PORT = gebe_nutzerliste_zurück()[handle_empfaenger]
+    ip, port = gebe_nutzerliste_zurück()[handle_empfaenger]
+    port = int(port)
 
     # Erste Nachricht senden: den IMG-Befehl mit Empfängername und Bildgröße
     # encode() wandelt den Text in Bytes um, damit er über das Netzwerk geschickt werden kann
-    sock.sendto(img_header.encode(), (ip, DISCOVERY_PORT))
+    sock.sendto(img_header.encode(), (ip, port))
 
     # Zweite Nachricht: das eigentliche Bild senden (als Binärdaten)
-    sock.sendto(bilddaten, (ip, DISCOVERY_PORT))
+    sock.sendto(bilddaten, (ip, port))
 
     # Bestätigung ausgeben, dass das Bild erfolgreich gesendet wurde
     print(f"Bild an {handle_empfaenger} gesendet ({groesse} Bytes)")
@@ -359,7 +360,7 @@ def netzwerkprozess():
             # Behandelt den IMG-Befehl und leitet das Bild weiter
             elif teile[0] == "IMG":
                 _, empfaenger, pfad = teile
-                sendIMG(config["handle"], empfaenger, pfad)
+                sendIMG(config["client"]["handle"], empfaenger, pfad)
                 
 
             # behandelt den JOIN-Befehl und leitet es Broadcast per UDP weiter 

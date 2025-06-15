@@ -82,7 +82,7 @@ def nutzerspeichern():
       ## message = enthält die Nachricht als Bytes
       ## .decode() = wandelt Bytes in String um
       ## strip() = entfernt leerzeichen und zeilechumbrueche, vorne und hinten
-        message = nachricht.decode().strip()
+        message = nachricht.decode('utf-8').strip()
 
       ## ueberpruefung 
         if len(nachricht) > 512:
@@ -128,7 +128,7 @@ def nutzerspeichern():
          ## encode() = wandelt string in bytes um
          ## absender = IP-Adresse und Port an dem die Nachricht gehen soll
 
-          sock.sendto(antwort.encode(), absender)
+          sock.sendto(antwort.encode('utf-8'), absender)
          
         elif befehl == "LEAVE" and len(nachrichtTeilen) == 2:
           handle = nachrichtTeilen[1]

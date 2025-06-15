@@ -54,7 +54,7 @@ def send_join(handle, port):
     # allen im Chat wird mitgeteilt, dass ich mich im Chat befinde
     ip = finde_lokale_ip()
     nachricht = f"JOIN {handle} {port} {ip}\n"
-    sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
+    sock.sendto(nachricht.encode('utf-8'), ("255.255.255.255", DISCOVERY_PORT))
     print(f"[JOIN] Gesendet: {nachricht.strip()}")
     
    # nachricht = f"JOIN {handle} {port}\n"
@@ -84,13 +84,13 @@ def handle_join(name, DISCOVERY_PORT, addr, ip=None):
 def send_leave(handle_nutzername):
     # allen im Chat wird mitgeteilt, dass ich den Chat verlasse (Nur Discovery)
     nachricht = f"LEAVE {handle_nutzername}\n"
-    sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
+    sock.sendto(nachricht.encode('utf-8'), ("255.255.255.255", DISCOVERY_PORT))
     print(f"[LEAVE] Gesendet: {nachricht.strip()}")
 
     # allen per Unicast zeigen das ich leave
     bekannte_nutzer = gebe_nutzerliste_zurück()
     for anderer_handle, (ip, port) in bekannte_nutzer.items():
-     sock.sendto(nachricht.encode(), (ip, int(port)))
+     sock.sendto(nachricht.encode('utf-8'), (ip, int(port)))
      print(f"[LEAVE] Gesendet (Unicast) an {anderer_handle} @ {ip}:{port}")
 
 # -------------LEAVE verarbeiten-----------------
@@ -127,13 +127,13 @@ def sendMSG(sock, handle, empfaenger_handle, text):
 
     nachricht = f'MSG {handle} "{text}"\n'
     print(f"[SEND] → an {empfaenger_handle} @ {ip}:{port} → {text}")
-    sock.sendto(nachricht.encode(), (ip, port))
+    sock.sendto(nachricht.encode('utf-8'), (ip, port))
 
 # -------------Nachricht empfangen-----------------
 def receive_MSG(sock, config):
     while True:
         daten, addr = sock.recvfrom(1024)
-        text = daten.decode().strip()
+        text = daten.decode('utf-8').strip()
 
 
         teile = text.strip().split(" ")
@@ -336,7 +336,7 @@ def netzwerkprozess(konfig_pfad=None):
         with conn:
             ## @var daten
             #  @brief Empfangener Befehl als Zeichenkette.
-            daten = conn.recv(1024).decode().strip()
+            daten = conn.recv(1024).decode('utf-8').strip()
             print(f"[Netzwerkprozess] Befehl empfangen: {daten}")
 
             ## @var teile
@@ -391,7 +391,7 @@ def netzwerkprozess(konfig_pfad=None):
 
                     while True:
                         daten, addr = who_sock.recvfrom(1024)
-                        text = daten.decode().strip()
+                        text = daten.decode('utf-8').strip()
 
                         if text.startswith("KNOWNUSERS"):
                             teile = text.split(" ", 1)
@@ -414,7 +414,7 @@ def netzwerkprozess(konfig_pfad=None):
                 # KNOWNUSERS-Antwort zusammensetzen und per TCP an UI zurücksenden
                 antwort_text = "KNOWNUSERS " + ", ".join(antwort_liste)
                 try:
-                    conn.sendall(antwort_text.encode())
+                    conn.sendall(antwort_text.encode('utf-8'))
                     print("[Netzwerkprozess] → Antwort an UI gesendet.")
                 except Exception as e:
                     print(f"[Netzwerkprozess] ⚠️ Antwort an UI fehlgeschlagen: {e}")

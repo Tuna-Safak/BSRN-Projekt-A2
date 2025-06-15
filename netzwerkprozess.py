@@ -18,7 +18,7 @@ from discovery import nutzerspeichern, gebe_nutzerliste_zurück, discovery_main
 
 
 # Lade die Konfiguration aus config.toml
-config = lade_config()
+#config = lade_config()
 
 # Discovery DISCOVERY_PORT aus Konfig
 DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
@@ -308,13 +308,13 @@ def handle_IMG(sock, teile, addr):
 #           wie MSG und IMG senden kann. Diese werden analysiert und mit UDP an die Ziel-Peers
 #           gemäß SLCP-Protokoll weitergeleitet.
 #  @note Diese Funktion blockiert dauerhaft. Sie sollte in einem separaten Prozess ausgeführt werden.
-def netzwerkprozess():
+def netzwerkprozess(konfig_pfad=None):
  
    
 
     ## @var config
     #  @brief Lädt Konfigurationsparameter wie Handle und Netzwerkports aus config.toml.
-    config = lade_config()
+    config = lade_config(konfig_pfad)
     # startet den Discovery-Dienst im Hintergrund
     threading.Thread(target=discovery_main, daemon=True).start()
 

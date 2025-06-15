@@ -65,12 +65,12 @@ def nutzerspeichern():
 ## sock	= Variable, die den UDP-Socket enthält
 ## bind()	= Methode, um dem Socket eine Adresse (IP + Port) zu geben
 ## ('', DISCOVERY_PORT) = '' bedeutet: alle lokalen IP-Adressen, Port kommt aus der Konfigurationsdatei
-try:
-  sock.bind(('', DISCOVERY_PORT))
-  print(f"Discovery-Dienst läuft und hört auf {DISCOVERY_PORT}... ")
+  try:
+    sock.bind(('', DISCOVERY_PORT))
+    print(f"Discovery-Dienst läuft und hört auf {DISCOVERY_PORT}... ")
   except OSError:
-        print(f"[INFO] Discovery-Dienst läuft bereits auf Port {DISCOVERY_PORT} – kein erneuter Start.")
-        return  # bricht Funktion ab → kein zweiter Listener startet
+    print(f"[INFO] Discovery-Dienst läuft bereits auf Port {DISCOVERY_PORT} – kein erneuter Start.")
+    return  # bricht Funktion ab → kein zweiter Listener startet
 
 
   while True:

@@ -3,6 +3,7 @@ handle = "Jana"              # Benutzername im Chat
 port = 5000                       # Portbereich, auf dem der Client Nachrichten empfängt
 whoisport = 4000                  # Port für Broadcasts vom Discovery-Dienst
 autoreply = "Bitte nicht stoeren"  # Automatische Antwort im Abwesenheitsmodus
+autoreply_aktiv=false
 imagepath = "images/" 
 [network]
 whoisdiscoveryport = 4000

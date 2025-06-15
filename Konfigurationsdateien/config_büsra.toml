@@ -3,6 +3,7 @@ handle = "Büsra"              # Benutzername im Chat
 port = 5000                       # Portbereich, auf dem der Client Nachrichten empfängt
 whoisport = 4000                  # Port für Broadcasts vom Discovery-Dienst
 autoreply = "Bin arbeiten."  # Automatische Antwort im Abwesenheitsmodus
+autoreply_aktiv=true
 imagepath = "images/" 
 [network]
 whoisdiscoveryport = 4000

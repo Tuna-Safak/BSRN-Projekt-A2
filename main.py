@@ -33,6 +33,7 @@ from UI_utils import (
 
 from netzwerkprozess import (
     send_join, 
+    netzwerkprozess,
     send_leave, 
     sendMSG, 
     sendIMG, 
@@ -76,6 +77,7 @@ def main():
     #ui_utils
     config = lade_config(konfig_pfad)
     #interface
+    netzwerkprozess(konfig_pfad)
     
     #main
     port, nutzer_sock = registriere_neuen_nutzer(handle,config)

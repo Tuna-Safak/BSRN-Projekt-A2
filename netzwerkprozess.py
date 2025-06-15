@@ -129,7 +129,7 @@ def receive_MSG(sock, config):
         text = daten.decode().strip()
         print(f"Nachricht von {addr}: {text}")
 
-        teile = nachricht.strip().split(" ")
+        teile = text.strip().split(" ")
         if len(teile) == 0:
             print("Leere Nachricht")
             continue

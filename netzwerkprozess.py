@@ -104,16 +104,30 @@ def handle_leave(name):
 
 
 # -------------Nachricht senden-----------------
-def sendMSG (sock, config, handle, empfaenger_handle, text):
-    if empfaenger_handle not in gebe_nutzerliste_zurück():
+def sendMSG(sock, handle, empfaenger_handle, text):
+    nutzerliste = gebe_nutzerliste_zurück()
+
+    if empfaenger_handle not in nutzerliste:
         print("Empfänger nicht bekannt.")
-        print(f"Bekannte Nutzer: {gebe_nutzerliste_zurück()()}")
+        print(f"Bekannte Nutzer: {nutzerliste}")
         return
 
-    nachricht = f'MSG {handle} \"{text}\"\n'
-    ip, DISCOVERY_PORT = gebe_nutzerliste_zurück()[empfaenger_handle]
-    print(f"[SEND] → an {empfaenger_handle} @ {ip}:{DISCOVERY_PORT} → {text}")
-    sock.sendto(nachricht.encode(), (ip, DISCOVERY_PORT))
+    eintrag = nutzerliste[empfaenger_handle]
+
+    if len(eintrag) != 2:
+        print(f"[FEHLER] Eintrag für {empfaenger_handle} hat kein (ip, port)-Format: {eintrag}")
+        return
+
+    ip, port = eintrag
+    try:
+        port = int(port)
+    except ValueError:
+        print(f"[FEHLER] Port ist keine Zahl: {port}")
+        return
+
+    nachricht = f'MSG {handle} "{text}"\n'
+    print(f"[SEND] → an {empfaenger_handle} @ {ip}:{port} → {text}")
+    sock.sendto(nachricht.encode(), (ip, port))
 
 
 # -------------Nachricht verarbeiten und formatieren-----------------
@@ -152,7 +166,9 @@ def receive_MSG(sock, config):
 
             if config.get("autoreply_aktiv", False):
                 autoreply_text = config.get("autoreply", "Ich bin gerade nicht da.")
-                sendMSG(sock, config["handle"], absender_handle, autoreply_text)
+                handle = config["client"]["handle"]
+                sendMSG(sock, handle, absender_handle, autoreply_text)
+
 
         elif befehl == "IMG" and len(teile) == 3:
             try:
@@ -331,13 +347,14 @@ def netzwerkprozess():
 
             ## @var teile
             #  @brief Aufgesplitteter Befehl (z. B. ["MSG", "Bob", "Hallo"])
-            teile = daten.split(" ", 2)
+            teile = daten.strip().split(" ", 2)  # WICHTIG!
 
             # Behandelt den MSG-Befehl und leitet ihn per UDP an den Ziel-Client weiter
             if teile[0] == "MSG":
                 _, empfaenger, text = teile
-                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-                sendMSG(sock, config["handle"], empfaenger, text)
+                handle = config["client"]["handle"]
+                sendMSG(sock, handle, empfaenger, text)
+
 
             # Behandelt den IMG-Befehl und leitet das Bild weiter
             elif teile[0] == "IMG":

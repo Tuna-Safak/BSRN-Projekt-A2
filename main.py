@@ -69,9 +69,7 @@ def sende_befehl_an_netzwerkprozess(befehl: str):
 #  @brief ruft Funktionen aus den importierten Datei auf
 #  @details lädt das Menü und verwaltet den Ablauf
 def main():
-    # 1. Starte Discovery separat
-    discovery_process = Process(target=discovery_main)
-    discovery_process.start()
+    # nutzernamen abfragen
     handle = nutzernamen_abfragen()
     # Dateipfad zusammenbauen
     konfig_pfad = f"Konfigurationsdateien/config_{handle.lower()}.toml" 

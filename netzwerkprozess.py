@@ -13,9 +13,9 @@ import threading
 import toml
 import os
 from UI_utils import lade_config, finde_freien_port
-from discovery import nutzerspeichern, gebe_nutzerliste_zurück
+from discovery import nutzerspeichern, gebe_nutzerliste_zurück, discovery_main
 # damit TCP und UDP seperat laufen können 
-import threading
+
 
 # Lade die Konfiguration aus config.toml
 config = lade_config()
@@ -306,7 +306,7 @@ def netzwerkprozess():
     #  @brief Lädt Konfigurationsparameter wie Handle und Netzwerkports aus config.toml.
     config = lade_config()
     # startet den Discovery-Dienst im Hintergrund
-    threading.Thread(target=nutzerspeichern, daemon=True).start()
+    threading.Thread(target=discovery_main, daemon=True).start()
 
     ## @var tcp_server
     #  @brief Lokaler TCP-Server-Socket für IPC zwischen UI und Netzwerkprozess.

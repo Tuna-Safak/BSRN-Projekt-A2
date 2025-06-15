@@ -77,7 +77,7 @@ def main():
     #ui_utils
     config = lade_config(konfig_pfad)
     #interface
-    netzwerkprozess(konfig_pfad)
+    #netzwerkprozess(konfig_pfad)
     
     #main
     port, nutzer_sock = registriere_neuen_nutzer(handle,config)

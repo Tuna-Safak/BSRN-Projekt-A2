@@ -18,7 +18,7 @@ from discovery import nutzerspeichern, gebe_nutzerliste_zurück, discovery_main
 
 
 # Lade die Konfiguration aus config.toml
-#config = lade_config()
+config = lade_config()
 
 # Discovery DISCOVERY_PORT aus Konfig
 DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]

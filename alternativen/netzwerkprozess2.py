@@ -97,7 +97,7 @@ def receive_MSG(sock, config):
     while True:
         daten, addr = sock.recvfrom(1024)
         text = daten.decode().strip()
-        teile = text.split(' ', 2)
+        teile = nachricht.strip().split(" ")
         if len(teile) == 0:
             continue
         befehl = teile[0]

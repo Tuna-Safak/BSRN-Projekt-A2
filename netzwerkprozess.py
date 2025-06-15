@@ -129,18 +129,18 @@ def receive_MSG(sock, config):
         text = daten.decode().strip()
         print(f"Nachricht von {addr}: {text}")
 
-        teile = text.split(' ', 2)
+        teile = nachricht.strip().split(" ")
         if len(teile) == 0:
             print("Leere Nachricht")
             continue
 
         befehl = teile[0]
 
-        if befehl == "JOIN" and len(teile) >= 3:
+        if teile[0] == "JOIN" and len(teile) >= 3:
             name = teile[1]
             port = teile[2]
-            ip = teile[3] if len(teile) == 4 else None
-            handle_join(name, port, addr, ip)
+            ip = teile[3] if len(teile) >= 4 else addr[0]
+            DISCOVERY_PORT = int(port)  
 
         elif befehl == "LEAVE" and len(teile) == 2:
             handle_leave(teile[1])

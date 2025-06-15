@@ -129,19 +129,12 @@ def sendMSG(sock, handle, empfaenger_handle, text):
     print(f"[SEND] → an {empfaenger_handle} @ {ip}:{port} → {text}")
     sock.sendto(nachricht.encode(), (ip, port))
 
-
-# -------------Nachricht verarbeiten und formatieren-----------------
-def handle_MSG(sender, text):
-    # Zeigt eine empfangene Nachricht schön formatiert im Terminal an.
-    clean_text = text.strip('"')  # Entferne äußere Anführungszeichen
-    print(f" Nachricht von {sender}: {clean_text}")
-
 # -------------Nachricht empfangen-----------------
 def receive_MSG(sock, config):
     while True:
         daten, addr = sock.recvfrom(1024)
         text = daten.decode().strip()
-        print(f"Nachricht von {addr}: {text}")
+
 
         teile = text.strip().split(" ")
         if len(teile) == 0:
@@ -159,10 +152,10 @@ def receive_MSG(sock, config):
         elif befehl == "LEAVE" and len(teile) == 2:
             handle_leave(teile[1])
 
-        elif befehl == "MSG" and len(teile) == 3:
+        elif befehl == "MSG" and len(teile) >= 3:
             absender_handle = teile[1]
-            nachricht = teile[2]
-            print(f"Nachricht von {absender_handle}: {nachricht}\n> ", end="")
+            nachricht =  " ".join(teile[2:])  # alles ab dem dritten Wort
+            print(f"\nNachricht von {absender_handle}: {nachricht}\n> ", end="")
 
             if config.get("autoreply_aktiv", False):
                 autoreply_text = config.get("autoreply", "Ich bin gerade nicht da.")

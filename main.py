@@ -170,7 +170,7 @@ def main():
             else:
                 sende_befehl_an_netzwerkprozess(f"LEAVE {handle}")
                 ist_im_chat = False
-            continue
+                break
 
             
        

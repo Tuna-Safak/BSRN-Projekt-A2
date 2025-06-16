@@ -6,6 +6,7 @@ autoreply = "Bin arbeiten."  # Automatische Antwort im Abwesenheitsmodus
 autoreply_aktiv=true
 imagepath = "images/" 
 [network]
+bildport = 7000
 whoisdiscoveryport = 4000
 port_min = 5000
 port_max = 5010

@@ -395,6 +395,7 @@ def netzwerkprozess(konfig_pfad=None):
     ## @var tcp_server
     #  @brief Lokaler TCP-Server-Socket für IPC zwischen UI und Netzwerkprozess.
     tcp_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tcp_server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     tcp_server.bind(("localhost", 6001))
     tcp_server.listen(1)
 

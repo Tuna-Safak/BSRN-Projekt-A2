@@ -53,6 +53,7 @@ def get_socket():
 def send_join(handle, port):
     # allen im Chat wird mitgeteilt, dass ich mich im Chat befinde
     ip = finde_lokale_ip()
+    bildport = config["network"]["bildport"]  # <<< NEU
     nachricht = f"\nJOIN {handle} {port}\n"
     sock.sendto(nachricht.encode('utf-8'), ("255.255.255.255", DISCOVERY_PORT))
   
@@ -66,10 +67,14 @@ def send_join(handle, port):
 def handle_join(name, DISCOVERY_PORT, addr, ip=None):
     if ip is None:
         ip = addr[0]
+        teile = name.split(" ")
+        handle = teile[0]
+        bildport = teile[3] if len(teile) > 3 else "7000"  # Fallback
 #def handle_join(name, DISCOVERY_PORT, addr):
     # Verarbeitung einer JOIN-Nachricht, um neuen Nutzer zu speichern
    # ip = addr[0]
     DISCOVERY_PORT = int(DISCOVERY_PORT)
+    gebe_nutzerliste_zurück()[handle] = (ip, int(bildport))
 
     if name not in gebe_nutzerliste_zurück():
         gebe_nutzerliste_zurück()[name] = (ip, DISCOVERY_PORT)
@@ -316,13 +321,13 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     img_header = f"IMG {handle_empfaenger} {groesse}\n"
 
     # IP-Adresse und DISCOVERY_PORT des Empfängers aus dem Nutzerverzeichnis holen
-    ip, port = gebe_nutzerliste_zurück()[handle_empfaenger]
-    port = int(port)
+    ip, bildport = gebe_nutzerliste_zurück()[handle_empfaenger]
+    bildport = int(bildport)
 
     try:
         # TCP-Verbindung zum Empfänger herstellen
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tcp_sock:
-            tcp_sock.connect((ip, port))
+            tcp_sock.connect((ip, bildport))
 
             # Header senden (als UTF-8)
             tcp_sock.sendall(img_header.encode('utf-8'))

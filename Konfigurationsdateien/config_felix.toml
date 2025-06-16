@@ -1,0 +1,7 @@
+[client]
+name = "felix"
+autoreply = ""
+
+[network]
+port_min = 5000
+port_max = 5100

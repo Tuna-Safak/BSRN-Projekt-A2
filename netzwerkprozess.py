@@ -129,61 +129,133 @@ def sendMSG(sock, handle, empfaenger_handle, text):
     print(f"[SEND] → an {empfaenger_handle} @ {ip}:{port} → {text}")
     sock.sendto(nachricht.encode('utf-8'), (ip, port))
 
-# -------------Nachricht empfangen-----------------
+# # -------------Nachricht empfangen-----------------
+# def receive_MSG(sock, config):
+#     while True:
+#         daten, addr = sock.recvfrom(1024)
+#         text = daten.decode('utf-8').strip()
+
+
+#         teile = text.strip().split(" ")
+#         if len(teile) == 0:
+#             print("Leere Nachricht")
+#             continue
+
+#         befehl = teile[0]
+
+#         if teile[0] == "JOIN" and len(teile) >= 3:
+#             name = teile[1]
+#             port = teile[2]
+#             ip = teile[3] if len(teile) >= 4 else addr[0]
+#             DISCOVERY_PORT = int(port)  
+
+#         elif befehl == "LEAVE" and len(teile) == 2:
+#             handle_leave(teile[1])
+
+#         elif befehl == "MSG" and len(teile) >= 3:
+#             absender_handle = teile[1]
+#             nachricht =  " ".join(teile[2:])  # alles ab dem dritten Wort
+#             print(f"\nNachricht von {absender_handle}: {nachricht}\n> ", end="")
+
+#             if config.get("autoreply_aktiv", False):
+#                 autoreply_text = config.get("autoreply", "Ich bin gerade nicht da.")
+#                 handle = config["client"]["handle"]
+#                 sendMSG(sock, handle, absender_handle, autoreply_text)
+
+
+#         elif befehl == "IMG" and len(teile) == 3:
+#             try:
+#                 handle_IMG(sock, teile, addr)
+#             except Exception as e:
+#                 print(f"Fehler beim Bildempfang: {e}")
+   
+   
+#         elif befehl == "KNOWNUSERS" and len(teile) == 2:
+#             eintraege = teile[1].split(", ")
+#             nutzerliste = gebe_nutzerliste_zurück()
+#             for eintrag in eintraege:
+#                 try:
+#                      handle, ip, port = eintrag.strip().split(" ")
+#                      nutzerliste[handle] = (ip, int(port))
+#                      print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
+#                 except ValueError:
+#                     print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
+
+#         else:
+#             print(f" Unbekannte Nachricht: {text}")
+
+
 def receive_MSG(sock, config):
+    """
+    Empfängt Nachrichten vom UDP-Socket und verarbeitet sie.
+    """
     while True:
-        daten, addr = sock.recvfrom(1024)
-        text = daten.decode('utf-8').strip()
+        try:
+            # Empfängt Daten vom Socket
+            daten, addr = sock.recvfrom(1024)  # Daten und Adresse des Absenders
+            text = daten.decode('utf-8').strip()
 
+            # Teile der Nachricht aufspalten
+            teile = text.strip().split(" ")
+            if len(teile) == 0:
+                print("Leere Nachricht")
+                continue
 
-        teile = text.strip().split(" ")
-        if len(teile) == 0:
-            print("Leere Nachricht")
-            continue
+            befehl = teile[0]
 
-        befehl = teile[0]
+            # Verarbeitung von JOIN-Nachrichten
+            if befehl == "JOIN" and len(teile) >= 3:
+                name = teile[1]
+                port = teile[2]
+                ip = teile[3] if len(teile) >= 4 else addr[0]
+                DISCOVERY_PORT = int(port)  
 
-        if teile[0] == "JOIN" and len(teile) >= 3:
-            name = teile[1]
-            port = teile[2]
-            ip = teile[3] if len(teile) >= 4 else addr[0]
-            DISCOVERY_PORT = int(port)  
+            # Verarbeitung von LEAVE-Nachrichten
+            elif befehl == "LEAVE" and len(teile) == 2:
+                handle_leave(teile[1])
 
-        elif befehl == "LEAVE" and len(teile) == 2:
-            handle_leave(teile[1])
+            # Verarbeitung von MSG-Nachrichten
+            elif befehl == "MSG" and len(teile) >= 3:
+                absender_handle = teile[1]
+                nachricht = " ".join(teile[2:])  # Alles ab dem dritten Wort
+                print(f"\nNachricht von {absender_handle}: {nachricht}\n> ", end="")
 
-        elif befehl == "MSG" and len(teile) >= 3:
-            absender_handle = teile[1]
-            nachricht =  " ".join(teile[2:])  # alles ab dem dritten Wort
-            print(f"\nNachricht von {absender_handle}: {nachricht}\n> ", end="")
+                if config.get("autoreply_aktiv", False):
+                    autoreply_text = config.get("autoreply", "Ich bin gerade nicht da.")
+                    handle = config["client"]["handle"]
+                    sendMSG(sock, handle, absender_handle, autoreply_text)
 
-            if config.get("autoreply_aktiv", False):
-                autoreply_text = config.get("autoreply", "Ich bin gerade nicht da.")
-                handle = config["client"]["handle"]
-                sendMSG(sock, handle, absender_handle, autoreply_text)
-
-
-        elif befehl == "IMG" and len(teile) == 3:
-            try:
-                handle_IMG(sock, teile, addr)
-            except Exception as e:
-                print(f"Fehler beim Bildempfang: {e}")
-   
-   
-        elif befehl == "KNOWNUSERS" and len(teile) == 2:
-            eintraege = teile[1].split(", ")
-            nutzerliste = gebe_nutzerliste_zurück()
-            for eintrag in eintraege:
+            # Verarbeitung von IMG-Nachrichten
+            elif befehl == "IMG" and len(teile) == 3:
                 try:
-                     handle, ip, port = eintrag.strip().split(" ")
-                     nutzerliste[handle] = (ip, int(port))
-                     print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
-                except ValueError:
-                    print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
+                    handle_IMG(sock, teile, addr)
+                except Exception as e:
+                    print(f"Fehler beim Bildempfang: {e}")
 
-        else:
-            print(f" Unbekannte Nachricht: {text}")
+            # Verarbeitung von KNOWNUSERS-Nachrichten
+            elif befehl == "KNOWNUSERS" and len(teile) == 2:
+                eintraege = teile[1].split(", ")
+                nutzerliste = gebe_nutzerliste_zurück()
+                for eintrag in eintraege:
+                    try:
+                         handle, ip, port = eintrag.strip().split(" ")
+                         nutzerliste[handle] = (ip, int(port))
+                         print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
+                    except ValueError:
+                         print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
 
+            else:
+                print(f"Unbekannte Nachricht: {text}")
+
+        except ConnectionResetError as e:
+            # Dieser Fehler tritt auf, wenn die Verbindung vom Remote Host geschlossen wurde
+            print(f"Fehler: Verbindung vom Remote Host geschlossen. {e}")
+            break  # Verbindung unterbrochen, daher Abbruch der Schleife
+
+        except Exception as e:
+            # Alle anderen unerwarteten Fehler werden hier abgefangen
+            print(f"Ein unerwarteter Fehler ist aufgetreten: {e}")
+            break  # Abbruch bei unerwartetem Fehler
 
 
 # -------------Bild senden-----------------

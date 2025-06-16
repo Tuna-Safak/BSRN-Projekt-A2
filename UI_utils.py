@@ -31,6 +31,33 @@ def lade_config(pfad=None):
     else:
         raise FileNotFoundError("config.toml nicht gefunden.") 
 
+def erstelle_neue_config(handle):
+    """
+    @brief Erstellt eine neue Konfigurationsdatei für den Benutzer, falls sie noch nicht existiert.
+    
+    @param handle: Der Benutzername für den die Konfiguration erstellt wird.
+    """
+    # Standard-Konfigurationswerte für den Benutzer
+    config = {
+        "client": {
+            "name": handle,
+            "autoreply": ""  # Standardwert für autoreply
+        },
+        "network": {
+            "port_min": 5000,
+            "port_max": 5100
+        }
+    }
+
+    # Dateipfad für die neue Konfigurationsdatei
+    konfig_pfad = f"Konfigurationsdateien/config_{handle.lower()}.toml"
+
+    # Speichern der Konfigurationsdatei im TOML-Format
+    with open(konfig_pfad, "w") as f:
+        toml.dump(config, f)
+    
+    print(f"Neue Konfigurationsdatei für {handle} wurde erstellt.")   
+
 def finde_freien_port(config):
 
     # config ist ein Dictionary mit Werten aus der config.toml.
@@ -47,6 +74,7 @@ def finde_freien_port(config):
     port_min = config["network"].get("port_min")
     port_max = config["network"].get("port_max")
 #Holt die Konfigurationswerte port_min und port_max aus dem config-Dictionary.
+
 
     if port_min is None or port_max is None:
         raise ValueError("Konfigurationswerte 'port_min' und 'port_max' fehlen.")
@@ -72,6 +100,8 @@ def finde_freien_port(config):
       except OSError:
         continue
         # Wenn der Bind-Vorgang fehlschlägt, wird ein OSError ausgelöst und die Schleife wird fortgesetzt.
+
+        
 
 
     raise RuntimeError("Kein freier UDP-Port im Bereich {}–{} gefunden.".format(port_min, port_max))

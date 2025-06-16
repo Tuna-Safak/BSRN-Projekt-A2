@@ -226,11 +226,8 @@ def receive_MSG(sock, config):
                     sendMSG(sock, handle, absender_handle, autoreply_text)
 
             # Verarbeitung von IMG-Nachrichten
-            elif befehl == "IMG" and len(teile) == 3:
-                try:
-                    handle_IMG(sock, teile, addr)
-                except Exception as e:
-                    print(f"Fehler beim Bildempfang: {e}")
+            elif befehl == "IMG":
+                continue
 
             # Verarbeitung von KNOWNUSERS-Nachrichten
             elif befehl == "KNOWNUSERS" and len(teile) == 2:

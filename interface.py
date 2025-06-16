@@ -100,7 +100,7 @@ def autoreply_umschalten(config, pfad):
     
     neu = input("Neuer Autoreply-Text (leer für deaktivieren): ")
     config["client"]["autoreply"] = neu
-   #config["client"]["autoreply_aktiv"] = bool(neu.strip())  # Aktiv, wenn Text vorhanden
+    config["client"]["autoreply_aktiv"] = bool(neu.strip())  # Aktiv, wenn Text vorhanden
     print(f"[INFO] Speichere Konfiguration in: {pfad}")
 
     # >>> Änderung hier: benutze den tatsächlich geladenen Pfad statt festem Dateinamen

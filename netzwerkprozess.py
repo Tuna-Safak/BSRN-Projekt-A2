@@ -53,9 +53,9 @@ def get_socket():
 def send_join(handle, port):
     # allen im Chat wird mitgeteilt, dass ich mich im Chat befinde
     ip = finde_lokale_ip()
-    nachricht = f"JOIN {handle} {port}\n"
+    nachricht = f"\nJOIN {handle} {port}\n"
     sock.sendto(nachricht.encode('utf-8'), ("255.255.255.255", DISCOVERY_PORT))
-    print(f"[JOIN] Gesendet: {nachricht.strip()}")
+  
     
    # nachricht = f"JOIN {handle} {port}\n"
     # JOIN: ist der Befehl, der an alle anderen Computer im Netzwerk gesendet wird
@@ -81,16 +81,18 @@ def handle_join(name, DISCOVERY_PORT, addr, ip=None):
 
 # -------------Leave-Nachricht versenden-----------------
 def send_leave(handle_nutzername):
-    # allen im Chat wird mitgeteilt, dass ich den Chat verlasse (Nur Discovery)
     nachricht = f"LEAVE {handle_nutzername}\n"
     sock.sendto(nachricht.encode('utf-8'), ("255.255.255.255", DISCOVERY_PORT))
-    print(f"[LEAVE] Gesendet: {nachricht.strip()}")
 
-    # allen per Unicast zeigen das ich leave
+    eigene_ip = finde_lokale_ip()
+
     bekannte_nutzer = gebe_nutzerliste_zurück()
     for anderer_handle, (ip, port) in bekannte_nutzer.items():
-     sock.sendto(nachricht.encode('utf-8'), (ip, int(port)))
-     print(f"[LEAVE] Gesendet (Unicast) an {anderer_handle} @ {ip}:{port}")
+        if ip == eigene_ip:
+            continue  # Nicht an sich selbst senden
+        sock.sendto(nachricht.encode('utf-8'), (ip, int(port)))
+        print(f"[LEAVE] Gesendet (Unicast) an {anderer_handle} @ {ip}:{port}")
+
 
 # -------------LEAVE verarbeiten-----------------
 def handle_leave(name):
@@ -207,12 +209,22 @@ def receive_MSG(sock, config):
                 port = teile[2]
                 ip = teile[3] if len(teile) >= 4 else addr[0]
                 handle_join(name, port, addr, ip) 
-                print(f"[JOIN] {name} ist dem Chat beigetreten.")
+                print(f"\n[JOIN] {name} ist dem Chat beigetreten.")
 
             # Verarbeitung von LEAVE-Nachrichten
             elif befehl == "LEAVE" and len(teile) == 2:
-                handle_leave(teile[1])
-                print(f"[LEAVE] {teile[1]} hat den Chat verlassen.") 
+                absender_ip = addr[0]
+                absender_name = None
+                for name, (ip, _) in gebe_nutzerliste_zurück().items():
+                    if ip == absender_ip:
+                     absender_name = name
+                     break
+
+                if not absender_name:
+                    absender_name = teile[1]  # Fallback, falls IP nicht gefunden
+
+                handle_leave(absender_name)
+                print(f"\n[LEAVE] {absender_name} hat den Chat verlassen.")
 
             # Verarbeitung von MSG-Nachrichten
             elif befehl == "MSG" and len(teile) >= 3:
@@ -392,6 +404,7 @@ def netzwerkprozess(konfig_pfad=None):
     ## @var config
     #  @brief Lädt Konfigurationsparameter wie Handle und Netzwerkports aus config.toml.
     config = lade_config(konfig_pfad)
+    handle = config["client"]["handle"] 
     # startet den Discovery-Dienst im Hintergrund
     threading.Thread(target=discovery_main, daemon=True).start()
 
@@ -440,9 +453,7 @@ def netzwerkprozess(konfig_pfad=None):
                 send_join(handle, port)
 
             elif teile[0] == "LEAVE": 
-                send_leave(handle)
-            
-
+                send_leave(config["client"]["handle"])
 
             ## @brief Behandelt den WHO-Befehl vom UI-Prozess über TCP.
             #  @details Führt einen UDP-Broadcast mit "WHO" an alle Peers im LAN durch. 

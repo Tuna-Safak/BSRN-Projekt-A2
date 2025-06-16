@@ -56,6 +56,7 @@ def nutzernamen_abfragen():
     else:
         # Wenn kein '--handle' Argument vorhanden ist, Benutzernamen interaktiv abfragen
         handle = input("Bitte Benutzernamen eingeben: ")
+        
 
     # Pfad zur Konfigurationsdatei des Benutzers
     konfig_pfad = f"Konfigurationsdateien/config_{handle.lower()}.toml"

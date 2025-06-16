@@ -86,7 +86,20 @@ def eingabe_bild():
 # @return Die Config-Datei wird verändert
 #gibt erst die aktuelle nachricht aus und fragt dann nach einer neuen
 #nachricht in der Config einsehbar
-def autoreply_umschalten(config, handle):
+def autoreply_umschalten(config, pfad):
+    aktuell = config.get("client", {}).get("autoreply", "")  # Liest aktuellen Autoreply
+    print(f"Aktueller Autoreply-Text: '{aktuell}'")
+    
+    neu = input("Neuer Autoreply-Text (leer für deaktivieren): ")
+    config["client"]["autoreply"] = neu
+    config["client"]["autoreply_aktiv"] = bool(neu.strip())  # Aktiv, wenn Text vorhanden
+
+    # >>> Änderung hier: benutze den tatsächlich geladenen Pfad statt festem Dateinamen
+    with open(pfad, "w") as f:
+        toml.dump(config, f)
+
+    return config
+'''def autoreply_umschalten(config, handle):
     aktuell = config.get("client", {}).get("autoreply", "")#ließt den Wert von autoreply aus. Wenn er nicht vorhalen ist, kommt ein leerer
     print(f"Aktueller Autoreply-Text: '{aktuell}'")
     neu = input("Neuer Autoreply-Text (leer für deaktivieren): ")
@@ -95,4 +108,4 @@ def autoreply_umschalten(config, handle):
     pfad = f"Konfigurationsdateien/config_{handle}.toml"
     with open(pfad, "w") as f:
         toml.dump(config, f)
-    return config
+    return config'''

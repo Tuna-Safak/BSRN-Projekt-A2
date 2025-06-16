@@ -43,7 +43,6 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 # Binde an den freien DISCOVERY_PORT
 sock.bind(('', DISCOVERY_PORT))
-print(f"[INFO] (Discovery-) Socket gebunden an DISCOVERY_PORT {DISCOVERY_PORT}")
 
 # Gib den Socket an andere Module zurück, falls gewünscht
 def get_socket():
@@ -204,6 +203,7 @@ def receive_MSG(sock, config):
     """
     Empfängt Nachrichten vom UDP-Socket und verarbeitet sie.
     """
+     
     while True:
         try:
             # Empfängt Daten vom Socket
@@ -216,12 +216,17 @@ def receive_MSG(sock, config):
                 continue
 
             befehl = teile[0]
+            eigene_ip = finde_lokale_ip()
+            eigener_handle = config["client"]["handle"]
 
             # Verarbeitung von JOIN-Nachrichten
             if befehl == "JOIN" and len(teile) >= 3:
                 name = teile[1]
                 port = teile[2]
                 ip = teile[3] if len(teile) >= 4 else addr[0]
+                if name == eigener_handle and ip == eigene_ip:
+                    continue
+
                 handle_join(name, port, addr, ip) 
                 print(f"\n[JOIN] {name} ist dem Chat beigetreten.")
 

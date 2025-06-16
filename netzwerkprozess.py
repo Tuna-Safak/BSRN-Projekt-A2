@@ -286,12 +286,6 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     # wichtig für den Empfänger damit er weiß wie viele Daten kommen
     groesse = len(bilddaten)
 
-
-
-    if groesse > 1400:
-        print("Bild zu groß für eine UDP-Nachricht max 1400 Bytes")
-        return
-
     # Nachricht im SLCP-Format vorbereiten: IMG <Empfänger> <Größe>
     # das ist die Steuerzeile, die vor dem Bild gesendet wird
     # f-String: setzt automatisch die Variablen ein
@@ -302,15 +296,23 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     ip, port = gebe_nutzerliste_zurück()[handle_empfaenger]
     port = int(port)
 
-    # Erste Nachricht senden: den IMG-Befehl mit Empfängername und Bildgröße
-    # encode() wandelt den Text in Bytes um, damit er über das Netzwerk geschickt werden kann
-    sock.sendto(img_header.encode(), (ip, port))
+    try:
+        # TCP-Verbindung zum Empfänger herstellen
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as tcp_sock:
+            tcp_sock.connect((ip, port))
 
-    # Zweite Nachricht: das eigentliche Bild senden (als Binärdaten)
-    sock.sendto(bilddaten, (ip, port))
+            # Header senden (als UTF-8)
+            tcp_sock.sendall(img_header.encode('utf-8'))
 
-    # Bestätigung ausgeben, dass das Bild erfolgreich gesendet wurde
-    print(f"Bild an {handle_empfaenger} gesendet ({groesse} Bytes)")
+            # Bilddaten senden (als Binärdaten)
+            tcp_sock.sendall(bilddaten)
+
+        print(f"Bild an {handle_empfaenger} gesendet ({groesse} Bytes)")
+
+    except Exception as e:
+        print(f"[FEHLER] TCP-Bildübertragung fehlgeschlagen: {e}")
+   
+   
 
 # -------------Bild empfangen-----------------
 # @brief verarbeitet eine IMG-Nachricht: liest Bilddaten ein und speichert sie als datei

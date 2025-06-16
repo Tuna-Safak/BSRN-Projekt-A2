@@ -41,7 +41,8 @@ def erstelle_neue_config(handle):
     config = {
         "client": {
             "name": handle,
-            "autoreply": ""  # Standardwert für autoreply
+            "autoreply": "",  # Standardwert für autoreply
+            "autoreply_aktiv": False
         },
         "network": {
             "port_min": 5000,

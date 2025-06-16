@@ -91,6 +91,7 @@ def autoreply_umschalten(config, handle):
     print(f"Aktueller Autoreply-Text: '{aktuell}'")
     neu = input("Neuer Autoreply-Text (leer für deaktivieren): ")
     config["client"]["autoreply"] = neu #greift auf die zeile autoreply in der config zu und ändert sie
+    config["client"]["autoreply_aktiv"] = bool(neu.strip())  
     pfad = f"Konfigurationsdateien/config_{handle}.toml"
     with open(pfad, "w") as f:
         toml.dump(config, f)

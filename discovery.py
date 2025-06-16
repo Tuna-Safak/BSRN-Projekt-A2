@@ -57,7 +57,7 @@ __all__ = ["sende_join", "sende_leave", "sende_who"]
 
 ## discovery prozess starten
 def discovery_main():
-    print("[INFO] Discovery-Prozess gestartet.")
+    print("[INFO] Discovery-Prozess gestartet. Läuft auf Port 4000")
     nutzerspeichern()
 
 def nutzerspeichern(): 
@@ -67,7 +67,6 @@ def nutzerspeichern():
 ## ('', DISCOVERY_PORT) = '' bedeutet: alle lokalen IP-Adressen, Port kommt aus der Konfigurationsdatei
   try:
     sock.bind(('', DISCOVERY_PORT))
-    print(f"Discovery-Dienst läuft und hört auf {DISCOVERY_PORT}... ")
   except OSError:
     print(f"[INFO] Discovery-Dienst läuft bereits auf Port {DISCOVERY_PORT} – kein erneuter Start.")
     return  # bricht Funktion ab → kein zweiter Listener startet

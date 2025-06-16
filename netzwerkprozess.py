@@ -183,6 +183,20 @@ def sendMSG(sock, handle, empfaenger_handle, text):
 #         else:
 #             print(f" Unbekannte Nachricht: {text}")
 
+    # >>> NEU: TCP-Server für eingehende Bilddaten
+def starte_bildserver(config):
+    bild_port = config["network"]["bildport"]
+    tcp_bildsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tcp_bildsock.bind(('', bild_port))
+    tcp_bildsock.listen(5)
+    print(f"[INFO] (Bildserver) lauscht auf TCP-Port {bild_port}")
+
+    while True:
+        conn, addr = tcp_bildsock.accept()
+        daten = conn.recv(1024).decode('utf-8').strip()
+        teile = daten.split(" ")
+        if teile[0] == "IMG":
+            handle_IMG(conn, teile, addr)
 
 def receive_MSG(sock, config):
     """

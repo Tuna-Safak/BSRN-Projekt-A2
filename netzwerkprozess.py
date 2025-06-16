@@ -319,7 +319,7 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
 # @param sock Der UDP-Socket, über den das Bild empfangen wird
 # @param teile Die Teile der empfangenen Textnachricht (z. B. ["IMG", "empfänger", "Größe"])
 # @param addr Die Adresse (IP, DISCOVERY_PORT) des Absenders
-def handle_IMG(sock, teile, addr):
+def handle_IMG(conn, teile, addr):
     # Prüfen, ob genug Teile in der Nachricht sind
     if len(teile) != 3:
         print("Nachricht ist nicht vollständig.")
@@ -337,13 +337,16 @@ def handle_IMG(sock, teile, addr):
         return
 
     # Die eigentlichen Bilddaten empfangen 
-    # recvfrom() wartet auf ein weiteres UDP-Paket
-    # Die Anzahl groesse + 1024 gibt einen Puffer mit dazu, falls z. B. mehr Daten ankommen
-    # bilddaten enthält die empfangenen Binärdaten 
-    bilddaten, addr2 = sock.recvfrom(groesse + 1024)  # etwas Puffer
+     # TCP: Bilddaten stückweise empfangen
+    bilddaten = b''
+    while len(bilddaten) < groesse:
+        chunk = conn.recv(groesse - len(bilddaten))  # >>> NEU: TCP-Streaming
+        if not chunk:
+            break
+        bilddaten += chunk
 
-    # IP-Adresse vom Absender herausfinden bzw speichern
-    sender_ip = addr[0]
+    # Absender-IP aus addr holen
+     sender_ip = addr[0]
 
     # Absendernamen aus der IP-Adresse ermitteln
     # durchsucht known_users

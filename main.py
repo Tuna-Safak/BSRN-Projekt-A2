@@ -74,7 +74,7 @@ def sende_befehl_an_netzwerkprozess(befehl: str):
 #  @details lädt das Menü und verwaltet den Ablauf
 def main():
     # boolean ob jmd schon im chat ist 
-    ist_im_chat = False
+   
     # nutzernamen abfragen
     handle = nutzernamen_abfragen()
     # Dateipfad zusammenbauen
@@ -95,11 +95,9 @@ def main():
         #kommt aus dem interface
         auswahl = menue()
         if auswahl == "0":
-            if ist_im_chat:
-                print("Du bist bereits dem Chat beigetreten.")
-            else:
-                sende_befehl_an_netzwerkprozess(f"\nJOIN {handle} {port}")
-                ist_im_chat = True
+        
+            sende_befehl_an_netzwerkprozess(f"\nJOIN {handle} {port}")
+            
             continue
         
                 ## @brief Behandelt Menüauswahl "1" – WHO-Befehl senden und bekannte Nutzer anzeigen.
@@ -165,12 +163,8 @@ def main():
                 print(f"  {k}: {v}")
             continue    
         elif auswahl == "6":
-            if not ist_im_chat:
-                print("Du bist aktuell nicht im Chat.")
-            else:
                 sende_befehl_an_netzwerkprozess(f"LEAVE {handle}")
-                ist_im_chat = False
-            break
+                break
 
             
        

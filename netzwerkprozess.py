@@ -346,7 +346,7 @@ def handle_IMG(conn, teile, addr):
         bilddaten += chunk
 
     # Absender-IP aus addr holen
-     sender_ip = addr[0]
+    sender_ip = addr[0]
 
     # Absendernamen aus der IP-Adresse ermitteln
     # durchsucht known_users

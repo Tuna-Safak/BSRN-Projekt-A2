@@ -41,6 +41,9 @@ from netzwerkprozess import (
     get_socket 
 )
 
+config = lade_config()
+threading.Thread(target=receive_MSG, args=(get_socket(), config), daemon=True).start()
+
 #registriere_neuen_nutzer
 
 def registriere_neuen_nutzer(handle,config):
@@ -83,12 +86,7 @@ def main():
     
     #main
     port, nutzer_sock = registriere_neuen_nutzer(handle,config)
-    #message_handler
-    # @para sock
-    # @para config
-    # programm läuft im hintergrund
-    ## daemon=true schließt die funktion automatisch nach schließung des Programms
-    threading.Thread(target=receive_MSG, args=(nutzer_sock, config), daemon=True).start()
+   
 
     print(f"Willkommen, {handle}! Dein Port: {port}")
 
@@ -100,7 +98,7 @@ def main():
             if ist_im_chat:
                 print("Du bist bereits dem Chat beigetreten.")
             else:
-                sende_befehl_an_netzwerkprozess(f"JOIN {handle} {port}")
+                sende_befehl_an_netzwerkprozess(f"\nJOIN {handle} {port}")
                 ist_im_chat = True
             continue
         

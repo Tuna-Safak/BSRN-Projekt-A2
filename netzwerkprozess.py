@@ -73,7 +73,6 @@ def handle_join(name, DISCOVERY_PORT, addr, ip=None):
 
     if name not in gebe_nutzerliste_zurück():
         gebe_nutzerliste_zurück()[name] = (ip, DISCOVERY_PORT)
-        print(f"{name} ist dem Chat beigetreten – {ip}:{DISCOVERY_PORT}")
     else:
         gebe_nutzerliste_zurück()[name] = (ip, DISCOVERY_PORT)
         print(f"{name} erneut beigetreten – Daten aktualisiert: {ip}:{DISCOVERY_PORT}")
@@ -194,7 +193,6 @@ def receive_MSG(sock, config):
             # Empfängt Daten vom Socket
             daten, addr = sock.recvfrom(1024)  # Daten und Adresse des Absenders
             text = daten.decode('utf-8').strip()
-
             # Teile der Nachricht aufspalten
             teile = text.strip().split(" ")
             if len(teile) == 0:
@@ -208,11 +206,13 @@ def receive_MSG(sock, config):
                 name = teile[1]
                 port = teile[2]
                 ip = teile[3] if len(teile) >= 4 else addr[0]
-                DISCOVERY_PORT = int(port)  
+                handle_join(name, port, addr, ip) 
+                print(f"[JOIN] {name} ist dem Chat beigetreten.")
 
             # Verarbeitung von LEAVE-Nachrichten
             elif befehl == "LEAVE" and len(teile) == 2:
                 handle_leave(teile[1])
+                print(f"[LEAVE] {teile[1]} hat den Chat verlassen.") 
 
             # Verarbeitung von MSG-Nachrichten
             elif befehl == "MSG" and len(teile) >= 3:
@@ -493,5 +493,10 @@ def netzwerkprozess(konfig_pfad=None):
 
 
 if __name__ == "__main__":
+     #message_handler
+    # @para sock
+    # @para config
+    # programm läuft im hintergrund
+    ## daemon=true schließt die funktion automatisch nach schließung des Programms
     threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
     netzwerkprozess()

@@ -1,0 +1,8 @@
+[client]
+name = ""
+autoreply = ""
+autoreply_aktiv = false
+
+[network]
+port_min = 5000
+port_max = 5100

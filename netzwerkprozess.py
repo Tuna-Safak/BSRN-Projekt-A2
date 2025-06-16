@@ -238,11 +238,8 @@ def receive_MSG(sock, config):
                     sendMSG(sock, handle, absender_handle, autoreply_text)
 
             # Verarbeitung von IMG-Nachrichten
-            elif befehl == "IMG" and len(teile) == 3:
-                try:
-                    handle_IMG(sock, teile, addr)
-                except Exception as e:
-                    print(f"Fehler beim Bildempfang: {e}")
+            elif befehl == "IMG":
+                continue
 
             # Verarbeitung von KNOWNUSERS-Nachrichten
             elif befehl == "KNOWNUSERS" and len(teile) == 2:
@@ -405,12 +402,15 @@ def netzwerkprozess(konfig_pfad=None):
     #  @brief Lädt Konfigurationsparameter wie Handle und Netzwerkports aus config.toml.
     config = lade_config(konfig_pfad)
     handle = config["client"]["handle"] 
+    # >>> NEU: Starte TCP-Server für Bildempfang (wichtig für TCP!)
+    threading.Thread(target=starte_bildserver, args=(config,), daemon=True).start()
     # startet den Discovery-Dienst im Hintergrund
     threading.Thread(target=discovery_main, daemon=True).start()
 
     ## @var tcp_server
     #  @brief Lokaler TCP-Server-Socket für IPC zwischen UI und Netzwerkprozess.
     tcp_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    tcp_server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     tcp_server.bind(("localhost", 6001))
     tcp_server.listen(1)
 

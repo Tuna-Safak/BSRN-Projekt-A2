@@ -389,6 +389,8 @@ def netzwerkprozess(konfig_pfad=None):
     ## @var config
     #  @brief Lädt Konfigurationsparameter wie Handle und Netzwerkports aus config.toml.
     config = lade_config(konfig_pfad)
+    # >>> NEU: Starte TCP-Server für Bildempfang (wichtig für TCP!)
+    threading.Thread(target=starte_bildserver, args=(config,), daemon=True).start()
     # startet den Discovery-Dienst im Hintergrund
     threading.Thread(target=discovery_main, daemon=True).start()
 

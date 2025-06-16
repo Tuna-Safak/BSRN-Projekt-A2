@@ -78,7 +78,7 @@ def nutzerspeichern():
       ## nachricht = in bytes (inhalt der nachricht), absender = IP-Adresse und Port des Absenders
       ## empfängt bis zu 1024 Bytes, Max. Nachrichtenlänge: 512 Zeichen, 1024 = doppelte Menge (Sicherheitsreserve)
         nachricht, absender = sock.recvfrom(1024)
-
+      
       ## message = enthält die Nachricht als Bytes
       ## .decode() = wandelt Bytes in String um
       ## strip() = entfernt leerzeichen und zeilechumbrueche, vorne und hinten
@@ -101,7 +101,7 @@ def nutzerspeichern():
       ## erstes Wort aus der Nachricht holen, also den Befehl, den der Absender geschickt hat
         befehl = nachrichtTeilen[0]
 
-        if befehl == "JOIN" and len(nachrichtTeilen) == 4:
+        if befehl == "JOIN" and len(nachrichtTeilen) == 3:
        ## handle = benutzername
           handle = nachrichtTeilen[1]
           port = nachrichtTeilen[2]

@@ -70,6 +70,8 @@ def sende_befehl_an_netzwerkprozess(befehl: str):
 #  @brief ruft Funktionen aus den importierten Datei auf
 #  @details lädt das Menü und verwaltet den Ablauf
 def main():
+    # boolean ob jmd schon im chat ist 
+    ist_im_chat = False
     # nutzernamen abfragen
     handle = nutzernamen_abfragen()
     # Dateipfad zusammenbauen
@@ -94,9 +96,13 @@ def main():
         ## aufrufen der Main methode
         #kommt aus dem interface
         auswahl = menue()
-        if auswahl=="0":
-           sende_befehl_an_netzwerkprozess(f"JOIN {handle} {port}")
-           continue
+        if auswahl == "0":
+            if ist_im_chat:
+                print("Du bist bereits dem Chat beigetreten.")
+            else:
+                sende_befehl_an_netzwerkprozess(f"JOIN {handle} {port}")
+                ist_im_chat = True
+            continue
         
                 ## @brief Behandelt Menüauswahl "1" – WHO-Befehl senden und bekannte Nutzer anzeigen.
         #  @details Diese Funktion sendet den WHO-Befehl über eine TCP-Verbindung an den
@@ -161,10 +167,13 @@ def main():
                 print(f"  {k}: {v}")
             continue    
         elif auswahl == "6":
-            print(f"→ LEAVE {handle}")
-            befehl = f"LEAVE {handle}"
-            sende_befehl_an_netzwerkprozess(befehl)
-            break
+            if not ist_im_chat:
+                print("Du bist aktuell nicht im Chat.")
+            else:
+                sende_befehl_an_netzwerkprozess(f"LEAVE {handle}")
+                ist_im_chat = False
+            continue
+
             
        
 

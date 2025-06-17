@@ -316,6 +316,9 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     ip, port = gebe_nutzerliste_zurück()[handle_empfaenger]
     port = int(port)
 
+    print("[DEBUG] Sende Header:", img_header.strip())
+    print("[DEBUG] Sende Bilddaten:", len(bilddaten), "Bytes")
+
     # Erste Nachricht senden: den IMG-Befehl mit Empfängername und Bildgröße
     # encode() wandelt den Text in Bytes um, damit er über das Netzwerk geschickt werden kann
     sock.sendto(img_header.encode(), (ip, port))
@@ -349,6 +352,7 @@ def handle_IMG(sock, teile, addr):
         # Wenn keine Zahl übergeben wurde sondern was anders
         print("Ungültige Bildgröße.")
         return
+        print(f"[DEBUG] Erwartete Bildgröße: {groesse} Bytes")
 
     # Die eigentlichen Bilddaten empfangen 
     # recvfrom() wartet auf ein weiteres UDP-Paket
@@ -359,6 +363,7 @@ def handle_IMG(sock, teile, addr):
     sock.settimeout(2.0)  # Setze Timeout NUR vor dem Bildempfang
     try:
         bilddaten, addr2 = sock.recvfrom(groesse + 1024)
+        print(f"[DEBUG] Empfangen: {len(bilddaten)} Bytes")
     except socket.timeout:
         print("[ERROR] Bilddaten nicht empfangen – Timeout.")
         return
@@ -367,6 +372,9 @@ def handle_IMG(sock, teile, addr):
 
     # Absender-IP aus addr holen
     sender_ip = addr[0]
+     if len(bilddaten) == 0:
+        print("[FEHLER] Leere Bilddaten empfangen – kein Bild gespeichert!")  # ❗DEBUG 
+        return
 
     # Absendernamen aus der IP-Adresse ermitteln
     # durchsucht known_users
@@ -379,6 +387,7 @@ def handle_IMG(sock, teile, addr):
     # Wenn kein Name gefunden wurde, "Unbekannt" setzen
     if sender_name is None:
         sender_name = "Unbekannt"
+         print(f"[DEBUG] Sender-Name: {sender_name}, IP: {sender_ip}")  # ❗DEBUG 4
 
     # Speicherordner erstellen, falls noch nicht vorhanden
     os.makedirs("empfangene_bilder", exist_ok = True)
@@ -393,6 +402,7 @@ def handle_IMG(sock, teile, addr):
     # öffnet die datei im wb und schreibt alle empfangenen Bytes in die Datei
     with open(pfad, "wb") as f:
         f.write(bilddaten)
+            print(f"[DEBUG] Bild erfolgreich gespeichert: {pfad}")  # ❗DEBUG 5
 
     # Info ausgeben, dass das Bild gespeichert wurde
     print(f"Bild von {sender_name} empfangen und gespeichert unter: {pfad}")

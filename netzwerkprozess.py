@@ -404,7 +404,7 @@ def handle_IMG(sock, teile, addr, config):
     # öffnet die datei im wb und schreibt alle empfangenen Bytes in die Datei
     with open(pfad, "wb") as f:
         f.write(bilddaten)
-            print(f"[DEBUG] Bild erfolgreich gespeichert: {pfad}")  # ❗DEBUG 5
+        print(f"[DEBUG] Bild erfolgreich gespeichert: {pfad}")  # ❗DEBUG 5
 
     # Info ausgeben, dass das Bild gespeichert wurde
     print(f"Bild von {sender_name} empfangen und gespeichert unter: {pfad}")

@@ -178,12 +178,4 @@ def main():
 ## beginnt das Programm
 #  @note Beim starten wird name durch main ersetzt, erst wenn es stimmt, wird die Main Funktion gestartet
 if __name__ == "__main__":
-    #main()
-    handle = nutzernamen_abfragen()
-    konfig_pfad = f"Konfigurationsdateien/config_{handle.lower()}.toml"
-
-    p_net = Process(target=netzwerkprozess, args=(konfig_pfad,))
-    p_net.start()
-
-    config = lade_config(konfig_pfad)
-    menue()
+    main()

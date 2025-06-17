@@ -13,13 +13,13 @@ from UI_utils import erstelle_neue_config
 #wird in der main aufgerufen
 def menue():
     print("\nMenü\n")
-    print("0. Join")
     print("1. Teilnehmer anzeigen")
     print("2. Nachricht senden")
     print("3. Bild senden")
     print("4. Autoreply aktivieren/deaktivieren")
-    print("5. Konfiguration anzeigen/bearbeiten")
-    print("6. Chat verlassen")
+    print("5. Autoreply ändern")
+    print("6. Konfiguration anzeigen/bearbeiten")
+    print("7. Chat verlassen")
     return input("> Bitte wählen: ")
     
 
@@ -106,6 +106,19 @@ def autoreply_umschalten(config, pfad):
 
     # >>> Änderung hier: benutze den tatsächlich geladenen Pfad statt festem Dateinamen
     with open(pfad, "w") as f:
+        toml.dump(config, f)
+
+    return config
+
+def autoreply_einschalten(config, pfad):
+    aktuell = config.get("client", {}).get("autoreply_aktiv", False)
+    neu = not aktuell  # Umschalten
+    config["client"]["autoreply_aktiv"] = neu
+
+    print(f"[INFO] Autoreply wurde {'aktiviert' if neu else 'deaktiviert'}.")
+
+    # Speichern der aktualisierten config
+    with open(pfad, "w", encoding="utf-8") as f:
         toml.dump(config, f)
 
     return config

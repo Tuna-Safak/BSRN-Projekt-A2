@@ -345,7 +345,7 @@ def handle_IMG(sock, teile, addr, config):
         return
 
     # ist der name also an wen das Bild gesendet werden soll
-    empfaenger = teile[1].lower()  ### ⬅️ GEÄNDERT
+    empfaenger = teile[1].strip().lower()  ### ⬅️ GEÄNDERT
     eigener_handle = config["client"]["handle"].lower()  ### ⬅️ GEÄNDERT
     if empfaenger != eigener_handle:  ### ⬅️ GEÄNDERT
         return  # Bild ist nicht für mich bestimmt – ignorieren

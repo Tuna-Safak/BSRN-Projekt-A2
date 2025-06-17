@@ -16,13 +16,6 @@ from UI_utils import lade_config, finde_freien_port
 from discovery import nutzerspeichern, gebe_nutzerliste_zurück, discovery_main
 # damit TCP und UDP seperat laufen können 
 
-'''if len(sys.argv) >= 2:
-    konfig_pfad = sys.argv[1]  # z. B. "Konfigurationsdateien/jana.toml"  # <<< geändert
-else:
-    konfig_pfad = "Konfigurationsdateien/config.toml"  # Standardpfad als Fallback  # <<< geändert
-
-config = lade_config(konfig_pfad)'''
-
 config=lade_config()
 # Discovery DISCOVERY_PORT aus Konfig
 DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
@@ -514,24 +507,10 @@ def netzwerkprozess(konfig_pfad=None):
 
 
 if __name__ == "__main__":
-      ''' # >>> NEU: Konfigpfad aus Argumenten laden oder Standard verwenden
-    if len(sys.argv) >= 2:
-        konfig_pfad = sys.argv[1]  # Benutzerdefinierte Konfig
-    else:
-        konfig_pfad = "Konfigurationsdateien/config.toml"  # Standard-Konfig
-
-    # Konfiguration laden
-    config = lade_config(konfig_pfad)
-
-    # Starte Nachricht-Receiver im Hintergrund
-    threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
-
-    # Starte den Netzwerkprozess mit dieser Konfiguration
-    netzwerkprozess(konfig_pfad)'''
-     #message_handler
+    #message_handler
     # @para sock
     # @para config
     # programm läuft im hintergrund
     ## daemon=true schließt die funktion automatisch nach schließung des Programms
-   # threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
-    #netzwerkprozess()
+    threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
+    netzwerkprozess()

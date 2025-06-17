@@ -249,6 +249,7 @@ def receive_MSG(sock, config):
 
             # Verarbeitung von IMG-Nachrichten
             elif befehl == "IMG" and len(teile) == 3:
+                print(f"[DEBUG] IMG-Befehl empfangen: {teile} von {addr}")
                 try:
                     handle_IMG(sock, teile, addr, config)
                 except Exception as e:
@@ -260,11 +261,11 @@ def receive_MSG(sock, config):
                 nutzerliste = gebe_nutzerliste_zurück()
                 for eintrag in eintraege:
                     try:
-                         handle, ip, port = eintrag.strip().split(" ")
-                         nutzerliste[handle] = (ip, int(port))
-                         print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
+                        handle, ip, port = eintrag.strip().split(" ")
+                        nutzerliste[handle] = (ip, int(port))
+                        print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
                     except ValueError:
-                         print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
+                        print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
 
             else:
                 print(f"Unbekannte Nachricht: {text}")
@@ -350,7 +351,7 @@ def handle_IMG(sock, teile, addr, config):
         return
 
     # ist der name also an wen das Bild gesendet werden soll
-    empfaenger = teile[1].lower()  ### ⬅️ GEÄNDERT
+    empfaenger = teile[1].strip().lower()  ### ⬅️ GEÄNDERT
     eigener_handle = config["client"]["handle"].lower()  ### ⬅️ GEÄNDERT
     if empfaenger != eigener_handle:  ### ⬅️ GEÄNDERT
         return  # Bild ist nicht für mich bestimmt – ignorieren

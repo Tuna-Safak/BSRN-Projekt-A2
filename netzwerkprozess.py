@@ -387,7 +387,7 @@ def handle_IMG(sock, teile, addr, config):
     # Wenn kein Name gefunden wurde, "Unbekannt" setzen
     if sender_name is None:
         sender_name = "Unbekannt"
-         print(f"[DEBUG] Sender-Name: {sender_name}, IP: {sender_ip}")  # ❗DEBUG 4
+        print(f"[DEBUG] Sender-Name: {sender_name}, IP: {sender_ip}")  # ❗DEBUG 4
 
     zielverzeichnis = config["client"].get("imagepath", "empfangene_bilder")  ### ⬅️ GEÄNDERT
     os.makedirs(zielverzeichnis, exist_ok=True)

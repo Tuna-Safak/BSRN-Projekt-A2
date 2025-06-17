@@ -3,7 +3,7 @@
 #         und sendet SLCP-Nachrichten (MSG, IMG) per UDP an andere Peers im Netzwerk.
 #  @details Der Netzwerkprozess stellt die Verbindung zwischen der lokalen Benutzeroberfläche
 #           und der Peer-to-Peer-Kommunikation im LAN her. Er verarbeitet übermittelte Befehle
-#           und nutzt die Methoden aus `message_handler`, um SLCP-konforme Nachrichten zu versenden.
+#           und nutzt die Methoden aus message_handler, um SLCP-konforme Nachrichten zu versenden.
 
 import socket
 import sys
@@ -16,7 +16,10 @@ from UI_utils import lade_config, finde_freien_port
 from discovery import nutzerspeichern, gebe_nutzerliste_zurück, discovery_main
 # damit TCP und UDP seperat laufen können 
 
-config=lade_config()
+
+# Lade die Konfiguration aus config.toml
+#config = lade_config()
+
 # Discovery DISCOVERY_PORT aus Konfig
 DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
 
@@ -40,6 +43,7 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 # Binde an den freien DISCOVERY_PORT
 sock.bind(('', DISCOVERY_PORT))
+print(f"[INFO] (Discovery-) Socket gebunden an DISCOVERY_PORT {DISCOVERY_PORT}")
 
 # Gib den Socket an andere Module zurück, falls gewünscht
 def get_socket():
@@ -52,7 +56,6 @@ def send_join(handle, port):
     nachricht = f"JOIN {handle} {port} {ip}\n"
     sock.sendto(nachricht.encode('utf-8'), ("255.255.255.255", DISCOVERY_PORT))
     print(f"[JOIN] Gesendet: {nachricht.strip()}")
-  
     
    # nachricht = f"JOIN {handle} {port}\n"
     # JOIN: ist der Befehl, der an alle anderen Computer im Netzwerk gesendet wird
@@ -63,7 +66,6 @@ def send_join(handle, port):
 def handle_join(name, DISCOVERY_PORT, addr, ip=None):
     if ip is None:
         ip = addr[0]
-        
 #def handle_join(name, DISCOVERY_PORT, addr):
     # Verarbeitung einer JOIN-Nachricht, um neuen Nutzer zu speichern
    # ip = addr[0]
@@ -80,18 +82,16 @@ def handle_join(name, DISCOVERY_PORT, addr, ip=None):
 
 # -------------Leave-Nachricht versenden-----------------
 def send_leave(handle_nutzername):
+    # allen im Chat wird mitgeteilt, dass ich den Chat verlasse (Nur Discovery)
     nachricht = f"LEAVE {handle_nutzername}\n"
     sock.sendto(nachricht.encode('utf-8'), ("255.255.255.255", DISCOVERY_PORT))
+    print(f"[LEAVE] Gesendet: {nachricht.strip()}")
 
-    eigene_ip = finde_lokale_ip()
-
+    # allen per Unicast zeigen das ich leave
     bekannte_nutzer = gebe_nutzerliste_zurück()
     for anderer_handle, (ip, port) in bekannte_nutzer.items():
-        if ip == eigene_ip:
-            continue  # Nicht an sich selbst senden
-        sock.sendto(nachricht.encode('utf-8'), (ip, int(port)))
-        print(f"[LEAVE] Gesendet (Unicast) an {anderer_handle} @ {ip}:{port}")
-
+     sock.sendto(nachricht.encode('utf-8'), (ip, int(port)))
+     print(f"[LEAVE] Gesendet (Unicast) an {anderer_handle} @ {ip}:{port}")
 
 # -------------LEAVE verarbeiten-----------------
 def handle_leave(name):
@@ -129,149 +129,61 @@ def sendMSG(sock, handle, empfaenger_handle, text):
     print(f"[SEND] → an {empfaenger_handle} @ {ip}:{port} → {text}")
     sock.sendto(nachricht.encode('utf-8'), (ip, port))
 
-# # -------------Nachricht empfangen-----------------
-# def receive_MSG(sock, config):
-#     while True:
-#         daten, addr = sock.recvfrom(1024)
-#         text = daten.decode('utf-8').strip()
-
-
-#         teile = text.strip().split(" ")
-#         if len(teile) == 0:
-#             print("Leere Nachricht")
-#             continue
-
-#         befehl = teile[0]
-
-#         if teile[0] == "JOIN" and len(teile) >= 3:
-#             name = teile[1]
-#             port = teile[2]
-#             ip = teile[3] if len(teile) >= 4 else addr[0]
-#             DISCOVERY_PORT = int(port)  
-
-#         elif befehl == "LEAVE" and len(teile) == 2:
-#             handle_leave(teile[1])
-
-#         elif befehl == "MSG" and len(teile) >= 3:
-#             absender_handle = teile[1]
-#             nachricht =  " ".join(teile[2:])  # alles ab dem dritten Wort
-#             print(f"\nNachricht von {absender_handle}: {nachricht}\n> ", end="")
-
-#             if config.get("autoreply_aktiv", False):
-#                 autoreply_text = config.get("autoreply", "Ich bin gerade nicht da.")
-#                 handle = config["client"]["handle"]
-#                 sendMSG(sock, handle, absender_handle, autoreply_text)
-
-
-#         elif befehl == "IMG" and len(teile) == 3:
-#             try:
-#                 handle_IMG(sock, teile, addr)
-#             except Exception as e:
-#                 print(f"Fehler beim Bildempfang: {e}")
-   
-   
-#         elif befehl == "KNOWNUSERS" and len(teile) == 2:
-#             eintraege = teile[1].split(", ")
-#             nutzerliste = gebe_nutzerliste_zurück()
-#             for eintrag in eintraege:
-#                 try:
-#                      handle, ip, port = eintrag.strip().split(" ")
-#                      nutzerliste[handle] = (ip, int(port))
-#                      print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
-#                 except ValueError:
-#                     print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
-
-#         else:
-#             print(f" Unbekannte Nachricht: {text}")
 # -------------Nachricht empfangen-----------------
 def receive_MSG(sock, config):
-    """
-    Empfängt Nachrichten vom UDP-Socket und verarbeitet sie.
-    """
-     
     while True:
-        try:
-            # Empfängt Daten vom Socket
-            daten, addr = sock.recvfrom(1024)  # Daten und Adresse des Absenders
-            text = daten.decode('utf-8').strip()
-            # Teile der Nachricht aufspalten
-            teile = text.strip().split(" ")
-            if len(teile) == 0:
-                print("Leere Nachricht")
-                continue
+        daten, addr = sock.recvfrom(1024)
+        text = daten.decode('utf-8').strip()
 
-            befehl = teile[0]
-            eigene_ip = finde_lokale_ip()
-            eigener_handle = config["client"]["handle"]
 
-            # Verarbeitung von JOIN-Nachrichten
-            if befehl == "JOIN" and len(teile) >= 3:
-                name = teile[1]
-                port = teile[2]
-                ip = teile[3] if len(teile) >= 4 else addr[0]
-                if name == eigener_handle and ip == eigene_ip:
-                    continue
+        teile = text.strip().split(" ")
+        if len(teile) == 0:
+            print("Leere Nachricht")
+            continue
 
-                handle_join(name, port, addr, ip) 
-                print(f"\n[JOIN] {name} ist dem Chat beigetreten.")
+        befehl = teile[0]
 
-            # Verarbeitung von LEAVE-Nachrichten
-            elif befehl == "LEAVE" and len(teile) == 2:
-                absender_ip = addr[0]
-                absender_name = None
-                for name, (ip, _) in gebe_nutzerliste_zurück().items():
-                    if ip == absender_ip:
-                     absender_name = name
-                     break
+        if teile[0] == "JOIN" and len(teile) >= 3:
+            name = teile[1]
+            port = teile[2]
+            ip = teile[3] if len(teile) >= 4 else addr[0]
+            DISCOVERY_PORT = int(port)  
 
-                if not absender_name:
-                    absender_name = teile[1]  # Fallback, falls IP nicht gefunden
+        elif befehl == "LEAVE" and len(teile) == 2:
+            handle_leave(teile[1])
 
-                handle_leave(absender_name)
-                print(f"\n[LEAVE] {absender_name} hat den Chat verlassen.")
+        elif befehl == "MSG" and len(teile) >= 3:
+            absender_handle = teile[1]
+            nachricht =  " ".join(teile[2:])  # alles ab dem dritten Wort
+            print(f"\nNachricht von {absender_handle}: {nachricht}\n> ", end="")
 
-            # Verarbeitung von MSG-Nachrichten
-            elif befehl == "MSG" and len(teile) >= 3:
-                absender_handle = teile[1]
-                nachricht = " ".join(teile[2:])  # Alles ab dem dritten Wort
-                print(f"\nNachricht von {absender_handle}: {nachricht}\n> ", end="")
+            if config.get("autoreply_aktiv", False):
+                autoreply_text = config.get("autoreply", "Ich bin gerade nicht da.")
+                handle = config["client"]["handle"]
+                sendMSG(sock, handle, absender_handle, autoreply_text)
 
-                if config.get("autoreply_aktiv", False):
-                    autoreply_text = config.get("autoreply", "Ich bin gerade nicht da.")
-                    handle = config["client"]["handle"]
-                    sendMSG(sock, handle, absender_handle, autoreply_text)
 
-            # Verarbeitung von IMG-Nachrichten
-            elif befehl == "IMG" and len(teile) == 3:
+        elif befehl == "IMG" and len(teile) == 3:
+            try:
+                handle_IMG(sock, teile, addr)
+            except Exception as e:
+                print(f"Fehler beim Bildempfang: {e}")
+   
+   
+        elif befehl == "KNOWNUSERS" and len(teile) == 2:
+            eintraege = teile[1].split(", ")
+            nutzerliste = gebe_nutzerliste_zurück()
+            for eintrag in eintraege:
                 try:
-                    handle_IMG(sock, teile, addr)
-                except Exception as e:
-                    print(f"Fehler beim Bildempfang: {e}")
+                     handle, ip, port = eintrag.strip().split(" ")
+                     nutzerliste[handle] = (ip, int(port))
+                     print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
+                except ValueError:
+                    print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
 
-            # Verarbeitung von KNOWNUSERS-Nachrichten
-            elif befehl == "KNOWNUSERS" and len(teile) == 2:
-                eintraege = teile[1].split(", ")
-                nutzerliste = gebe_nutzerliste_zurück()
-                for eintrag in eintraege:
-                    try:
-                         handle, ip, port = eintrag.strip().split(" ")
-                         nutzerliste[handle] = (ip, int(port))
-                         print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
-                    except ValueError:
-                         print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
+        else:
+            print(f" Unbekannte Nachricht: {text}")
 
-            else:
-                print(f"Unbekannte Nachricht: {text}")
-
-        except ConnectionResetError as e:
-            # Dieser Fehler tritt auf, wenn die Verbindung vom Remote Host geschlossen wurde
-            print(f"Fehler: Verbindung vom Remote Host geschlossen. {e}")
-            break  # Verbindung unterbrochen, daher Abbruch der Schleife
-
-        except Exception as e:
-            # Alle anderen unerwarteten Fehler werden hier abgefangen
-            print(f"Ein unerwarteter Fehler ist aufgetreten: {e}")
-            break  # Abbruch bei unerwartetem Fehler
 
 
 # -------------Bild senden-----------------
@@ -281,37 +193,52 @@ def receive_MSG(sock, config):
 # @param bildpfad: Pfad zur Bilddatei
 def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     
+    # Prüfen, ob der Empfänger überhaupt bekannt ist, also ob wir seine IP-Adresse und DISCOVERY_PORT kennen
     if handle_empfaenger not in gebe_nutzerliste_zurück():
         print("Empfänger nicht bekannt.")
-        return
+        return  # die Funktion wird beendet, weil Senden nicht möglich ist
 
     try:
+        # Bilddatei öffnen – "rb" bedeutet:
+        # r = read, b = binary (binär lesen, nicht als Text)
+        # wir brauchen das für Bilder, weil sie keine Textdateien sind
         with open(bildpfad, "rb") as b:
+            # gesamtes Bild als Binärdaten einlesen
             bilddaten = b.read()
     except FileNotFoundError:
+        # Wenn der Pfad falsch ist oder das Bild nicht existiert
         print("Bild nicht gefunden:", bildpfad)
+        return  # Funktion beenden
+
+    # Bildgröße berechnen (Anzahl der Bytes)
+    # wichtig für den Empfänger damit er weiß wie viele Daten kommen
+    groesse = len(bilddaten)
+
+
+
+    if groesse > 1400:
+        print("Bild zu groß für eine UDP-Nachricht max 1400 Bytes")
         return
 
-    groesse = len(bilddaten)
+    # Nachricht im SLCP-Format vorbereiten: IMG <Empfänger> <Größe>
+    # das ist die Steuerzeile, die vor dem Bild gesendet wird
+    # f-String: setzt automatisch die Variablen ein
+    # \n = Zeilenumbruch, wie vom Protokoll gefordert
+    img_header = f"IMG {handle_empfaenger} {groesse}\n"
+
+    # IP-Adresse und DISCOVERY_PORT des Empfängers aus dem Nutzerverzeichnis holen
     ip, port = gebe_nutzerliste_zurück()[handle_empfaenger]
     port = int(port)
 
-    # IMG-Header senden
-    img_header = f"IMG {handle_empfaenger} {groesse}\n"
+    # Erste Nachricht senden: den IMG-Befehl mit Empfängername und Bildgröße
+    # encode() wandelt den Text in Bytes um, damit er über das Netzwerk geschickt werden kann
     sock.sendto(img_header.encode(), (ip, port))
 
-    chunk_size = 1024
-    anzahl_chunks = (groesse + chunk_size - 1) // chunk_size
+    # Zweite Nachricht: das eigentliche Bild senden (als Binärdaten)
+    sock.sendto(bilddaten, (ip, port))
 
-    for i in range(anzahl_chunks):
-        start = i * chunk_size
-        ende = start + chunk_size
-        chunk = bilddaten[start:ende]
-        sock.sendto(chunk, (ip, port))
-
-    print(f"Bild an {handle_empfaenger} gesendet ({groesse} Bytes in {anzahl_chunks} Chunks)")
-   
-   
+    # Bestätigung ausgeben, dass das Bild erfolgreich gesendet wurde
+    print(f"Bild an {handle_empfaenger} gesendet ({groesse} Bytes)")
 
 # -------------Bild empfangen-----------------
 # @brief verarbeitet eine IMG-Nachricht: liest Bilddaten ein und speichert sie als datei
@@ -319,36 +246,60 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
 # @param teile Die Teile der empfangenen Textnachricht (z. B. ["IMG", "empfänger", "Größe"])
 # @param addr Die Adresse (IP, DISCOVERY_PORT) des Absenders
 def handle_IMG(sock, teile, addr):
+    # Prüfen, ob genug Teile in der Nachricht sind
     if len(teile) != 3:
         print("Nachricht ist nicht vollständig.")
         return
 
+    # ist der name also an wen das Bild gesendet werden soll
     empfaenger = teile[1]
+
     try:
+        # Die Bildgröße aus dem Text in eine Zahl umwandeln
         groesse = int(teile[2])
     except ValueError:
+        # Wenn keine Zahl übergeben wurde sondern was anders
         print("Ungültige Bildgröße.")
         return
 
-    bilddaten = b""
-    verbleibend = groesse
+    # Die eigentlichen Bilddaten empfangen 
+    # recvfrom() wartet auf ein weiteres UDP-Paket
+    # Die Anzahl groesse + 1024 gibt einen Puffer mit dazu, falls z. B. mehr Daten ankommen
+    # bilddaten enthält die empfangenen Binärdaten 
+    bilddaten, addr2 = sock.recvfrom(groesse + 1024)  # etwas Puffer
 
-    while verbleibend > 0:
-        chunk, _ = sock.recvfrom(2048)
-        bilddaten += chunk
-        verbleibend -= len(chunk)
-
+    # IP-Adresse vom Absender herausfinden bzw speichern
     sender_ip = addr[0]
-    sender_name = next((name for name, (ip, _) in gebe_nutzerliste_zurück().items() if ip == sender_ip), "Unbekannt")
 
-    os.makedirs("empfangene_bilder", exist_ok=True)
+    # Absendernamen aus der IP-Adresse ermitteln
+    # durchsucht known_users
+    sender_name = None
+    for name, (ip, _) in gebe_nutzerliste_zurück().items():
+        if ip == sender_ip:
+            sender_name = name
+            break
+
+    # Wenn kein Name gefunden wurde, "Unbekannt" setzen
+    if sender_name is None:
+        sender_name = "Unbekannt"
+
+    # Speicherordner erstellen, falls noch nicht vorhanden
+    os.makedirs("empfangene_bilder", exist_ok = True)
+
+    # Bild speichern mit einfachem Namen z.B. büsra_bild.jpg
+    # es wird ein vollständiger pfad gebaut
     dateiname = f"{sender_name}_bild.jpg"
     pfad = os.path.join("empfangene_bilder", dateiname)
 
+    # Bild speichern
+    # w = write, b = binary
+    # öffnet die datei im wb und schreibt alle empfangenen Bytes in die Datei
     with open(pfad, "wb") as f:
         f.write(bilddaten)
 
+    # Info ausgeben, dass das Bild gespeichert wurde
     print(f"Bild von {sender_name} empfangen und gespeichert unter: {pfad}")
+
 
 
 
@@ -412,14 +363,16 @@ def netzwerkprozess(konfig_pfad=None):
                 send_join(handle, port)
 
             elif teile[0] == "LEAVE": 
-                send_leave(config["client"]["handle"])
+                send_leave(handle)
+            
+
 
             ## @brief Behandelt den WHO-Befehl vom UI-Prozess über TCP.
             #  @details Führt einen UDP-Broadcast mit "WHO" an alle Peers im LAN durch. 
             #           Sammelt die eingehenden KNOWNUSERS-Antworten, nimmt alle Nutzereinträge,
             #           aktualisiert die interne Nutzerliste und sendet sie formatiert per TCP 
             #           zurück an den aufrufenden UI-Prozess.
-            #  @note Verwendet dieselbe TCP-Verbindung (`conn.sendall`), über die auch der WHO-Befehl empfangen wurde.
+            #  @note Verwendet dieselbe TCP-Verbindung (conn.sendall), über die auch der WHO-Befehl empfangen wurde.
             elif teile[0] == "WHO":
                 print("[Netzwerkprozess] → WHO wird gesendet ...")
                 DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
@@ -464,14 +417,9 @@ def netzwerkprozess(konfig_pfad=None):
                     conn.sendall(antwort_text.encode('utf-8'))
                     print("[Netzwerkprozess] → Antwort an UI gesendet.")
                 except Exception as e:
-                    print(f"[Netzwerkprozess] Antwort an UI fehlgeschlagen: {e}")
+                    print(f"[Netzwerkprozess] ⚠️ Antwort an UI fehlgeschlagen: {e}")
 
 
 if __name__ == "__main__":
-    #message_handler
-    # @para sock
-    # @para config
-    # programm läuft im hintergrund
-    ## daemon=true schließt die funktion automatisch nach schließung des Programms
     threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
     netzwerkprozess()

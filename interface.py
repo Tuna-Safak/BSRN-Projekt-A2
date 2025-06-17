@@ -13,13 +13,13 @@ from UI_utils import erstelle_neue_config
 #wird in der main aufgerufen
 def menue():
     print("\nMenü\n")
-    print("0. Join")
     print("1. Teilnehmer anzeigen")
     print("2. Nachricht senden")
     print("3. Bild senden")
     print("4. Autoreply aktivieren/deaktivieren")
-    print("5. Konfiguration anzeigen/bearbeiten")
-    print("6. Chat verlassen")
+    print("5. Autoreply ändern")
+    print("6. Konfiguration anzeigen/bearbeiten")
+    print("7. Chat verlassen")
     return input("> Bitte wählen: ")
     
 
@@ -87,13 +87,6 @@ def eingabe_bild():
 # @return Die Config-Datei wird verändert
 #gibt erst die aktuelle nachricht aus und fragt dann nach einer neuen
 #nachricht in der Config einsehbar
-'''def autoreply_aktivieren(config,pfad):
-    aktuell = config.get("client", {}).get("autoreply_aktiv", "")
-    print(f"Aktueller Status: {aktuell}")
-    if aktuell=="false":
-        config["client"]["autoreply_aktiv"] =true
-    else:
-        config["client"]["autoreply_aktiv"] =false'''
 
 def autoreply_umschalten(config, pfad):
     aktuell = config.get("client", {}).get("autoreply", "")  # Liest aktuellen Autoreply
@@ -110,26 +103,16 @@ def autoreply_umschalten(config, pfad):
 
     return config
 
-''' autoreply_umschalten(config, pfad):
-    aktuell = config.get("client", {}).get("autoreply", "")  # Liest aktuellen Autoreply
-    print(f"Aktueller Autoreply-Text: '{aktuell}'")
-    
-    neu = input("Neuer Autoreply-Text (leer für deaktivieren): ")
-    config["client"]["autoreply"] = neu
-    config["client"]["autoreply_aktiv"] = bool(neu.strip())  # Aktiv, wenn Text vorhanden
+def autoreply_einschalten(config, pfad):
+    aktuell = config.get("client", {}).get("autoreply_aktiv", False)
+    neu = not aktuell  # Umschalten
+    config["client"]["autoreply_aktiv"] = neu
 
-    # >>> Änderung hier: benutze den tatsächlich geladenen Pfad statt festem Dateinamen
-    with open(pfad, "w") as f:
+    print(f"[INFO] Autoreply wurde {'aktiviert' if neu else 'deaktiviert'}.")
+
+    # Speichern der aktualisierten config
+    with open(pfad, "w", encoding="utf-8") as f:
         toml.dump(config, f)
 
-    return config'''
-'''def autoreply_umschalten(config, handle):
-    aktuell = config.get("client", {}).get("autoreply", "")#ließt den Wert von autoreply aus. Wenn er nicht vorhalen ist, kommt ein leerer
-    print(f"Aktueller Autoreply-Text: '{aktuell}'")
-    neu = input("Neuer Autoreply-Text (leer für deaktivieren): ")
-    config["client"]["autoreply"] = neu #greift auf die zeile autoreply in der config zu und ändert sie
-    config["client"]["autoreply_aktiv"] = bool(neu.strip())  
-    pfad = f"Konfigurationsdateien/config_{handle}.toml"
-    with open(pfad, "w") as f:
-        toml.dump(config, f)
-    return config'''
+    return config
+

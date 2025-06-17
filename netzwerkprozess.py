@@ -302,9 +302,9 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     # wichtig für den Empfänger damit er weiß wie viele Daten kommen
     groesse = len(bilddaten)
 
-    if groesse > 1400:
-        print("Bild zu groß für eine UDP-Nachricht max 1400 Bytes")
-        return
+    #if groesse > 1400:
+     #   print("Bild zu groß für eine UDP-Nachricht max 1400 Bytes")
+      #  return
 
     # Nachricht im SLCP-Format vorbereiten: IMG <Empfänger> <Größe>
     # das ist die Steuerzeile, die vor dem Bild gesendet wird

@@ -33,7 +33,8 @@ import os
 from UI_utils import (
     lade_config, 
     finde_freien_port,
-    erstelle_neue_config
+    erstelle_neue_config,
+    finde_freien_tcp_port
     
 )
 
@@ -60,13 +61,13 @@ def registriere_neuen_nutzer(handle,config):
 #  @details Diese Funktion wird vom UI-Prozess verwendet, um Nachrichten- oder Bildbefehle
 #           (z. B. MSG oder IMG) an den Netzwerkprozess weiterzuleiten. Der Netzwerkprozess
 #           übernimmt dann das eigentliche Senden per UDP an andere Chat-Teilnehmer.
-#           Die Kommunikation erfolgt über eine TCP-Verbindung zu localhost:6001
+#           Die Kommunikation erfolgt über eine TCP-Verbindung zu localhost:6001 FALSCH
 #  @param befehl Der SLCP-kompatible Befehl, z. B. "MSG Bob Hallo" oder "IMG Bob pfad/zum/bild.jpg".
 #  @note Wenn der Netzwerkprozess nicht läuft oder der Socket nicht erreichbar ist,
 #        wird eine Fehlermeldung ausgegeben.
-def sende_befehl_an_netzwerkprozess(befehl: str):
+def sende_befehl_an_netzwerkprozess(befehl: str, tcp_port: int):
     try:
-        with socket.create_connection(("localhost", 6001)) as sock:
+        with socket.create_connection(("localhost", tcp_port)) as sock:
             sock.sendall(befehl.encode())
     except ConnectionRefusedError:
         print("Netzwerkprozess läuft nicht!")
@@ -87,7 +88,9 @@ def main():
         erstelle_neue_config(handle)  # ❗Konfig anlegen, falls nicht vorhanden
 
     # Jetzt erst Netzwerkprozess starten
-    subprocess.Popen(["python", "netzwerkprozess.py", konfig_pfad])
+    tcp_port = finde_freien_tcp_port()
+    subprocess.Popen(["python", "netzwerkprozess.py", konfig_pfad, str(tcp_port)])
+
     time.sleep(1)
     # nutzernamen abfragen
    
@@ -110,8 +113,8 @@ def main():
         if auswahl == "1":
             print("→ WHO wird gesendet ...")
             try:
-                # Öffnet eine TCP-Verbindung zum lokalen Netzwerkprozess (Port 6001)
-                with socket.create_connection(("localhost", 6001)) as sock:
+                # Öffnet eine TCP-Verbindung zum lokalen Netzwerkprozess (TCPport) 
+                with socket.create_connection(("localhost", tcp_port)) as sock:
                     # Sendet den WHO-Befehl (als Bytefolge)
                     sock.sendall(b"WHO")
 
@@ -143,12 +146,12 @@ def main():
         elif auswahl == "2":
          empfaenger, text = eingabe_nachricht()
          befehl = f"MSG {empfaenger} {text}"
-         sende_befehl_an_netzwerkprozess(befehl)
+         sende_befehl_an_netzwerkprozess(befehl, tcp_port)
          continue
         elif auswahl == "3":
          empfaenger, pfad = eingabe_bild()
          befehl = f"IMG {empfaenger} {pfad}"
-         sende_befehl_an_netzwerkprozess(befehl)
+         sende_befehl_an_netzwerkprozess(befehl, tcp_port)
          continue
         elif auswahl == "4":
             print("Hallo")
@@ -169,7 +172,7 @@ def main():
                 print(f"  {k}: {v}")
             continue    
         elif auswahl == "7":
-                sende_befehl_an_netzwerkprozess(f"LEAVE {handle}")
+                sende_befehl_an_netzwerkprozess(f"LEAVE {handle}", tcp_port)
                 break
 
             

@@ -337,6 +337,7 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
 # @param teile Die Teile der empfangenen Textnachricht (z. B. ["IMG", "empfänger", "Größe"])
 # @param addr Die Adresse (IP, DISCOVERY_PORT) des Absenders
 def handle_IMG(sock, teile, addr, config):
+    
     # Prüfen, ob genug Teile in der Nachricht sind
     if len(teile) != 3:
         print("Nachricht ist nicht vollständig.")
@@ -348,71 +349,56 @@ def handle_IMG(sock, teile, addr, config):
     if empfaenger != eigener_handle:  ### ⬅️ GEÄNDERT
         return  # Bild ist nicht für mich bestimmt – ignorieren
 
-
     try:
-        # Die Bildgröße aus dem Text in eine Zahl umwandeln
         groesse = int(teile[2])
     except ValueError:
-        # Wenn keine Zahl übergeben wurde sondern was anders
         print("Ungültige Bildgröße.")
         return
-        print(f"[DEBUG] Erwartete Bildgröße: {groesse} Bytes")
+    print(f"[DEBUG] Erwartete Bildgröße: {groesse} Bytes")  # ❗DEBUG
 
-    # Die eigentlichen Bilddaten empfangen 
-    # recvfrom() wartet auf ein weiteres UDP-Paket
-    # Die Anzahl groesse + 1024 gibt einen Puffer mit dazu, falls z. B. mehr Daten ankommen
-    # bilddaten enthält die empfangenen Binärdaten 
-    #bilddaten, addr2 = sock.recvfrom(groesse + 1024)  # etwas Puffer
+    # ❗NEU: Bilddaten in mehreren Chunks empfangen
+    bilddaten = b""
+    verbleibend = groesse
+    sock.settimeout(3.0)
 
-    sock.settimeout(2.0)  # Setze Timeout NUR vor dem Bildempfang
     try:
-        bilddaten, addr2 = sock.recvfrom(groesse + 1024)
-        print(f"[DEBUG] Empfangen: {len(bilddaten)} Bytes")
+        while verbleibend > 0:
+            chunk, _ = sock.recvfrom(2048)
+            bilddaten += chunk
+            verbleibend -= len(chunk)
+            print(f"[DEBUG] Chunk empfangen, verbleibend: {verbleibend} Bytes")  # ❗DEBUG
     except socket.timeout:
         print("[ERROR] Bilddaten nicht empfangen - Timeout.")
         return
     finally:
-        sock.settimeout(None)  # Timeout wieder entfernen, wichtig!
+        sock.settimeout(None)
 
-    # Absender-IP aus addr holen
     sender_ip = addr[0]
     if len(bilddaten) == 0:
-        print("[FEHLER] Leere Bilddaten empfangen – kein Bild gespeichert!")  # ❗DEBUG 
+        print("[FEHLER] Leere Bilddaten empfangen – kein Bild gespeichert!")  # ❗DEBUG
         return
 
     # Absendernamen aus der IP-Adresse ermitteln
-    # durchsucht known_users
     sender_name = None
     for name, (ip, _) in gebe_nutzerliste_zurück().items():
         if ip == sender_ip:
             sender_name = name
             break
-
-    # Wenn kein Name gefunden wurde, "Unbekannt" setzen
     if sender_name is None:
         sender_name = "Unbekannt"
-        print(f"[DEBUG] Sender-Name: {sender_name}, IP: {sender_ip}")  # ❗DEBUG 4
+        print(f"[DEBUG] Sender-Name: {sender_name}, IP: {sender_ip}")  # ❗DEBUG
 
     zielverzeichnis = config["client"].get("imagepath", "empfangene_bilder")  ### ⬅️ GEÄNDERT
     os.makedirs(zielverzeichnis, exist_ok=True)
-    # Speicherordner erstellen, falls noch nicht vorhanden
-    #os.makedirs("empfangene_bilder", exist_ok = True)
 
-    # Bild speichern mit einfachem Namen z.B. büsra_bild.jpg
-    # es wird ein vollständiger pfad gebaut
     dateiname = f"{sender_name}_bild.jpg"
     pfad = os.path.join(zielverzeichnis, dateiname)
 
-    # Bild speichern
-    # w = write, b = binary
-    # öffnet die datei im wb und schreibt alle empfangenen Bytes in die Datei
     with open(pfad, "wb") as f:
         f.write(bilddaten)
-        print(f"[DEBUG] Bild erfolgreich gespeichert: {pfad}")  # ❗DEBUG 5
+        print(f"[DEBUG] Bild erfolgreich gespeichert: {pfad}")  # ❗DEBUG
 
-    # Info ausgeben, dass das Bild gespeichert wurde
     print(f"Bild von {sender_name} empfangen und gespeichert unter: {pfad}")
-
 
 
 

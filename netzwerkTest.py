@@ -281,11 +281,13 @@ def receive_MSG(sock, config):
 # @param bildpfad: Pfad zur Bilddatei
 def sendIMG(handle_sender, handle_empfaenger, bildpfad):
     
+    # Prüfen, ob der Empfänger überhaupt bekannt ist
     if handle_empfaenger not in gebe_nutzerliste_zurück():
         print("Empfänger nicht bekannt.")
         return
 
     try:
+        # Bild als Binärdaten laden
         with open(bildpfad, "rb") as b:
             bilddaten = b.read()
     except FileNotFoundError:
@@ -293,13 +295,17 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
         return
 
     groesse = len(bilddaten)
+
+    # IP & Port vom Empfänger ermitteln
     ip, port = gebe_nutzerliste_zurück()[handle_empfaenger]
     port = int(port)
 
-    # IMG-Header senden
+    # IMG-Header vorbereiten
     img_header = f"IMG {handle_empfaenger} {groesse}\n"
+    print("[DEBUG] Sende Header:", img_header.strip())  # ❗NEU
     sock.sendto(img_header.encode(), (ip, port))
 
+    # ❗NEU: Bild in kleine Stücke (Chunks) aufteilen und senden
     chunk_size = 1024
     anzahl_chunks = (groesse + chunk_size - 1) // chunk_size
 
@@ -308,9 +314,9 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
         ende = start + chunk_size
         chunk = bilddaten[start:ende]
         sock.sendto(chunk, (ip, port))
+        print(f"[DEBUG] → Chunk {i+1}/{anzahl_chunks} gesendet")  # ❗NEU
 
-    print(f"Bild an {handle_empfaenger} gesendet ({groesse} Bytes in {anzahl_chunks} Chunks)")
-   
+    print(f"Bild an {handle_empfaenger} gesendet ({groesse} Bytes in {anzahl_chunks} Chunks)")  # ❗NEU
    
 
 # -------------Bild empfangen-----------------

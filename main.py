@@ -48,9 +48,14 @@ from netzwerkprozess import (
 )
 
 # registriere_neuen_nutzer
-# @brief 
-# @param handle: den Benutzername der eingegeben wird
-# @param config: die geladenen congig wird als Variable übergeben
+# @brief Registiert einen neuen Nutzer im Chatnetzwerk
+    ## @details finde_freien_port: es wird ein freier Port gesucht und ein Socket dadurch erstellt
+    ## @details send_join: verschickt eine Join Nachricht an alle
+## @param handle: der Benutzername des Teilnehmers
+## @param config: die config Datei wird geldaden
+## @return port: verwendeter UDP-Port des Nutzers
+## @return nutzer_sock: der UDP-Socket, der an den Port gebunden ist
+
 def registriere_neuen_nutzer(handle,config):
     port, nutzer_sock = finde_freien_port(config)
     send_join(handle,port)
@@ -75,12 +80,12 @@ def sende_befehl_an_netzwerkprozess(befehl: str):
 
 
 ## Hauptfunktion
-#  @brief ruft Funktionen aus den importierten Datei auf
+#  @brief startet alle funktionienen nach eingabe durch eingabe im Terminal
 #  @details lädt das Menü und verwaltet den Ablauf
 def main():
-
-
+    # nutzername abfragen
     handle = nutzernamen_abfragen()
+    # Dateipfad zusammenbauen um die richtige config zu laden
     konfig_pfad = f"Konfigurationsdateien/config_{handle.lower()}.toml"
 
     if not os.path.exists(konfig_pfad):
@@ -104,9 +109,7 @@ def main():
     print(f"Willkommen, {handle}! Dein Port: {port}")
 
     while True:
-        ## aufrufen der Main methode
-        #kommt aus dem interface
-        auswahl = menue()
+        auswahl = menue() # interface
         if auswahl == "1":
             print("→ WHO wird gesendet ...")
             try:

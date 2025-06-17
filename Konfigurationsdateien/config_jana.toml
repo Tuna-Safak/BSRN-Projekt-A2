@@ -2,7 +2,7 @@
 handle = "Jana"
 port = 5000
 whoisport = 4000
-autoreply = "Hallo du"
+autoreply = "bin nun nicht mehr da"
 autoreply_aktiv = true
 imagepath = "images/"
 

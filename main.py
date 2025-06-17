@@ -17,7 +17,8 @@ from interface import (
     nutzernamen_abfragen,
     eingabe_nachricht,
     eingabe_bild,
-    autoreply_umschalten
+    autoreply_umschalten,
+    autoreply_einschalten
 )
 
 ## Importiert Methoden aus dem UI_utils.py, discovery und message_handler
@@ -94,18 +95,7 @@ def main():
         ## aufrufen der Main methode
         #kommt aus dem interface
         auswahl = menue()
-        if auswahl == "0":
-        
-            sende_befehl_an_netzwerkprozess(f"\nJOIN {handle} {port}")
-            
-            continue
-        
-                ## @brief Behandelt Menüauswahl "1" – WHO-Befehl senden und bekannte Nutzer anzeigen.
-        #  @details Diese Funktion sendet den WHO-Befehl über eine TCP-Verbindung an den
-        #           Netzwerkprozess (localhost:6001). Der Netzwerkprozess führt den WHO-Broadcast
-        #           im LAN aus, sammelt die Antworten (KNOWNUSERS) und sendet sie per TCP zurück.
-        #           Diese Rückmeldung wird hier analysiert und im UI ausgegeben.
-        elif auswahl == "1":
+        if auswahl == "1":
             print("→ WHO wird gesendet ...")
             try:
                 # Öffnet eine TCP-Verbindung zum lokalen Netzwerkprozess (Port 6001)
@@ -149,11 +139,15 @@ def main():
          sende_befehl_an_netzwerkprozess(befehl)
          continue
         elif auswahl == "4":
+            print("Hallo")
+            autoreply_einschalten(config, konfig_pfad)
+            continue
+        elif auswahl =="5":
             #interface
             config = autoreply_umschalten(config, konfig_pfad)
             print("→ Autoreply aktualisiert.")
             continue
-        elif auswahl == "5":
+        elif auswahl == "6":
             print("→ Aktuelle Konfiguration:")
             # config hat schlüssel und wert paare
             # k=kex(schlüssel) --> autoreply
@@ -162,7 +156,7 @@ def main():
             for k, v in config.items():
                 print(f"  {k}: {v}")
             continue    
-        elif auswahl == "6":
+        elif auswahl == "7":
                 sende_befehl_an_netzwerkprozess(f"LEAVE {handle}")
                 break
 

@@ -244,7 +244,7 @@ def receive_MSG(sock, config):
             # Verarbeitung von IMG-Nachrichten
             elif befehl == "IMG" and len(teile) == 3:
                 try:
-                    handle_IMG(sock, teile, addr)
+                    handle_IMG(sock, teile, addr, config)
                 except Exception as e:
                     print(f"Fehler beim Bildempfang: {e}")
 
@@ -333,7 +333,7 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
 # @param sock Der UDP-Socket, über den das Bild empfangen wird
 # @param teile Die Teile der empfangenen Textnachricht (z. B. ["IMG", "empfänger", "Größe"])
 # @param addr Die Adresse (IP, DISCOVERY_PORT) des Absenders
-def handle_IMG(sock, teile, addr):
+def handle_IMG(sock, teile, addr, config):
     # Prüfen, ob genug Teile in der Nachricht sind
     if len(teile) != 3:
         print("Nachricht ist nicht vollständig.")
@@ -360,7 +360,7 @@ def handle_IMG(sock, teile, addr):
     try:
         bilddaten, addr2 = sock.recvfrom(groesse + 1024)
     except socket.timeout:
-        print("[ERROR] Bilddaten nicht empfangen – Timeout.")
+        print("[ERROR] Bilddaten nicht empfangen - Timeout.")
         return
     finally:
         sock.settimeout(None)  # Timeout wieder entfernen, wichtig!
@@ -380,13 +380,15 @@ def handle_IMG(sock, teile, addr):
     if sender_name is None:
         sender_name = "Unbekannt"
 
+    zielverzeichnis = config["client"].get("imagepath", "empfangene_bilder")  ### ⬅️ GEÄNDERT
+    os.makedirs(zielverzeichnis, exist_ok=True)
     # Speicherordner erstellen, falls noch nicht vorhanden
-    os.makedirs("empfangene_bilder", exist_ok = True)
+    #os.makedirs("empfangene_bilder", exist_ok = True)
 
     # Bild speichern mit einfachem Namen z.B. büsra_bild.jpg
     # es wird ein vollständiger pfad gebaut
     dateiname = f"{sender_name}_bild.jpg"
-    pfad = os.path.join("empfangene_bilder", dateiname)
+    pfad = os.path.join(zielverzeichnis, dateiname)
 
     # Bild speichern
     # w = write, b = binary

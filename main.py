@@ -1,17 +1,18 @@
 ## @file main.py
-##  @brief Start des Programms
+## @brief Start des Programms und ruft die ganzen funktionien auf
 
-## mehrere Aufgaben gleichzeitig im selben Prozess: eigehende Nachrichten, senden von Nachrichten ermöglichen 
+# mehrere Aufgaben gleichzeitig im selben Prozess: eigehende Nachrichten, senden von Nachrichten ermöglichen 
 import threading
-## importiert socket
+# importiert socket
+# kommunikation zwischen zwei Programmen(Prozessen)
 import socket
-## hat eigenen Speicher für jeden einzelnen Prozess des Projektes: e.g Netzwerkprozess und Discovery gleichzeitig laufen lassen
+# hat eigenen Speicher für jeden einzelnen Prozess des Projektes: e.g Netzwerkprozess und Discovery gleichzeitig laufen lassen
+# pyhton Modul
 import multiprocessing
-#
-# alles wird gut
+# importiert die Klasse Process vom gesamten mulitprocessing Modul
 from multiprocessing import Process
 
-## Importiert Methoden aus dem interface.py
+# Importiert Methoden aus dem interface.py
 from interface import (
     menue,
     nutzernamen_abfragen,
@@ -21,7 +22,7 @@ from interface import (
     autoreply_einschalten
 )
 
-## Importiert Methoden aus dem UI_utils.py, discovery und message_handler
+# Importiert Methoden aus dem discovery, UI_utils.py und netzwerkprozess
 from discovery import (
     zeige_bekannte_nutzer,
     discovery_main
@@ -41,12 +42,14 @@ from netzwerkprozess import (
     receive_MSG, 
     get_socket 
 )
+# @TODo kann glaube ich gelöscht werden steht nun im Main bllock
+#config = lade_config()
+#threading.Thread(target=receive_MSG, args=(get_socket(), config), daemon=True).start()
 
-config = lade_config()
-threading.Thread(target=receive_MSG, args=(get_socket(), config), daemon=True).start()
-
-#registriere_neuen_nutzer
-
+# registriere_neuen_nutzer
+# @brief 
+# @param handle: den Benutzername der eingegeben wird
+# @param config: die geladenen congig wird als Variable übergeben
 def registriere_neuen_nutzer(handle,config):
     port, nutzer_sock = finde_freien_port(config)
     send_join(handle,port)
@@ -84,7 +87,7 @@ def main():
     config = lade_config(konfig_pfad)
     #interface
     #netzwerkprozess(konfig_pfad)
-    
+    threading.Thread(target=receive_MSG, args=(get_socket(), config), daemon=True).start()
     #main
     port, nutzer_sock = registriere_neuen_nutzer(handle,config)
    

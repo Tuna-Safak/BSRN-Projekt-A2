@@ -354,7 +354,16 @@ def handle_IMG(sock, teile, addr):
     # recvfrom() wartet auf ein weiteres UDP-Paket
     # Die Anzahl groesse + 1024 gibt einen Puffer mit dazu, falls z. B. mehr Daten ankommen
     # bilddaten enthält die empfangenen Binärdaten 
-    bilddaten, addr2 = sock.recvfrom(groesse + 1024)  # etwas Puffer
+    #bilddaten, addr2 = sock.recvfrom(groesse + 1024)  # etwas Puffer
+
+    sock.settimeout(2.0)  # Setze Timeout NUR vor dem Bildempfang
+    try:
+        bilddaten, addr2 = sock.recvfrom(groesse + 1024)
+    except socket.timeout:
+        print("[ERROR] Bilddaten nicht empfangen – Timeout.")
+        return
+    finally:
+        sock.settimeout(None)  # Timeout wieder entfernen, wichtig!
 
     # Absender-IP aus addr holen
     sender_ip = addr[0]

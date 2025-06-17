@@ -1,5 +1,7 @@
 ## @file main.py
 ##  @brief Start des Programms
+import subprocess
+import time
 
 ## mehrere Aufgaben gleichzeitig im selben Prozess: eigehende Nachrichten, senden von Nachrichten ermöglichen 
 import threading
@@ -26,10 +28,12 @@ from discovery import (
     zeige_bekannte_nutzer,
     discovery_main
 )
-
+import os 
 from UI_utils import (
     lade_config, 
-    finde_freien_port
+    finde_freien_port,
+    erstelle_neue_config
+    
 )
 
 from netzwerkprozess import (
@@ -41,9 +45,6 @@ from netzwerkprozess import (
     receive_MSG, 
     get_socket 
 )
-
-config = lade_config()
-threading.Thread(target=receive_MSG, args=(get_socket(), config), daemon=True).start()
 
 #registriere_neuen_nutzer
 
@@ -74,12 +75,20 @@ def sende_befehl_an_netzwerkprozess(befehl: str):
 #  @brief ruft Funktionen aus den importierten Datei auf
 #  @details lädt das Menü und verwaltet den Ablauf
 def main():
-    # boolean ob jmd schon im chat ist 
-   
-    # nutzernamen abfragen
+
+
     handle = nutzernamen_abfragen()
-    # Dateipfad zusammenbauen
-    konfig_pfad = f"Konfigurationsdateien/config_{handle.lower()}.toml" 
+    konfig_pfad = f"Konfigurationsdateien/config_{handle.lower()}.toml"
+
+    if not os.path.exists(konfig_pfad):
+        erstelle_neue_config(handle)  # ❗Konfig anlegen, falls nicht vorhanden
+
+    # Jetzt erst Netzwerkprozess starten
+    subprocess.Popen(["python", "netzwerkprozess.py", konfig_pfad])
+    time.sleep(1)
+    # nutzernamen abfragen
+   
+   
     #ui_utils
     config = lade_config(konfig_pfad)
     #interface

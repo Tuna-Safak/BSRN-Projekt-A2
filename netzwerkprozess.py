@@ -15,8 +15,14 @@ import os
 from UI_utils import lade_config, finde_freien_port
 from discovery import nutzerspeichern, gebe_nutzerliste_zurück, discovery_main
 # damit TCP und UDP seperat laufen können 
+import sys
 
-config=lade_config()
+if __name__ == "__main__":
+    konfig_pfad = sys.argv[1] if len(sys.argv) > 1 else None
+else:
+    konfig_pfad = None
+
+config = lade_config(konfig_pfad)
 # Discovery DISCOVERY_PORT aus Konfig
 DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
 
@@ -51,7 +57,7 @@ def send_join(handle, port):
     ip = finde_lokale_ip()
     nachricht = f"JOIN {handle} {port} {ip}\n"
     sock.sendto(nachricht.encode('utf-8'), ("255.255.255.255", DISCOVERY_PORT))
-    print(f"[JOIN] Gesendet: {nachricht.strip()}")
+   # print(f"[JOIN] Gesendet: {nachricht.strip()}")
   
     
    # nachricht = f"JOIN {handle} {port}\n"
@@ -213,7 +219,7 @@ def receive_MSG(sock, config):
                     continue
 
                 handle_join(name, port, addr, ip) 
-                print(f"\n[JOIN] {name} ist dem Chat beigetreten.")
+                #  print(f"\n[JOIN] {name} ist dem Chat beigetreten.")
 
             # Verarbeitung von LEAVE-Nachrichten
             elif befehl == "LEAVE" and len(teile) == 2:
@@ -409,11 +415,14 @@ def handle_IMG(sock, teile, addr, config):
 #  @note Diese Funktion blockiert dauerhaft. Sie sollte in einem separaten Prozess ausgeführt werden.
 def netzwerkprozess(konfig_pfad=None):
  
-   
+    print("[DEBUG] netzwerkprozess(konfig_pfad) wurde aufgerufen")
+
 
     ## @var config
     #  @brief Lädt Konfigurationsparameter wie Handle und Netzwerkports aus config.toml.
     config = lade_config(konfig_pfad)
+    print("[DEBUG] Netzwerkprozess gestartet")
+
     # startet den Discovery-Dienst im Hintergrund
     threading.Thread(target=discovery_main, daemon=True).start()
 
@@ -517,11 +526,22 @@ def netzwerkprozess(konfig_pfad=None):
                     print(f"[Netzwerkprozess] Antwort an UI fehlgeschlagen: {e}")
 
 
+
 if __name__ == "__main__":
-    #message_handler
-    # @para sock
-    # @para config
-    # programm läuft im hintergrund
-    ## daemon=true schließt die funktion automatisch nach schließung des Programms
+    import sys
+    import os
+    import threading
+
+    konfig_pfad = sys.argv[1] if len(sys.argv) > 1 else None
+
+    if konfig_pfad is None or not os.path.exists(konfig_pfad):
+        print("[FEHLER] Keine gültige Konfigurationsdatei angegeben.")
+        sys.exit(1)
+
+    config = lade_config(konfig_pfad)
+
+    # Starte UDP-Receiver
     threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
-    netzwerkprozess()
+
+     # Starte TCP-IPC
+    netzwerkprozess(konfig_pfad)

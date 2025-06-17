@@ -45,7 +45,7 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 # Binde an den freien DISCOVERY_PORT
-sock.bind(('', DISCOVERY_PORT))
+#sock.bind(('', DISCOVERY_PORT))
 
 # Gib den Socket an andere Module zurück, falls gewünscht
 def get_socket():
@@ -410,11 +410,11 @@ def handle_IMG(sock, teile, addr, config):
 
 
 ## @brief Startet den Netzwerkprozess und lauscht auf Befehle vom UI-Prozess.
-#  @details Stellt einen TCP-Server auf localhost:6001 bereit, über den der UI-Prozess Kommandos
+#  @details Stellt einen TCP-Server auf localhost:tcpPort bereit, über den der UI-Prozess Kommandos
 #           wie MSG und IMG senden kann. Diese werden analysiert und mit UDP an die Ziel-Peers
 #           gemäß SLCP-Protokoll weitergeleitet.
 #  @note Diese Funktion blockiert dauerhaft. Sie sollte in einem separaten Prozess ausgeführt werden.
-def netzwerkprozess(konfig_pfad=None):
+def netzwerkprozess(konfig_pfad, tcp_port):
  
     print("[DEBUG] netzwerkprozess(konfig_pfad) wurde aufgerufen")
 
@@ -430,11 +430,11 @@ def netzwerkprozess(konfig_pfad=None):
     ## @var tcp_server
     #  @brief Lokaler TCP-Server-Socket für IPC zwischen UI und Netzwerkprozess.
     tcp_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcp_server.bind(("localhost", 6001))
+    tcp_server.bind(("localhost", tcp_port))
     tcp_server.listen(1)
 
 
-    print("[INFO] (Netzwerkprozess) TCP-IPC bereit auf Port 6001.")
+    print("[INFO] (Netzwerkprozess) TCP-IPC bereit auf Port {tcp_port}}" )
 
     while True:
         ## @var conn
@@ -532,17 +532,26 @@ if __name__ == "__main__":
     import sys
     import os
     import threading
+    from UI_utils import lade_config
 
+    # Argumente auslesen
     konfig_pfad = sys.argv[1] if len(sys.argv) > 1 else None
+    tcp_port = int(sys.argv[2]) if len(sys.argv) > 2 else None
 
     if konfig_pfad is None or not os.path.exists(konfig_pfad):
         print("[FEHLER] Keine gültige Konfigurationsdatei angegeben.")
         sys.exit(1)
 
+    if tcp_port is None:
+        print("[FEHLER] Kein TCP-Port angegeben.")
+        sys.exit(1)
+
+    # Konfiguration laden
     config = lade_config(konfig_pfad)
+    print(f"[DEBUG] Netzwerkprozess gestartet mit TCP-Port {tcp_port}")
 
-    # Starte UDP-Receiver
-    threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
+    # UDP-Receiver starten
+    threading.Thread(target=receive_MSG, args=(get_socket(), config), daemon=True).start()
 
-     # Starte TCP-IPC
-    netzwerkprozess(konfig_pfad)
+    # TCP-Server starten
+    netzwerkprozess(konfig_pfad, tcp_port)

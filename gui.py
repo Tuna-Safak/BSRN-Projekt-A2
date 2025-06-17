@@ -64,7 +64,7 @@ class ChatGUI:
             return
         befehl = f"MSG {empfaenger} {text}"
         try:
-            sende_befehl_an_netzwerkprozess(befehl)
+            sende_befehl_an_netzwerkprozess(befehl, tcp_port)
             self.zeige_nachricht(f"Du an {empfaenger}: {text}", "eigene")
             self.nachricht_entry.delete(0, tk.END)
         except Exception as e:
@@ -73,7 +73,7 @@ class ChatGUI:
     def join_chat(self):
         port = self.config["client"]["port"]
         befehl = f"JOIN {self.handle} {port}"
-        sende_befehl_an_netzwerkprozess(befehl)
+        sende_befehl_an_netzwerkprozess(befehl, tcp_port)
         self.zeige_nachricht("JOIN gesendet.", "system")
 
     def zeige_teilnehmer(self):
@@ -103,7 +103,7 @@ class ChatGUI:
         if pfad:
             befehl = f"IMG {empfaenger} {pfad}"
             try:
-                sende_befehl_an_netzwerkprozess(befehl)
+                sende_befehl_an_netzwerkprozess(befehl, tcp_port)
                 self.zeige_nachricht(f"Bild an {empfaenger} gesendet.", "eigene")
             except Exception as e:
                 self.zeige_nachricht(f"Fehler beim Bildversand: {e}", "fehler")
@@ -123,7 +123,7 @@ class ChatGUI:
 
     def chat_verlassen(self):
         befehl = f"LEAVE {self.handle}"
-        sende_befehl_an_netzwerkprozess(befehl)
+        sende_befehl_an_netzwerkprozess(befehl, tcp_port)
         self.zeige_nachricht("LEAVE gesendet. Fenster wird geschlossen.", "system")
         self.root.after(1000, self.root.destroy)
 

@@ -59,6 +59,14 @@ def erstelle_neue_config(handle):
     
     print(f"Neue Konfigurationsdatei für {handle} wurde erstellt.")   
 
+
+def finde_freien_tcp_port():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(('', 0))  # Port 0 = automatisch freien Port finden
+        return s.getsockname()[1]
+
+
+
 def finde_freien_port(config):
 
     # config ist ein Dictionary mit Werten aus der config.toml.

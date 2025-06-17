@@ -372,7 +372,7 @@ def handle_IMG(sock, teile, addr, config):
 
     # Absender-IP aus addr holen
     sender_ip = addr[0]
-     if len(bilddaten) == 0:
+    if len(bilddaten) == 0:
         print("[FEHLER] Leere Bilddaten empfangen – kein Bild gespeichert!")  # ❗DEBUG 
         return
 

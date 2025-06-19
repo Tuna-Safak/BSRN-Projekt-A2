@@ -22,7 +22,7 @@ def menue():
     print("7. Chat verlassen")
     return input("> Bitte wählen: ")
     
-
+    
 '''wahl= questionary.select(
     "Was möchtest du tun?",
     choices=[

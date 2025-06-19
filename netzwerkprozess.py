@@ -45,10 +45,8 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 # Binde an den freien DISCOVERY_PORT
-try:
-    sock.bind(('', DISCOVERY_PORT))
-except OSError:
-    print(f"[WARNUNG] Socket konnte nicht gebunden werden möglicherweise bereits durch Discovery-Prozess gebunden.")
+sock.bind(('', DISCOVERY_PORT))
+   
 
 # Gib den Socket an andere Module zurück, falls gewünscht
 def get_socket():

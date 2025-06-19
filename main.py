@@ -1,8 +1,10 @@
 ## @file main.py
 ## @brief Start des Programms und ruft die ganzen funktionien auf
-import subprocess
-import time
 
+# starten eines weiteren Prozesses durch ein bestehenden Prozess
+import subprocess
+# erlaubt eine verzögerung beim starten
+import time
 # mehrere Aufgaben gleichzeitig im selben Prozess: eigehende Nachrichten, senden von Nachrichten ermöglichen 
 import threading
 # importiert socket
@@ -14,7 +16,7 @@ import multiprocessing
 # importiert die Klasse Process vom gesamten mulitprocessing Modul
 from multiprocessing import Process
 
-# Importiert Methoden aus dem interface.py
+# Importiert Methoden aus dem interface, discovery, UI_utils und netzwerkprozess 
 from interface import (
     menue,
     nutzernamen_abfragen,
@@ -24,18 +26,17 @@ from interface import (
     autoreply_einschalten
 )
 
-# Importiert Methoden aus dem discovery, UI_utils.py und netzwerkprozess
 from discovery import (
     zeige_bekannte_nutzer,
     discovery_main
 )
+
 import os 
 from UI_utils import (
     lade_config, 
     finde_freien_port,
     erstelle_neue_config,
     finde_freien_tcp_port
-    
 )
 
 from netzwerkprozess import (
@@ -88,14 +89,20 @@ def main():
     handle = nutzernamen_abfragen()
     # Dateipfad zusammenbauen um die richtige config zu laden
     konfig_pfad = f"Konfigurationsdateien/config_{handle.lower()}.toml"
-
+    # Prüft, ob die Konfigurationsdatei für den angegebenen Benutzer bereits existiert.
+    # Wenn nicht, wird automatisch eine neue Konfiguration angelegt (z. B. config_tuna.toml)
     if not os.path.exists(konfig_pfad):
-        erstelle_neue_config(handle)  # ❗Konfig anlegen, falls nicht vorhanden
+        erstelle_neue_config(handle)  # Konfig anlegen, falls nicht vorhanden
 
-    # Jetzt erst Netzwerkprozess starten
+    # Startet den Netzwerkprozess als separaten Hintergrundprozess.
+    # Übergeben werden: Pfad zur Benutzer-Konfigurationsdatei und der dynamisch gewählte TCP-Port.
+    # subprocess.Popen wird verwendet, damit dieser Prozess parallel zur UI läuft.
+    # !Jetzt erst Netzwerkprozess starten
     tcp_port = finde_freien_tcp_port()
     subprocess.Popen(["python", "netzwerkprozess.py", konfig_pfad, str(tcp_port)])
 
+    # Kurze Wartezeit, um sicherzustellen, dass der Netzwerkprozess genügend Zeit zum Hochfahren hat.
+    # Verhindert Race Conditions bei späterer Kommunikation (z. B. TCP-Verbindung).
     time.sleep(1)
     # nutzernamen abfragen
    
@@ -147,23 +154,20 @@ def main():
 
         #NEU FÜR TCP
         elif auswahl == "2":
-         empfaenger, text = eingabe_nachricht()
-         befehl = f"MSG {empfaenger} {text}"
-         sende_befehl_an_netzwerkprozess(befehl, tcp_port)
-         continue
+            empfaenger, text = eingabe_nachricht() # Interface
+            befehl = f"MSG {empfaenger} {text}"
+            sende_befehl_an_netzwerkprozess(befehl, tcp_port)
+            continue
         elif auswahl == "3":
-         empfaenger, pfad = eingabe_bild()
-         befehl = f"IMG {empfaenger} {pfad}"
-         sende_befehl_an_netzwerkprozess(befehl, tcp_port)
-         continue
+            empfaenger, pfad = eingabe_bild() # Interface
+            befehl = f"IMG {empfaenger} {pfad}"
+            sende_befehl_an_netzwerkprozess(befehl, tcp_port) # main
+            continue
         elif auswahl == "4":
-            print("Hallo")
-            autoreply_einschalten(config, konfig_pfad)
+            autoreply_einschalten(config, konfig_pfad) # interface
             continue
         elif auswahl =="5":
-            #interface
-            config = autoreply_umschalten(config, konfig_pfad)
-            print("→ Autoreply aktualisiert.")
+            config = autoreply_umschalten(config, konfig_pfad) # interface
             continue
         elif auswahl == "6":
             print("→ Aktuelle Konfiguration:")
@@ -175,7 +179,7 @@ def main():
                 print(f"  {k}: {v}")
             continue    
         elif auswahl == "7":
-                sende_befehl_an_netzwerkprozess(f"LEAVE {handle}", tcp_port)
+                sende_befehl_an_netzwerkprozess(f"LEAVE {handle}", tcp_port) # main
                 break
 
             

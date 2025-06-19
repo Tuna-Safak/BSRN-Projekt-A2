@@ -60,13 +60,6 @@ def send_join(handle, port):
     ip = finde_lokale_ip()
     nachricht = f"JOIN {handle} {port} {ip}\n"
     sock.sendto(nachricht.encode('utf-8'), ("255.255.255.255", DISCOVERY_PORT))
-   # print(f"[JOIN] Gesendet: {nachricht.strip()}")
-  
-    
-   # nachricht = f"JOIN {handle} {port}\n"
-    # JOIN: ist der Befehl, der an alle anderen Computer im Netzwerk gesendet wird
-    #sock.sendto(nachricht.encode(), ("255.255.255.255", DISCOVERY_PORT))
-    #print(f"[JOIN] Gesendet: {nachricht.strip()}")
 
 # -------------JOIN verarbeiten-----------------
 def handle_join(name, DISCOVERY_PORT, addr, ip=None):
@@ -138,60 +131,7 @@ def sendMSG(sock, handle, empfaenger_handle, text):
     print(f"[SEND] → an {empfaenger_handle} @ {ip}:{port} → {text}")
     sock.sendto(nachricht.encode('utf-8'), (ip, port))
 
-# # -------------Nachricht empfangen-----------------
-# def receive_MSG(sock, config):
-#     while True:
-#         daten, addr = sock.recvfrom(1024)
-#         text = daten.decode('utf-8').strip()
 
-
-#         teile = text.strip().split(" ")
-#         if len(teile) == 0:
-#             print("Leere Nachricht")
-#             continue
-
-#         befehl = teile[0]
-
-#         if teile[0] == "JOIN" and len(teile) >= 3:
-#             name = teile[1]
-#             port = teile[2]
-#             ip = teile[3] if len(teile) >= 4 else addr[0]
-#             DISCOVERY_PORT = int(port)  
-
-#         elif befehl == "LEAVE" and len(teile) == 2:
-#             handle_leave(teile[1])
-
-#         elif befehl == "MSG" and len(teile) >= 3:
-#             absender_handle = teile[1]
-#             nachricht =  " ".join(teile[2:])  # alles ab dem dritten Wort
-#             print(f"\nNachricht von {absender_handle}: {nachricht}\n> ", end="")
-
-#             if config.get("autoreply_aktiv", False):
-#                 autoreply_text = config.get("autoreply", "Ich bin gerade nicht da.")
-#                 handle = config["client"]["handle"]
-#                 sendMSG(sock, handle, absender_handle, autoreply_text)
-
-
-#         elif befehl == "IMG" and len(teile) == 3:
-#             try:
-#                 handle_IMG(sock, teile, addr)
-#             except Exception as e:
-#                 print(f"Fehler beim Bildempfang: {e}")
-   
-   
-#         elif befehl == "KNOWNUSERS" and len(teile) == 2:
-#             eintraege = teile[1].split(", ")
-#             nutzerliste = gebe_nutzerliste_zurück()
-#             for eintrag in eintraege:
-#                 try:
-#                      handle, ip, port = eintrag.strip().split(" ")
-#                      nutzerliste[handle] = (ip, int(port))
-#                      print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
-#                 except ValueError:
-#                     print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
-
-#         else:
-#             print(f" Unbekannte Nachricht: {text}")
 # -------------Nachricht empfangen-----------------
 def receive_MSG(sock, config):
     """

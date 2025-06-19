@@ -2,8 +2,8 @@
 handle = "Jana"
 port = 5000
 whoisport = 4000
-autoreply = "bin da"
-autoreply_aktiv = false
+autoreply = "Bin nicht mehr da"
+autoreply_aktiv = true
 imagepath = "images/"
 
 [network]

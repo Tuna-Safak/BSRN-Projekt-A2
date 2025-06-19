@@ -10,10 +10,10 @@ import sys
 # ermöglicht den Zugriff aus Systemfunktionen
 import threading 
 # ermöglicht das gleichzeitige Ausführen von mehreren Threads
-import toml
+#import toml
 import os
-from interface import lade_config, finde_freien_port
-from discovery import nutzerspeichern, gebe_nutzerliste_zurück, discovery_main
+from interface import lade_config
+from discovery import gebe_nutzerliste_zurück, discovery_main
 # damit TCP und UDP seperat laufen können 
 import sys
 
@@ -27,7 +27,7 @@ config = lade_config(konfig_pfad)
 DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
 
 def finde_lokale_ip():
-    """Ermittelt die echte lokale IP-Adresse (z. B. WLAN) durch Verbindung zu 8.8.8.8."""
+    #Ermittelt die echte lokale IP-Adresse (z. B. WLAN) durch Verbindung zu 8.8.8.8.
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8", 80))
@@ -133,9 +133,8 @@ def sendMSG(sock, handle, empfaenger_handle, text):
 
 # -------------Nachricht empfangen-----------------
 def receive_MSG(sock, config):
-    """
-    Empfängt Nachrichten vom UDP-Socket und verarbeitet sie.
-    """
+   # Empfängt Nachrichten vom UDP-Socket und verarbeitet sie.
+    
      
     while True:
         try:
@@ -165,7 +164,7 @@ def receive_MSG(sock, config):
                     continue
 
                 handle_join(name, port, addr, ip) 
-                #  print(f"\n[JOIN] {name} ist dem Chat beigetreten.")
+                #print(f"\n[JOIN] {name} ist dem Chat beigetreten.") #maybe löschen
 
             # Verarbeitung von LEAVE-Nachrichten
             elif befehl == "LEAVE" and len(teile) == 2:
@@ -206,7 +205,7 @@ def receive_MSG(sock, config):
             
                 if rest:
                     eintraege = rest.split(", ")
-                    nutzerliste = gebe_nutzerliste_zurück()
+                    nutzerlist = gebe_nutzerliste_zurück()
                     eigener_handle = config["client"]["handle"]
                     for eintrag in eintraege:
                         try:
@@ -293,9 +292,9 @@ def handle_IMG(sock, teile, addr, config):
         return
 
     # ist der name also an wen das Bild gesendet werden soll
-    empfaenger = teile[1].strip().lower()  ### ⬅️ GEÄNDERT
-    eigener_handle = config["client"]["handle"].lower()  ### ⬅️ GEÄNDERT
-    if empfaenger != eigener_handle:  ### ⬅️ GEÄNDERT
+    empfaenger = teile[1].strip().lower()  #GEÄNDERT
+    eigener_handle = config["client"]["handle"].lower()  #GEÄNDERT
+    if empfaenger != eigener_handle:  #GEÄNDERT
         return  # Bild ist nicht für mich bestimmt – ignorieren
 
     try:

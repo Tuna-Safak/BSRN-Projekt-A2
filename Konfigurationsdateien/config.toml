@@ -1,7 +1,5 @@
-autoreply = "bin nicht da"
-
 [client]
-handle = "Busra"
+handle = ""
 port = 5000
 whoisport = 4000
 autoreply = "Bin arbeiten."

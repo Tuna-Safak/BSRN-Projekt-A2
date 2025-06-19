@@ -62,6 +62,7 @@ def send_join(handle, port):
 # -------------JOIN verarbeiten-----------------
 def handle_join(name, DISCOVERY_PORT, addr, ip=None):
     print(f"[DEBUG] Vorher bekannte Nutzer: {gebe_nutzerliste_zurück()}")
+    gebe_nutzerliste_zurück().clear()
     if ip is None:
         ip = addr[0]
         
@@ -76,7 +77,7 @@ def handle_join(name, DISCOVERY_PORT, addr, ip=None):
     #else:
         #gebe_nutzerliste_zurück()[name] = (ip, DISCOVERY_PORT)
         #print(f"{name} erneut beigetreten – Daten aktualisiert: {ip}:{DISCOVERY_PORT}")
-        print(f"[DEBUG] Nachher bekannte Nutzer: {gebe_nutzerliste_zurück()}")
+        #print(f"[DEBUG] Nachher bekannte Nutzer: {gebe_nutzerliste_zurück()}")
 
 
 # -------------Leave-Nachricht versenden-----------------
@@ -160,8 +161,8 @@ def receive_MSG(sock, config):
                 name = teile[1]
                 port = teile[2]
                 ip = teile[3] if len(teile) >= 4 else addr[0]
-                if name == eigener_handle and ip == eigene_ip:
-                    continue
+                #if name == eigener_handle and ip == eigene_ip:
+                 #   continue
 
                 handle_join(name, port, addr, ip) 
                 #print(f"\n[JOIN] {name} ist dem Chat beigetreten.") #maybe löschen

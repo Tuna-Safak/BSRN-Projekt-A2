@@ -12,7 +12,7 @@ import threading
 # ermöglicht das gleichzeitige Ausführen von mehreren Threads
 import toml
 import os
-from UI_utils import lade_config, finde_freien_port
+from interface import lade_config, finde_freien_port
 from discovery import nutzerspeichern, gebe_nutzerliste_zurück, discovery_main
 # damit TCP und UDP seperat laufen können 
 import sys
@@ -475,7 +475,7 @@ if __name__ == "__main__":
     import sys
     import os
     import threading
-    from UI_utils import lade_config
+    from interface import lade_config
 
     # Argumente auslesen
     konfig_pfad = sys.argv[1] if len(sys.argv) > 1 else None

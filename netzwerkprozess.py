@@ -144,7 +144,11 @@ def receive_MSG(sock, config):
             daten, addr = sock.recvfrom(1024)  # Daten und Adresse des Absenders
             text = daten.decode('utf-8').strip()
             # Teile der Nachricht aufspalten
-            teile = text.strip().split(" ")
+            teile = text.strip().split(" ", 1)
+            befehl = teile[0]
+            rest = teile[1] if len(teile) > 1 else ""
+
+            teile = [befehl] + rest.strip().split(" ")
             if len(teile) == 0:
                 print("Leere Nachricht")
                 continue
@@ -199,29 +203,24 @@ def receive_MSG(sock, config):
                     print(f"Fehler beim Bildempfang: {e}")
 
             # Verarbeitung von KNOWNUSERS-Nachrichten
-            elif befehl == "KNOWNUSERS" and len(teile) == 2:
-                eintraege = teile[1].split(", ")
-                nutzerliste = gebe_nutzerliste_zurück()
-                for eintrag in eintraege:
-                    try:
-                        handle, ip, port = eintrag.strip().split(" ")
-                        nutzerliste[handle] = (ip, int(port))
-                        print(f"[INFO] → {handle} @ {ip}:{port} gespeichert")
-                    except ValueError:
-                        print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
-
-            else:
-                print(f"Unbekannte Nachricht: {text}")
-
-        except ConnectionResetError as e:
-            # Dieser Fehler tritt auf, wenn die Verbindung vom Remote Host geschlossen wurde
-            print(f"Fehler: Verbindung vom Remote Host geschlossen. {e}")
-            break  # Verbindung unterbrochen, daher Abbruch der Schleife
+            elif befehl == "KNOWNUSERS":
+            
+                if rest:
+                    eintraege = rest.split(", ")
+                    nutzerliste = gebe_nutzerliste_zurück()
+                    eigener_handle = config["client"]["handle"]
+                    for eintrag in eintraege:
+                        try:
+                            handle, ip, port = eintrag.strip().split(" ")
+                            if handle == eigener_handle:
+                                continue
+                        except ValueError:
+                            print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
+                else:
+                     print("[INFO] Keine Nutzer in KNOWNUSERS-Antwort.")
 
         except Exception as e:
-            # Alle anderen unerwarteten Fehler werden hier abgefangen
-            print(f"Ein unerwarteter Fehler ist aufgetreten: {e}")
-            break  # Abbruch bei unerwartetem Fehler
+            print(f"Fehler: {e}")
 
 
 # -------------Bild senden-----------------
@@ -236,14 +235,14 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
         print("Empfänger nicht bekannt.")
         return  # die Funktion wird beendet, weil Senden nicht möglich ist
 
-    try:
+   # try:
         # Bilddatei öffnen – "rb" bedeutet:
         # r = read, b = binary (binär lesen, nicht als Text)
         # wir brauchen das für Bilder, weil sie keine Textdateien sind
         with open(bildpfad, "rb") as b:
             # gesamtes Bild als Binärdaten einlesen
             bilddaten = b.read()
-    except FileNotFoundError:
+   # except FileNotFoundError:
         # Wenn der Pfad falsch ist oder das Bild nicht existiert
         print("Bild nicht gefunden:", bildpfad)
         return  # Funktion beenden
@@ -389,8 +388,7 @@ def netzwerkprozess(konfig_pfad, tcp_port):
             ## @var daten
             #  @brief Empfangener Befehl als Zeichenkette.
             daten = conn.recv(1024).decode('utf-8').strip()
-            print(f"[Netzwerkprozess] Befehl empfangen: {daten}")
-
+        
             ## @var teile
             #  @brief Aufgesplitteter Befehl (z. B. ["MSG", "Bob", "Hallo"])
             teile = daten.strip().split(" ", 2)  # WICHTIG!
@@ -424,7 +422,6 @@ def netzwerkprozess(konfig_pfad, tcp_port):
             #           zurück an den aufrufenden UI-Prozess.
             #  @note Verwendet dieselbe TCP-Verbindung (`conn.sendall`), über die auch der WHO-Befehl empfangen wurde.
             elif teile[0] == "WHO":
-                print("[Netzwerkprozess] → WHO wird gesendet ...")
                 DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
 
                 who_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -434,7 +431,6 @@ def netzwerkprozess(konfig_pfad, tcp_port):
                 try:
                     # Broadcast-Nachricht an alle Peers senden
                     who_sock.sendto(b"WHO\n", ("255.255.255.255", DISCOVERY_PORT))
-                    print("[Netzwerkprozess] → Warte auf KNOWNUSERS-Antwort(en) ...")
 
                     nutzerliste = gebe_nutzerliste_zurück()
                     antwort_liste = []  # lokale Liste zum Rücksenden
@@ -465,10 +461,8 @@ def netzwerkprozess(konfig_pfad, tcp_port):
                 antwort_text = "KNOWNUSERS " + ", ".join(antwort_liste)
                 try:
                     conn.sendall(antwort_text.encode('utf-8'))
-                    print("[Netzwerkprozess] → Antwort an UI gesendet.")
                 except Exception as e:
                     print(f"[Netzwerkprozess] Antwort an UI fehlgeschlagen: {e}")
-
 
 
 if __name__ == "__main__":

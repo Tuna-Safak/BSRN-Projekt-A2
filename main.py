@@ -58,7 +58,7 @@ from netzwerkprozess import (
 ## @return port: verwendeter UDP-Port des Nutzers
 ## @return nutzer_sock: der UDP-Socket, der an den Port gebunden ist
 
-def registriere_neuen_nutzer(handle,config):
+def registriere_neuen_nutzer(handle, config):
     port, nutzer_sock = finde_freien_port(config)
     send_join(handle,port)
     return port, nutzer_sock

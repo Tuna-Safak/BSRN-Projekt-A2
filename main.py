@@ -1,6 +1,6 @@
 ## @file main.py
 ## @brief Start des Programms und ruft die ganzen funktionien auf
-
+import os
 # starten eines weiteren Prozesses durch ein bestehenden Prozess
 import subprocess
 # erlaubt eine verzögerung beim starten
@@ -23,7 +23,11 @@ from interface import (
     eingabe_nachricht,
     eingabe_bild,
     autoreply_umschalten,
-    autoreply_einschalten
+    autoreply_einschalten,
+    lade_config, 
+    finde_freien_port,
+    erstelle_neue_config,
+    finde_freien_tcp_port
 )
 
 from discovery import (
@@ -31,13 +35,13 @@ from discovery import (
     discovery_main
 )
 
-import os 
-from UI_utils import (
+ 
+'''from UI_utils import (
     lade_config, 
     finde_freien_port,
     erstelle_neue_config,
     finde_freien_tcp_port
-)
+)'''
 
 from netzwerkprozess import (
     send_join, 

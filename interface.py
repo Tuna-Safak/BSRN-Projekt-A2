@@ -1,8 +1,13 @@
 #Argumente aus der Kommandozeile auslesen --handel
 import sys
+#Modul zum Parsen von .toml-Dateien
 import toml
+# Für Prüfung freier Ports per UDP-Socket
+import socket
+#Für Datei- und Pfadprüfung (z. B. ob config.toml existiert)
 import os
-from UI_utils import erstelle_neue_config
+
+#from UI_utils import erstelle_neue_config
 ## import questionary
 ## @file interface.py
 # @brief interface der Kommmandozeile für das Chat-Programm
@@ -21,21 +26,7 @@ def menue():
     print("6. Konfiguration anzeigen/bearbeiten")
     print("7. Chat verlassen")
     return input("> Bitte wählen: ")
-    
-    
-'''wahl= questionary.select(
-    "Was möchtest du tun?",
-    choices=[
-        "Teilnehmer anzeigen",
-        "Nachricht senden",
-        "Bild senden",
-        "Autoreply ändern",
-        "Konfiguration",
-        "Beenden"
-    ]
-).ask()
 
-print("Du hast gewählt:", wahl)'''
 
 ## Eingabe des Benutzernames
 # @return Benutzername (Handle) als String
@@ -115,4 +106,103 @@ def autoreply_einschalten(config, pfad):
         toml.dump(config, f)
 
     return config
+
+
+import os          
+
+
+#: @brief Pfad zur standardmäßigen Konfigurationsdatei, wird großgeschrieben da Konstante 
+KONFIGURATIONSDATEI = "Konfigurationsdateien/config.toml"
+
+def lade_config(pfad=None):
+    # @brief lädt die TOML-Konfigurationsdatei und gibt sie als Dictionary zurück (Parsing).
+    # @return dict mit den Konfigurationswerten
+    # @raises FileNotFoundError wenn die Datei nicht existiert
+    if pfad is None:
+        pfad = "Konfigurationsdateien/config.toml"
+
+    if os.path.exists(pfad):
+       
+        return toml.load(pfad)
+    else:
+        raise FileNotFoundError("config.toml nicht gefunden.") 
+
+def erstelle_neue_config(handle):
+    # @brief Erstellt eine neue Konfigurationsdatei für den Benutzer, falls sie noch nicht existiert.
+    # @param handle: Der Benutzername für den die Konfiguration erstellt wird.
+    # Standard-Konfigurationswerte für den Benutzer
+    config = {
+        "client": {
+            "name": handle,
+            "autoreply": "",  # Standardwert für autoreply
+            "autoreply_aktiv": False
+        },
+        "network": {
+            "port_min": 5000,
+            "port_max": 5100
+        }
+    }
+
+    # Dateipfad für die neue Konfigurationsdatei
+    konfig_pfad = f"Konfigurationsdateien/config_{handle.lower()}.toml"
+
+    # Speichern der Konfigurationsdatei im TOML-Format
+    with open(konfig_pfad, "w") as f:
+        toml.dump(config, f)
+    
+    print(f"Neue Konfigurationsdatei für {handle} wurde erstellt.")   
+
+## @brief Findet einen freien TCP-Port auf dem lokalen System.
+#  Diese Funktion erstellt einen temporären TCP-Socket, der sich an Port 0 bindet.
+#  Die Angabe von Port 0 signalisiert dem Betriebssystem, dass ein beliebiger freier Port
+#  automatisch zugewiesen werden soll. Nachdem der Socket gebunden ist, wird der
+#  tatsächlich zugewiesene Port abgefragt und zurückgegeben.
+#  @return int Ein freier TCP-Port, der aktuell nicht verwendet wird.
+def finde_freien_tcp_port():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind(('', 0))  # Port 0 = automatisch freien Port finden
+        return s.getsockname()[1]
+
+# @brief Durchsucht den in der Konfigurationsdatei angegebenen Portbereich nach einem freien UDP-Port.
+# @param config dict mit den Konfigurationswerten, erwartet Schlüssel 'port_min' und 'port_max'
+# @return int erster freier UDP-Port im Bereich
+# @raises ValueError Wenn 'port_min' oder 'port_max' in der Konfiguration fehlen
+# @raises RuntimeError wenn kein freier Port im Bereich gefunden wird
+def finde_freien_port(config):
+    #Holt die Konfigurationswerte port_min und port_max aus dem config-Dictionary
+    port_min = config["network"].get("port_min")
+    port_max = config["network"].get("port_max")
+
+    # Fehlermeldung, falls einer der benötigten Ports in der Konfigurationsdatei fehlen.
+    if port_min is None or port_max is None:
+        raise ValueError("Konfigurationswerte 'port_min' und 'port_max' fehlen.")
+   
+    # Schleife über alle Ports im Bereich.
+    # range(... + 1) ist notwendig, weil range die letzte Position nicht einbezieht.
+    for port in range(port_min, port_max + 1):
+   
+      try:
+        # Erstellt einen Socket mit IPv4 (Adressfamilie = AF_INET) und UDP (Sockettyp = SOCK_DGRAM).
+        # Kein 'with', damit der Socket erhalten bleibt und der Port reserviert bleibt.
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+        # Versucht, den Socket an einen bestimmten Port zu binden:
+        # "" steht für „alle Netzwerk-Interfaces“ (z. B. localhost und LAN).
+        # port ist der aktuell getestete Port.
+        # Wenn das gelingt, ist der Port frei – also wird er sofort zurückgegeben.
+        sock.bind(("", port))
+        
+        return port, sock
+
+      except OSError:
+        # Wenn der Bind-Vorgang fehlschlägt, wird ein OSError ausgelöst und die Schleife wird fortgesetzt.
+        continue 
+
+    # Wenn kein einziger Port im angegebenen Bereich verfügbar war, bricht die Funktion mit einem RuntimeError ab
+    raise RuntimeError("Kein freier UDP-Port im Bereich {}–{} gefunden.".format(port_min, port_max))
+ 
+
+
+
+
 

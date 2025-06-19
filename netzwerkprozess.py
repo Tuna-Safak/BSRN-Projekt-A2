@@ -12,7 +12,7 @@ import threading
 # ermöglicht das gleichzeitige Ausführen von mehreren Threads
 import toml
 import os
-from UI_utils import lade_config, finde_freien_port
+from interface import lade_config, finde_freien_port
 from discovery import nutzerspeichern, gebe_nutzerliste_zurück, discovery_main
 # damit TCP und UDP seperat laufen können 
 import sys
@@ -45,10 +45,8 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 # Binde an den freien DISCOVERY_PORT
-try:
-    sock.bind(('', DISCOVERY_PORT))
-except OSError:
-    print(f"[WARNUNG] Socket konnte nicht gebunden werden möglicherweise bereits durch Discovery-Prozess gebunden.")
+sock.bind(('', DISCOVERY_PORT))
+   
 
 # Gib den Socket an andere Module zurück, falls gewünscht
 def get_socket():
@@ -469,7 +467,7 @@ if __name__ == "__main__":
     import sys
     import os
     import threading
-    from UI_utils import lade_config
+    from interface import lade_config
 
     # Argumente auslesen
     konfig_pfad = sys.argv[1] if len(sys.argv) > 1 else None

@@ -55,12 +55,13 @@ def get_socket():
 # -----------JOIN-Nachricht versenden------------------
 def send_join(handle, port):
     # allen im Chat wird mitgeteilt, dass ich mich im Chat befinde
-    ip = finde_lokale_ip()
-    nachricht = f"JOIN {handle} {port} {ip}\n"
+    #ip = finde_lokale_ip()
+    nachricht = f"JOIN {handle} {port}\n"
     sock.sendto(nachricht.encode('utf-8'), ("255.255.255.255", DISCOVERY_PORT))
 
 # -------------JOIN verarbeiten-----------------
 def handle_join(name, DISCOVERY_PORT, addr, ip=None):
+    print(f"[DEBUG] Vorher bekannte Nutzer: {gebe_nutzerliste_zurück()}")
     if ip is None:
         ip = addr[0]
         
@@ -71,11 +72,11 @@ def handle_join(name, DISCOVERY_PORT, addr, ip=None):
 
     if name not in gebe_nutzerliste_zurück():
         gebe_nutzerliste_zurück()[name] = (ip, DISCOVERY_PORT)
-        print(f"{name} ist dem Chat beigetreten – {ip}:{DISCOVERY_PORT}")
-    else:
-        gebe_nutzerliste_zurück()[name] = (ip, DISCOVERY_PORT)
-        print(f"{name} erneut beigetreten – Daten aktualisiert: {ip}:{DISCOVERY_PORT}")
-
+        print(f"JOIN {name} {DISCOVERY_PORT}")
+    #else:
+        #gebe_nutzerliste_zurück()[name] = (ip, DISCOVERY_PORT)
+        #print(f"{name} erneut beigetreten – Daten aktualisiert: {ip}:{DISCOVERY_PORT}")
+        print(f"[DEBUG] Nachher bekannte Nutzer: {gebe_nutzerliste_zurück()}")
 
 
 # -------------Leave-Nachricht versenden-----------------
@@ -98,7 +99,7 @@ def handle_leave(name):
     # Verarbeitung einer LEAVE-Nachricht, um Nutzer aus der Liste zu entfernen
     if name in gebe_nutzerliste_zurück():
         del gebe_nutzerliste_zurück()[name]
-        print(f"{name} hat den Chat verlassen")
+        print(f"LEAVE {name}")
     else:
         print(f"LEAVE von unbekanntem Nutzer erhalten: {name}")
 
@@ -126,7 +127,7 @@ def sendMSG(sock, handle, empfaenger_handle, text):
         return
 
     nachricht = f'MSG {handle} "{text}"\n'
-    print(f"[SEND] → an {empfaenger_handle} @ {ip}:{port} → {text}")
+    print(f'MSG {empfaenger_handle} "{text}"')
     sock.sendto(nachricht.encode('utf-8'), (ip, port))
 
 
@@ -179,7 +180,7 @@ def receive_MSG(sock, config):
                     absender_name = teile[1]  # Fallback, falls IP nicht gefunden
 
                 handle_leave(absender_name)
-                print(f"\n[LEAVE] {absender_name} hat den Chat verlassen.")
+                # print(f"\n[LEAVE] {absender_name} hat den Chat verlassen.")
 
             # Verarbeitung von MSG-Nachrichten
             elif befehl == "MSG" and len(teile) >= 3:
@@ -210,6 +211,7 @@ def receive_MSG(sock, config):
                     for eintrag in eintraege:
                         try:
                             handle, ip, port = eintrag.strip().split(" ")
+        
                             if handle == eigener_handle:
                                 continue
                         except ValueError:
@@ -301,9 +303,9 @@ def handle_IMG(sock, teile, addr, config):
     except ValueError:
         print("Ungültige Bildgröße.")
         return
-    print(f"[DEBUG] Erwartete Bildgröße: {groesse} Bytes")  # ❗DEBUG
+    print(f"[DEBUG] Erwartete Bildgröße: {groesse} Bytes") 
 
-    # ❗NEU: Bilddaten in mehreren Chunks empfangen
+    #  Bilddaten in mehreren Chunks empfangen
     bilddaten = b""
     verbleibend = groesse
     sock.settimeout(3.0)
@@ -313,7 +315,7 @@ def handle_IMG(sock, teile, addr, config):
             chunk, _ = sock.recvfrom(2048)
             bilddaten += chunk
             verbleibend -= len(chunk)
-            print(f"[DEBUG] Chunk empfangen, verbleibend: {verbleibend} Bytes")  # ❗DEBUG
+            print(f"[DEBUG] Chunk empfangen, verbleibend: {verbleibend} Bytes")  
     except socket.timeout:
         print("[ERROR] Bilddaten nicht empfangen - Timeout.")
         return
@@ -322,7 +324,7 @@ def handle_IMG(sock, teile, addr, config):
 
     sender_ip = addr[0]
     if len(bilddaten) == 0:
-        print("[FEHLER] Leere Bilddaten empfangen – kein Bild gespeichert!")  # ❗DEBUG
+        print("[FEHLER] Leere Bilddaten empfangen – kein Bild gespeichert!")  #DEBUG
         return
 
     # Absendernamen aus der IP-Adresse ermitteln
@@ -333,9 +335,9 @@ def handle_IMG(sock, teile, addr, config):
             break
     if sender_name is None:
         sender_name = "Unbekannt"
-        print(f"[DEBUG] Sender-Name: {sender_name}, IP: {sender_ip}")  # ❗DEBUG
+        print(f"[DEBUG] Sender-Name: {sender_name}, IP: {sender_ip}")  #DEBUG
 
-    zielverzeichnis = config["client"].get("imagepath", "empfangene_bilder")  ### ⬅️ GEÄNDERT
+    zielverzeichnis = config["client"].get("imagepath", "empfangene_bilder")  #GEÄNDERT
     os.makedirs(zielverzeichnis, exist_ok=True)
 
     dateiname = f"{sender_name}_bild.jpg"
@@ -343,7 +345,7 @@ def handle_IMG(sock, teile, addr, config):
 
     with open(pfad, "wb") as f:
         f.write(bilddaten)
-        print(f"[DEBUG] Bild erfolgreich gespeichert: {pfad}")  # ❗DEBUG
+        print(f"[DEBUG] Bild erfolgreich gespeichert: {pfad}")  #DEBUG
 
     print(f"Bild von {sender_name} empfangen und gespeichert unter: {pfad}")
 
@@ -444,6 +446,8 @@ def netzwerkprozess(konfig_pfad, tcp_port):
                                 for eintrag in eintraege:
                                     try:
                                         handle, ip, port = eintrag.strip().split(" ")
+                                        if handle in nutzerliste and nutzerliste[handle] == (ip, int(port)):
+                                            continue  # Schon drin, überspringen!
                                         nutzerliste[handle] = (ip, int(port))
                                         antwort_liste.append(f"{handle} {ip} {port}")
                                         print(f"[WHO] → {handle} @ {ip}:{port} gespeichert")

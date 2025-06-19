@@ -120,7 +120,7 @@ def main():
     port, nutzer_sock = registriere_neuen_nutzer(handle,config)
    
 
-    print(f"Willkommen, {handle}! Dein Port: {port}")
+    #print(f"Willkommen, {handle}! Dein Port: {port}")
 
     while True:
         auswahl = menue() # interface

@@ -111,7 +111,7 @@ def nutzerspeichern():
        ## benutzer im Woerterbuch speichern
           known_users[handle] = (ip, port)
 
-          print(f" [INFO: ] {handle} ist jetzt bekannt unter {ip}: {port}")
+          #print(f" [INFO: ] {handle} ist jetzt bekannt unter {ip}: {port}")
        ## who-block
 
         elif befehl == "WHO" and len(nachrichtTeilen) == 1:
@@ -129,15 +129,6 @@ def nutzerspeichern():
 
           sock.sendto(antwort.encode('utf-8'), absender)
          
-        elif befehl == "LEAVE" and len(nachrichtTeilen) == 2:
-          handle = nachrichtTeilen[1]
-         
-          if handle in known_users:
-         
-              del known_users[handle]
-              print(f"[INFO] {handle} wurde entfernt (LEAVE empfangen)")
-          else:
-             print(f"[WARNUNG] LEAVE empfangen, aber {handle} war nicht bekannt")
 
 def zeige_bekannte_nutzer():
     print(" Bekannte Nutzer:")

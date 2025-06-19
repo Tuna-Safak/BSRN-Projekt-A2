@@ -104,7 +104,7 @@ def main():
     config = lade_config(konfig_pfad)
     #interface
     #netzwerkprozess(konfig_pfad)
-    threading.Thread(target=receive_MSG, args=(get_socket(), config), daemon=True).start()
+    #threading.Thread(target=receive_MSG, args=(get_socket(), config), daemon=True).start()
     #main
     port, nutzer_sock = registriere_neuen_nutzer(handle,config)
    

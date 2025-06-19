@@ -199,7 +199,7 @@ def finde_freien_port(config):
         continue 
 
     # Wenn kein einziger Port im angegebenen Bereich verfügbar war, bricht die Funktion mit einem RuntimeError ab
-    raise RuntimeError("Kein freier UDP-Port im Bereich {}–{} gefunden.".format(port_min, port_max))
+    raise RuntimeError("Kein freier UDP-Port im Bereich {} {} gefunden.".format(port_min, port_max))
  
 
 

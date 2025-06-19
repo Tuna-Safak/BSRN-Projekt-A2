@@ -233,14 +233,14 @@ def sendIMG(handle_sender, handle_empfaenger, bildpfad):
         print("Empfänger nicht bekannt.")
         return  # die Funktion wird beendet, weil Senden nicht möglich ist
 
-   # try:
+    try:
         # Bilddatei öffnen – "rb" bedeutet:
         # r = read, b = binary (binär lesen, nicht als Text)
         # wir brauchen das für Bilder, weil sie keine Textdateien sind
         with open(bildpfad, "rb") as b:
             # gesamtes Bild als Binärdaten einlesen
             bilddaten = b.read()
-   # except FileNotFoundError:
+    except FileNotFoundError:
         # Wenn der Pfad falsch ist oder das Bild nicht existiert
         print("Bild nicht gefunden:", bildpfad)
         return  # Funktion beenden

@@ -110,7 +110,7 @@ def sendMSG(sock, handle, empfaenger_handle, text):
 
     if empfaenger_handle not in nutzerliste:
         print("Empfänger nicht bekannt.")
-        print(f"Bekannte Nutzer: {nutzerliste}")
+        # print(f"Bekannte Nutzer: {nutzerliste}")
         return
 
     eintrag = nutzerliste[empfaenger_handle]

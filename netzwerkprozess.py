@@ -10,10 +10,10 @@ import sys
 # ermöglicht den Zugriff aus Systemfunktionen
 import threading 
 # ermöglicht das gleichzeitige Ausführen von mehreren Threads
-import toml
+#import toml
 import os
-from interface import lade_config, finde_freien_port
-from discovery import nutzerspeichern, gebe_nutzerliste_zurück, discovery_main
+from interface import lade_config
+from discovery import gebe_nutzerliste_zurück, discovery_main
 # damit TCP und UDP seperat laufen können 
 import sys
 
@@ -27,7 +27,7 @@ config = lade_config(konfig_pfad)
 DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
 
 def finde_lokale_ip():
-    """Ermittelt die echte lokale IP-Adresse (z. B. WLAN) durch Verbindung zu 8.8.8.8."""
+    #Ermittelt die echte lokale IP-Adresse (z. B. WLAN) durch Verbindung zu 8.8.8.8.
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8", 80))
@@ -132,9 +132,8 @@ def sendMSG(sock, handle, empfaenger_handle, text):
 
 # -------------Nachricht empfangen-----------------
 def receive_MSG(sock, config):
-    """
-    Empfängt Nachrichten vom UDP-Socket und verarbeitet sie.
-    """
+   # Empfängt Nachrichten vom UDP-Socket und verarbeitet sie.
+    
      
     while True:
         try:
@@ -164,7 +163,7 @@ def receive_MSG(sock, config):
                     continue
 
                 handle_join(name, port, addr, ip) 
-                #  print(f"\n[JOIN] {name} ist dem Chat beigetreten.")
+                #print(f"\n[JOIN] {name} ist dem Chat beigetreten.") #maybe löschen
 
             # Verarbeitung von LEAVE-Nachrichten
             elif befehl == "LEAVE" and len(teile) == 2:
@@ -205,7 +204,7 @@ def receive_MSG(sock, config):
             
                 if rest:
                     eintraege = rest.split(", ")
-                    nutzerliste = gebe_nutzerliste_zurück()
+                    nutzerlist = gebe_nutzerliste_zurück()
                     eigener_handle = config["client"]["handle"]
                     for eintrag in eintraege:
                         try:
@@ -291,9 +290,9 @@ def handle_IMG(sock, teile, addr, config):
         return
 
     # ist der name also an wen das Bild gesendet werden soll
-    empfaenger = teile[1].strip().lower()  ### ⬅️ GEÄNDERT
-    eigener_handle = config["client"]["handle"].lower()  ### ⬅️ GEÄNDERT
-    if empfaenger != eigener_handle:  ### ⬅️ GEÄNDERT
+    empfaenger = teile[1].strip().lower()  #GEÄNDERT
+    eigener_handle = config["client"]["handle"].lower()  #GEÄNDERT
+    if empfaenger != eigener_handle:  #GEÄNDERT
         return  # Bild ist nicht für mich bestimmt – ignorieren
 
     try:
@@ -301,9 +300,9 @@ def handle_IMG(sock, teile, addr, config):
     except ValueError:
         print("Ungültige Bildgröße.")
         return
-    print(f"[DEBUG] Erwartete Bildgröße: {groesse} Bytes")  # ❗DEBUG
+    print(f"[DEBUG] Erwartete Bildgröße: {groesse} Bytes")  # DEBUG
 
-    # ❗NEU: Bilddaten in mehreren Chunks empfangen
+    # NEU: Bilddaten in mehreren Chunks empfangen
     bilddaten = b""
     verbleibend = groesse
     sock.settimeout(3.0)
@@ -313,7 +312,7 @@ def handle_IMG(sock, teile, addr, config):
             chunk, _ = sock.recvfrom(2048)
             bilddaten += chunk
             verbleibend -= len(chunk)
-            print(f"[DEBUG] Chunk empfangen, verbleibend: {verbleibend} Bytes")  # ❗DEBUG
+            print(f"[DEBUG] Chunk empfangen, verbleibend: {verbleibend} Bytes")  # DEBUG
     except socket.timeout:
         print("[ERROR] Bilddaten nicht empfangen - Timeout.")
         return
@@ -322,7 +321,7 @@ def handle_IMG(sock, teile, addr, config):
 
     sender_ip = addr[0]
     if len(bilddaten) == 0:
-        print("[FEHLER] Leere Bilddaten empfangen – kein Bild gespeichert!")  # ❗DEBUG
+        print("[FEHLER] Leere Bilddaten empfangen – kein Bild gespeichert!")  # DEBUG
         return
 
     # Absendernamen aus der IP-Adresse ermitteln
@@ -333,9 +332,9 @@ def handle_IMG(sock, teile, addr, config):
             break
     if sender_name is None:
         sender_name = "Unbekannt"
-        print(f"[DEBUG] Sender-Name: {sender_name}, IP: {sender_ip}")  # ❗DEBUG
+        print(f"[DEBUG] Sender-Name: {sender_name}, IP: {sender_ip}")  # DEBUG
 
-    zielverzeichnis = config["client"].get("imagepath", "empfangene_bilder")  ### ⬅️ GEÄNDERT
+    zielverzeichnis = config["client"].get("imagepath", "empfangene_bilder")  # GEÄNDERT
     os.makedirs(zielverzeichnis, exist_ok=True)
 
     dateiname = f"{sender_name}_bild.jpg"
@@ -343,7 +342,7 @@ def handle_IMG(sock, teile, addr, config):
 
     with open(pfad, "wb") as f:
         f.write(bilddaten)
-        print(f"[DEBUG] Bild erfolgreich gespeichert: {pfad}")  # ❗DEBUG
+        print(f"[DEBUG] Bild erfolgreich gespeichert: {pfad}")  # DEBUG
 
     print(f"Bild von {sender_name} empfangen und gespeichert unter: {pfad}")
 

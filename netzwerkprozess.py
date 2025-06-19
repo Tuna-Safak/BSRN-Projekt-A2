@@ -454,7 +454,7 @@ def netzwerkprozess(konfig_pfad, tcp_port):
                                         print(f"[WHO] Warnung: Eintrag konnte nicht verarbeitet werden: {eintrag}")
 
                 except socket.timeout:
-                    print("[WHO] Antwortphase beendet.")
+                    print("[WHO] Antwortphase beendet.")#Löschen
                 finally:
                     who_sock.close()
 

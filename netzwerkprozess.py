@@ -62,7 +62,6 @@ def send_join(handle, port):
 # -------------JOIN verarbeiten-----------------
 def handle_join(name, DISCOVERY_PORT, addr, ip=None):
     print(f"[DEBUG] Vorher bekannte Nutzer: {gebe_nutzerliste_zurück()}")
-    gebe_nutzerliste_zurück().clear()
     if ip is None:
         ip = addr[0]
         
@@ -71,7 +70,7 @@ def handle_join(name, DISCOVERY_PORT, addr, ip=None):
    # ip = addr[0]
     DISCOVERY_PORT = int(DISCOVERY_PORT)
 
-    if name not in gebe_nutzerliste_zurück():
+    if name not in gebe_nutzerliste_zurück(): 
         gebe_nutzerliste_zurück()[name] = (ip, DISCOVERY_PORT)
         print(f"JOIN {name} {DISCOVERY_PORT}")
     #else:
@@ -161,8 +160,8 @@ def receive_MSG(sock, config):
                 name = teile[1]
                 port = teile[2]
                 ip = teile[3] if len(teile) >= 4 else addr[0]
-                #if name == eigener_handle and ip == eigene_ip:
-                 #   continue
+                if name == eigener_handle and ip == eigene_ip:
+                    continue
 
                 handle_join(name, port, addr, ip) 
                 #print(f"\n[JOIN] {name} ist dem Chat beigetreten.") #maybe löschen
@@ -207,13 +206,16 @@ def receive_MSG(sock, config):
                 if rest:
                     eintraege = rest.split(", ")
                     nutzerlist = gebe_nutzerliste_zurück()
-                    eigener_handle = config["client"]["handle"]
+                   # eigener_handle = config["client"]["handle"]
+                   
                     for eintrag in eintraege:
                         try:
                             handle, ip, port = eintrag.strip().split(" ")
+                            nutzerlist[handle] = (ip, int(port)) 
+
         
-                            if handle == eigener_handle:
-                                continue
+                            #if handle == eigener_handle:
+                               # continue
                         except ValueError:
                             print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
                 else:
@@ -450,7 +452,7 @@ def netzwerkprozess(konfig_pfad, tcp_port):
                                             continue  # Schon drin, überspringen!
                                         nutzerliste[handle] = (ip, int(port))
                                         antwort_liste.append(f"{handle} {ip} {port}")
-                                        print(f"[WHO] → {handle} @ {ip}:{port} gespeichert")
+                                        print(f"KNOWNUSERS {handle} @ {ip}:{port}")
                                     except ValueError:
                                         print(f"[WHO] Warnung: Eintrag konnte nicht verarbeitet werden: {eintrag}")
 

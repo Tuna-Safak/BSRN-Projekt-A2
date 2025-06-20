@@ -127,15 +127,15 @@ class ChatGUI:
         self.zeige_nachricht("LEAVE gesendet. Fenster wird geschlossen.", "system")
         self.root.after(1000, self.root.destroy)
 
-if __name__ == "__main__":
-    import sys
-    if len(sys.argv) >= 2:
-        handle = sys.argv[1]
-    else:
-        handle = input("Bitte Benutzernamen eingeben: ")
-        if not os.path.exists(f"Konfigurationsdateien/config_{handle.lower()}.toml"):
-            erstelle_neue_config(handle)
+#if __name__ == "__main__":
+ #   import sys
+  #  if len(sys.argv) >= 2:
+   #     handle = sys.argv[1]
+    #else:
+     #   handle = input("Bitte Benutzernamen eingeben: ")
+      #  if not os.path.exists(f"Konfigurationsdateien/config_{handle.lower()}.toml"):
+       #     erstelle_neue_config(handle)
 
-    root = tk.Tk()
-    app = ChatGUI(root, handle)
-    root.mainloop()
+    #root = tk.Tk()
+    #app = ChatGUI(root, handle)
+    #root.mainloop()

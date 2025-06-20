@@ -36,17 +36,8 @@ def nutzernamen_abfragen():
     
     @return Der Benutzername
     """
-    # Prüfen, ob das Argument '--handle' in der Kommandozeile übergeben wurde
-    if '--handle' in sys.argv:
-        index = sys.argv.index('--handle') + 1
-        if index < len(sys.argv):
-            handle = sys.argv[index]
-        else:
-            print("Fehler: Der Parameter '--handle' wurde ohne Wert angegeben.")
-            sys.exit(1)
-    else:
-        # Wenn kein '--handle' Argument vorhanden ist, Benutzernamen interaktiv abfragen
-        handle = input("Bitte Benutzernamen eingeben: ")
+  
+    handle = input("Bitte Benutzernamen eingeben: ")
         
 
     # Pfad zur Konfigurationsdatei des Benutzers
@@ -150,8 +141,6 @@ def erstelle_neue_config(handle):
     with open(konfig_pfad, "w") as f:
         toml.dump(config, f)
     
-    print(f"Neue Konfigurationsdatei für {handle} wurde erstellt.")   
-
 ## @brief Findet einen freien TCP-Port auf dem lokalen System.
 #  Diese Funktion erstellt einen temporären TCP-Socket, der sich an Port 0 bindet.
 #  Die Angabe von Port 0 signalisiert dem Betriebssystem, dass ein beliebiger freier Port
@@ -185,6 +174,8 @@ def finde_freien_port(config):
         # Erstellt einen Socket mit IPv4 (Adressfamilie = AF_INET) und UDP (Sockettyp = SOCK_DGRAM).
         # Kein 'with', damit der Socket erhalten bleibt und der Port reserviert bleibt.
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+
 
         # Versucht, den Socket an einen bestimmten Port zu binden:
         # "" steht für „alle Netzwerk-Interfaces“ (z. B. localhost und LAN).

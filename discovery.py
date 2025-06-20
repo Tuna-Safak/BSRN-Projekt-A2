@@ -107,9 +107,10 @@ def nutzerspeichern():
 
        ## IP-Adresse aus dem Datenpaket "absender" holen
           ip = absender[0]   
-
+          print(f"\n{handle} ist dem Chat beigetreten")
        ## benutzer im Woerterbuch speichern
           known_users[handle] = (ip, port)
+
 
           #print(f" [INFO: ] {handle} ist jetzt bekannt unter {ip}: {port}")
        ## who-block
@@ -139,5 +140,5 @@ def gebe_nutzerliste_zurück():
    return known_users
 
 
-if __name__ == "__main__":
-    discovery_main()
+#if __name__ == "__main__":
+ #   discovery_main()

@@ -43,6 +43,8 @@ from discovery import (
     finde_freien_tcp_port
 )'''
 
+from multiprocessing import Process
+
 from netzwerkprozess import (
     send_join, 
     netzwerkprozess,
@@ -50,7 +52,8 @@ from netzwerkprozess import (
     sendMSG, 
     sendIMG, 
     receive_MSG, 
-    get_socket 
+    starte_netzwerkprozess
+
 )
 
 # registriere_neuen_nutzer
@@ -64,7 +67,8 @@ from netzwerkprozess import (
 
 def registriere_neuen_nutzer(handle, config):
     port, nutzer_sock = finde_freien_port(config)
-    send_join(handle,port)
+    DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
+    send_join(nutzer_sock, handle,port, DISCOVERY_PORT)
     return port, nutzer_sock
 
 ## @brief Sendet einen Steuerbefehl über einen lokalen TCP-Socket an den Netzwerkprozess.
@@ -85,6 +89,7 @@ def sende_befehl_an_netzwerkprozess(befehl: str, tcp_port: int):
 
 
 
+
 ## Hauptfunktion
 #  @brief startet alle funktionienen nach eingabe durch eingabe im Terminal
 #  @details lädt das Menü und verwaltet den Ablauf
@@ -96,14 +101,18 @@ def main():
     # Prüft, ob die Konfigurationsdatei für den angegebenen Benutzer bereits existiert.
     # Wenn nicht, wird automatisch eine neue Konfiguration angelegt (z. B. config_tuna.toml)
     if not os.path.exists(konfig_pfad):
-        erstelle_neue_config(handle)  # Konfig anlegen, falls nicht vorhanden
+        erstelle_neue_config(handle)  # Konfig anlegen, falls nicht vorhanden, WIRD SCHON IN ZEILE 93 GEMACHT
 
     # Startet den Netzwerkprozess als separaten Hintergrundprozess.
     # Übergeben werden: Pfad zur Benutzer-Konfigurationsdatei und der dynamisch gewählte TCP-Port.
     # subprocess.Popen wird verwendet, damit dieser Prozess parallel zur UI läuft.
     # !Jetzt erst Netzwerkprozess starten
+
+
     tcp_port = finde_freien_tcp_port()
-    subprocess.Popen(["python", "netzwerkprozess.py", konfig_pfad, str(tcp_port)])
+    netzwerk_prozess = Process(target=starte_netzwerkprozess, args=(konfig_pfad, tcp_port))
+    netzwerk_prozess.start()
+
 
     # Kurze Wartezeit, um sicherzustellen, dass der Netzwerkprozess genügend Zeit zum Hochfahren hat.
     # Verhindert Race Conditions bei späterer Kommunikation (z. B. TCP-Verbindung).
@@ -192,4 +201,6 @@ def main():
 ## beginnt das Programm
 #  @note Beim starten wird name durch main ersetzt, erst wenn es stimmt, wird die Main Funktion gestartet
 if __name__ == "__main__":
+    import multiprocessing
+    multiprocessing.set_start_method("spawn")  # wichtig für Windows/macOS
     main()

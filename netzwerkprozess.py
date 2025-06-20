@@ -17,14 +17,12 @@ from discovery import gebe_nutzerliste_zurück, discovery_main
 # damit TCP und UDP seperat laufen können 
 import sys
 
-if __name__ == "__main__":
-    konfig_pfad = sys.argv[1] if len(sys.argv) > 1 else None
-else:
-    konfig_pfad = None
+#if __name__ == "__main__":
+ #   konfig_pfad = sys.argv[1] if len(sys.argv) > 1 else None
+#else:
+ #   konfig_pfad = None
 
-config = lade_config(konfig_pfad)
 # Discovery DISCOVERY_PORT aus Konfig
-DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
 
 def finde_lokale_ip():
     #Ermittelt die echte lokale IP-Adresse (z. B. WLAN) durch Verbindung zu 8.8.8.8.
@@ -39,21 +37,13 @@ def finde_lokale_ip():
         return "127.0.0.1"
 
 
-# Erstelle den UDP-Socket
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-
-# Binde an den freien DISCOVERY_PORT
-sock.bind(('', DISCOVERY_PORT))
-   
 
 # Gib den Socket an andere Module zurück, falls gewünscht
-def get_socket():
-    return sock
+#def get_socket():
+ #   return sock
 
 # -----------JOIN-Nachricht versenden------------------
-def send_join(handle, port):
+def send_join(sock, handle, port, DISCOVERY_PORT):
     # allen im Chat wird mitgeteilt, dass ich mich im Chat befinde
     #ip = finde_lokale_ip()
     nachricht = f"JOIN {handle} {port}\n"
@@ -61,7 +51,6 @@ def send_join(handle, port):
 
 # -------------JOIN verarbeiten-----------------
 def handle_join(name, DISCOVERY_PORT, addr, ip=None):
-    print(f"[DEBUG] Vorher bekannte Nutzer: {gebe_nutzerliste_zurück()}")
     if ip is None:
         ip = addr[0]
         
@@ -76,11 +65,11 @@ def handle_join(name, DISCOVERY_PORT, addr, ip=None):
     #else:
         #gebe_nutzerliste_zurück()[name] = (ip, DISCOVERY_PORT)
         #print(f"{name} erneut beigetreten – Daten aktualisiert: {ip}:{DISCOVERY_PORT}")
-        print(f"[DEBUG] Nachher bekannte Nutzer: {gebe_nutzerliste_zurück()}")
+        #print(f"[DEBUG] Nachher bekannte Nutzer: {gebe_nutzerliste_zurück()}")
 
 
 # -------------Leave-Nachricht versenden-----------------
-def send_leave(handle_nutzername):
+def send_leave(sock, handle_nutzername):
     nachricht = f"LEAVE {handle_nutzername}\n"
     sock.sendto(nachricht.encode('utf-8'), ("255.255.255.255", DISCOVERY_PORT))
 
@@ -227,7 +216,7 @@ def receive_MSG(sock, config):
 # @param handle_sender: Benutzername des Absenders 
 # @param handle_empfaenger: Benutzername des Empfängers
 # @param bildpfad: Pfad zur Bilddatei
-def sendIMG(handle_sender, handle_empfaenger, bildpfad):
+def sendIMG(sock, handle_sender, handle_empfaenger, bildpfad):
     
     # Prüfen, ob der Empfänger überhaupt bekannt ist, also ob wir seine IP-Adresse und DISCOVERY_PORT kennen
     if handle_empfaenger not in gebe_nutzerliste_zurück():
@@ -355,7 +344,7 @@ def handle_IMG(sock, teile, addr, config):
 #           wie MSG und IMG senden kann. Diese werden analysiert und mit UDP an die Ziel-Peers
 #           gemäß SLCP-Protokoll weitergeleitet.
 #  @note Diese Funktion blockiert dauerhaft. Sie sollte in einem separaten Prozess ausgeführt werden.
-def netzwerkprozess(konfig_pfad, tcp_port):
+def netzwerkprozess(sock, konfig_pfad, tcp_port):
  
     print("[DEBUG] netzwerkprozess(konfig_pfad) wurde aufgerufen")
 
@@ -375,7 +364,7 @@ def netzwerkprozess(konfig_pfad, tcp_port):
     tcp_server.listen(1)
 
 
-    print("[INFO] (Netzwerkprozess) TCP-IPC bereit auf Port {tcp_port}}" )
+    print("f[INFO] (Netzwerkprozess) TCP-IPC bereit auf Port {tcp_port}" )
 
     while True:
         ## @var conn
@@ -402,17 +391,17 @@ def netzwerkprozess(konfig_pfad, tcp_port):
             # Behandelt den IMG-Befehl und leitet das Bild weiter
             elif teile[0] == "IMG":
                 _, empfaenger, pfad = teile
-                sendIMG(config["client"]["handle"], empfaenger, pfad)
+                sendIMG(sock, config["client"]["handle"], empfaenger, pfad)
                 
 
             # behandelt den JOIN-Befehl und leitet es Broadcast per UDP weiter 
             # wird von Discovery-Dienst empfangen
             elif teile[0] == "JOIN":
                 _, handle, port = teile
-                send_join(handle, port)
+                send_join(sock, handle, port)
 
             elif teile[0] == "LEAVE": 
-                send_leave(config["client"]["handle"])
+                send_leave(sock, config["client"]["handle"])
 
             ## @brief Behandelt den WHO-Befehl vom UI-Prozess über TCP.
             #  @details Führt einen UDP-Broadcast mit "WHO" an alle Peers im LAN durch. 
@@ -465,31 +454,17 @@ def netzwerkprozess(konfig_pfad, tcp_port):
                 except Exception as e:
                     print(f"[Netzwerkprozess] Antwort an UI fehlgeschlagen: {e}")
 
-
-if __name__ == "__main__":
-    import sys
-    import os
-    import threading
-    from interface import lade_config
-
-    # Argumente auslesen
-    konfig_pfad = sys.argv[1] if len(sys.argv) > 1 else None
-    tcp_port = int(sys.argv[2]) if len(sys.argv) > 2 else None
-
-    if konfig_pfad is None or not os.path.exists(konfig_pfad):
-        print("[FEHLER] Keine gültige Konfigurationsdatei angegeben.")
-        sys.exit(1)
-
-    if tcp_port is None:
-        print("[FEHLER] Kein TCP-Port angegeben.")
-        sys.exit(1)
-
-    # Konfiguration laden
+def starte_netzwerkprozess(konfig_pfad, tcp_port):
     config = lade_config(konfig_pfad)
-    print(f"[DEBUG] Netzwerkprozess gestartet mit TCP-Port {tcp_port}")
+    DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
+    
+# Erstelle den UDP-Socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
-    # UDP-Receiver starten
-    threading.Thread(target=receive_MSG, args=(get_socket(), config), daemon=True).start()
-
-    # TCP-Server starten
-    netzwerkprozess(konfig_pfad, tcp_port)
+# Binde an den freien DISCOVERY_PORT
+    sock.bind(('', DISCOVERY_PORT))
+   
+    threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
+    netzwerkprozess(sock, konfig_pfad, tcp_port)

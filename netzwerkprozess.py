@@ -13,7 +13,8 @@ import threading
 #import toml
 import os
 from interface import lade_config
-from discovery import gebe_nutzerliste_zurück, discovery_main
+from discovery import discovery_main
+from nutzerliste import gebe_nutzerliste_zurück
 # damit TCP und UDP seperat laufen können 
 import sys
 
@@ -61,7 +62,7 @@ def handle_join(name, DISCOVERY_PORT, addr, ip=None):
 
     if name not in gebe_nutzerliste_zurück(): 
         gebe_nutzerliste_zurück()[name] = (ip, DISCOVERY_PORT)
-        print(f"JOIN {name} {DISCOVERY_PORT}")
+        
     #else:
         #gebe_nutzerliste_zurück()[name] = (ip, DISCOVERY_PORT)
         #print(f"{name} erneut beigetreten – Daten aktualisiert: {ip}:{DISCOVERY_PORT}")
@@ -69,7 +70,7 @@ def handle_join(name, DISCOVERY_PORT, addr, ip=None):
 
 
 # -------------Leave-Nachricht versenden-----------------
-def send_leave(sock, handle_nutzername):
+def send_leave(sock, handle_nutzername, DISCOVERY_PORT):
     nachricht = f"LEAVE {handle_nutzername}\n"
     sock.sendto(nachricht.encode('utf-8'), ("255.255.255.255", DISCOVERY_PORT))
 
@@ -123,7 +124,6 @@ def sendMSG(sock, handle, empfaenger_handle, text):
 # -------------Nachricht empfangen-----------------
 def receive_MSG(sock, config):
    # Empfängt Nachrichten vom UDP-Socket und verarbeitet sie.
-    
      
     while True:
         try:
@@ -357,8 +357,6 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
     config = lade_config(konfig_pfad)
     print("[DEBUG] Netzwerkprozess gestartet")
 
-    # startet den Discovery-Dienst im Hintergrund
-    threading.Thread(target=discovery_main, daemon=True).start()
 
     ## @var tcp_server
     #  @brief Lokaler TCP-Server-Socket für IPC zwischen UI und Netzwerkprozess.
@@ -401,10 +399,13 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
             # wird von Discovery-Dienst empfangen
             elif teile[0] == "JOIN":
                 _, handle, port = teile
-                send_join(sock, handle, port)
+                send_join(sock, handle, port, config["network"]["whoisdiscoveryport"])
+                 # Lokalen Nutzer selbst eintragen
+                eigene_ip = finde_lokale_ip()
+                gebe_nutzerliste_zurück()[handle] = (eigene_ip, int(port))
 
             elif teile[0] == "LEAVE": 
-                send_leave(sock, config["client"]["handle"])
+                send_leave(sock, config["client"]["handle"],config["network"]["whoisdiscoveryport"] )
 
             ## @brief Behandelt den WHO-Befehl vom UI-Prozess über TCP.
             #  @details Führt einen UDP-Broadcast mit "WHO" an alle Peers im LAN durch. 
@@ -419,12 +420,11 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
                 who_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
                 who_sock.settimeout(2) 
 
-                try:
-                    # Broadcast-Nachricht an alle Peers senden
-                    who_sock.sendto(b"WHO\n", ("255.255.255.255", DISCOVERY_PORT))
+                antwort_liste = []  # lokale Liste zum Rücksenden
 
-                    nutzerliste = gebe_nutzerliste_zurück()
-                    antwort_liste = []  # lokale Liste zum Rücksenden
+                try:
+        # WHO-Nachricht senden
+                    who_sock.sendto(b"WHO", ("255.255.255.255", DISCOVERY_PORT))
 
                     while True:
                         daten, addr = who_sock.recvfrom(1024)
@@ -437,27 +437,32 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
                                 for eintrag in eintraege:
                                     try:
                                         handle, ip, port = eintrag.strip().split(" ")
-                                        if handle in nutzerliste and nutzerliste[handle] == (ip, int(port)):
-                                            continue  # Schon drin, überspringen!
-                                        nutzerliste[handle] = (ip, int(port))
-                                        antwort_liste.append(f"{handle} {ip} {port}")
-                                        print(f"KNOWNUSERS {handle} @ {ip}:{port}")
-                                    except ValueError:
-                                        print(f"[WHO] Warnung: Eintrag konnte nicht verarbeitet werden: {eintrag}")
+                                        port = int(port)
 
+                            # ✅ Zugriff direkt auf das zentrale Dictionary!
+                                        nutzerdict = gebe_nutzerliste_zurück()
+                                        if handle in nutzerdict and nutzerdict[handle] == (ip, port):
+                                            continue  # schon drin
+                                        nutzerdict[handle] = (ip, port)
+                                        antwort_liste.append(f"{handle} {ip} {port}")
+                                        print(f"[WHO] Bekannt: {handle} @ {ip}:{port}")
+
+                                    except ValueError:
+                                        print(f"[WHO] Fehler beim Verarbeiten: {eintrag}")
                 except socket.timeout:
-                    print("[WHO] Antwortphase beendet.")#Löschen
+                    print("[WHO] Antwortphase beendet.")
                 finally:
                     who_sock.close()
 
-                # KNOWNUSERS-Antwort zusammensetzen und per TCP an UI zurücksenden
+    # TCP-Antwort zurück an das UI
                 antwort_text = "KNOWNUSERS " + ", ".join(antwort_liste)
                 try:
                     conn.sendall(antwort_text.encode('utf-8'))
-                except Exception as e:
-                    print(f"[Netzwerkprozess] Antwort an UI fehlgeschlagen: {e}")
+                except Exception as e:              
+                    print(f"[Netzwerkprozess] Antwort an UI fehlgeschlagen")
 
-def starte_netzwerkprozess(konfig_pfad, tcp_port):
+
+def starte_netzwerkprozess(konfig_pfad, tcp_port, port):
     config = lade_config(konfig_pfad)
     DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
     
@@ -465,9 +470,9 @@ def starte_netzwerkprozess(konfig_pfad, tcp_port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-
+    sock.bind(('', port))  # <--- Wichtig: mit dem übergebenen Port binden
 # Binde an den freien DISCOVERY_PORT
-    sock.bind(('', DISCOVERY_PORT))
-   
+    
+    
     threading.Thread(target=receive_MSG, args=(sock, config), daemon=True).start()
     netzwerkprozess(sock, konfig_pfad, tcp_port)

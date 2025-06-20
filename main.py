@@ -68,7 +68,8 @@ def registriere_neuen_nutzer(handle, config):
     port, nutzer_sock = finde_freien_port(config)
     DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
     send_join(nutzer_sock, handle,port, DISCOVERY_PORT)
-    return port, nutzer_sock
+    nutzer_sock.close()  # Port bleibt "reserviert" bis zum neuen Binden im Netzwerkprozess
+    return port  # Kein Socket mehr zurückgeben
 
 ## @brief Sendet einen Steuerbefehl über einen lokalen TCP-Socket an den Netzwerkprozess.
 #  @details Diese Funktion wird vom UI-Prozess verwendet, um Nachrichten- oder Bildbefehle
@@ -93,6 +94,7 @@ def sende_befehl_an_netzwerkprozess(befehl: str, tcp_port: int):
 #  @brief startet alle funktionienen nach eingabe durch eingabe im Terminal
 #  @details lädt das Menü und verwaltet den Ablauf
 def main():
+
     # nutzername abfragen
     handle = nutzernamen_abfragen()
     # Dateipfad zusammenbauen um die richtige config zu laden
@@ -106,11 +108,18 @@ def main():
     # Übergeben werden: Pfad zur Benutzer-Konfigurationsdatei und der dynamisch gewählte TCP-Port.
     # subprocess.Popen wird verwendet, damit dieser Prozess parallel zur UI läuft.
     # !Jetzt erst Netzwerkprozess starten
+    config = lade_config(konfig_pfad)
+    port = registriere_neuen_nutzer(handle,config)
 
+     # Discovery-Prozess nur einmal starten
+    discovery_proc = Process(target=discovery_main, args=(konfig_pfad,))
+    discovery_proc.start()
+    time.sleep(1.5)  # Kleine Pause, damit Discovery bereit ist
 
     tcp_port = finde_freien_tcp_port()
-    netzwerk_prozess = Process(target=starte_netzwerkprozess, args=(konfig_pfad, tcp_port))
+    netzwerk_prozess = Process(target=starte_netzwerkprozess, args=(konfig_pfad, tcp_port, port))
     netzwerk_prozess.start()
+
 
 
     # Kurze Wartezeit, um sicherzustellen, dass der Netzwerkprozess genügend Zeit zum Hochfahren hat.
@@ -120,12 +129,11 @@ def main():
    
    
     #ui_utils
-    config = lade_config(konfig_pfad)
+ 
     #interface
     #netzwerkprozess(konfig_pfad)
     #threading.Thread(target=receive_MSG, args=(get_socket(), config), daemon=True).start()
     #main
-    port, nutzer_sock = registriere_neuen_nutzer(handle,config)
    
 
     #print(f"Willkommen, {handle}! Dein Port: {port}")

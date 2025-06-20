@@ -31,7 +31,6 @@ from interface import (
 )
 
 from discovery import (
-    zeige_bekannte_nutzer,
     discovery_main
 )
 
@@ -143,7 +142,7 @@ def main():
 
                     # Wartet auf Antwort (z. B. "KNOWNUSERS Alice 192.168.0.2 5000, Bob ...")
                     antwort = sock.recv(4096).decode().strip()
-
+                    # löschen?
                     if antwort.startswith("KNOWNUSERS"):
                         print("Bekannte Nutzer:")
                         teile = antwort.split(" ", 1)

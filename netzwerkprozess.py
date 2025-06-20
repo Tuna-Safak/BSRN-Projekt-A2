@@ -59,7 +59,7 @@ def handle_join(name, DISCOVERY_PORT, addr, ip=None):
    # ip = addr[0]
     DISCOVERY_PORT = int(DISCOVERY_PORT)
 
-    if name not in gebe_nutzerliste_zurück():
+    if name not in gebe_nutzerliste_zurück(): 
         gebe_nutzerliste_zurück()[name] = (ip, DISCOVERY_PORT)
         print(f"JOIN {name} {DISCOVERY_PORT}")
     #else:
@@ -99,7 +99,7 @@ def sendMSG(sock, handle, empfaenger_handle, text):
 
     if empfaenger_handle not in nutzerliste:
         print("Empfänger nicht bekannt.")
-        print(f"Bekannte Nutzer: {nutzerliste}")
+        # print(f"Bekannte Nutzer: {nutzerliste}")
         return
 
     eintrag = nutzerliste[empfaenger_handle]
@@ -195,13 +195,16 @@ def receive_MSG(sock, config):
                 if rest:
                     eintraege = rest.split(", ")
                     nutzerlist = gebe_nutzerliste_zurück()
-                    eigener_handle = config["client"]["handle"]
+                   # eigener_handle = config["client"]["handle"]
+                   
                     for eintrag in eintraege:
                         try:
                             handle, ip, port = eintrag.strip().split(" ")
+                            nutzerlist[handle] = (ip, int(port)) 
+
         
-                            if handle == eigener_handle:
-                                continue
+                            #if handle == eigener_handle:
+                               # continue
                         except ValueError:
                             print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
                 else:
@@ -438,7 +441,7 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
                                             continue  # Schon drin, überspringen!
                                         nutzerliste[handle] = (ip, int(port))
                                         antwort_liste.append(f"{handle} {ip} {port}")
-                                        print(f"[WHO] → {handle} @ {ip}:{port} gespeichert")
+                                        print(f"KNOWNUSERS {handle} @ {ip}:{port}")
                                     except ValueError:
                                         print(f"[WHO] Warnung: Eintrag konnte nicht verarbeitet werden: {eintrag}")
 

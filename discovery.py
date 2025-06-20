@@ -131,10 +131,10 @@ def nutzerspeichern():
           sock.sendto(antwort.encode('utf-8'), absender)
          
 #Löschen
-def zeige_bekannte_nutzer():
-    print(" Bekannte Nutzer:")
-    for handle, (ip, port) in known_users.items():
-        print(f"  {handle} → {ip}:{port}")     
+#def zeige_bekannte_nutzer():
+ #   print(" Bekannte Nutzer:")
+  #  for handle, (ip, port) in known_users.items():
+   #     print(f"  {handle} → {ip}:{port}")     
 
 def gebe_nutzerliste_zurück():
    return known_users

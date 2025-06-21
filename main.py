@@ -119,14 +119,15 @@ def main():
     tcp_port = finde_freien_tcp_port()
     netzwerk_prozess = Process(target=starte_netzwerkprozess, args=(konfig_pfad, tcp_port, port))
     netzwerk_prozess.start()
+    # Kurze Wartezeit, um sicherzustellen, dass der Netzwerkprozess genügend Zeit zum Hochfahren hat.
+    # Verhindert Race Conditions bei späterer Kommunikation (z. B. TCP-Verbindung).
+    time.sleep(1)
     # nachdem netzwerkprozess läuft:
     sende_befehl_an_netzwerkprozess(f"JOIN {handle} {port}", tcp_port)
 
 
 
-    # Kurze Wartezeit, um sicherzustellen, dass der Netzwerkprozess genügend Zeit zum Hochfahren hat.
-    # Verhindert Race Conditions bei späterer Kommunikation (z. B. TCP-Verbindung).
-    time.sleep(1)
+    
     # nutzernamen abfragen
    
    

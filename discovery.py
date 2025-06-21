@@ -74,9 +74,9 @@ def discovery_main(konfig_pfad):
             ip = absender[0]
 
             if handle not in gebe_nutzerliste_zurück():
-                print(f"[JOIN] {handle} ist neu beigetreten → {ip}:{port}")
+                print(f"JOIN {handle} {port}")
             else:
-                print(f"[JOIN] {handle} aktualisiert → {ip}:{port}")
+                print(f"JOIN {handle} aktualisiert → {port}")
 
             gebe_nutzerliste_zurück()[handle] = (ip, port)
 

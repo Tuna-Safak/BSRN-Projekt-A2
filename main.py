@@ -154,7 +154,7 @@ def main():
                     antwort = sock.recv(4096).decode().strip()
                     # löschen?
                     if antwort.startswith("KNOWNUSERS"):
-                        print("Bekannte Nutzer:")
+                        print("KNOWN USERS")
                         teile = antwort.split(" ", 1)
 
                         if len(teile) == 2:

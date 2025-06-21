@@ -441,7 +441,7 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
                                         handle, ip, port = eintrag.strip().split(" ")
                                         port = int(port)
 
-                            # ✅ Zugriff direkt auf das zentrale Dictionary!
+                            # Zugriff direkt auf das zentrale Dictionary
                                         if handle in nutzerdict and nutzerdict[handle] == (ip, port):
                                             continue  # schon drin
 

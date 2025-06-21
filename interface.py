@@ -25,7 +25,7 @@ def menue():
     print("\033[95m3. Bild senden\033[0m")                        # Magenta
     print("\033[97m4. Autoreply aktivieren/deaktivieren\033[0m") # Weiß
     print("\033[97m5. Autoreply ändern\033[0m")                   # Weiß
-    print("\033[97m6. Konfiguration anzeigen/bearbeiten\033[0m") # Grau
+    print("\033[97m6. Konfiguration anzeigen\033[0m")             # Grau
     print("\033[91m7. Chat verlassen\033[0m")                     # Rot
 
     return input("\n> \033[1mBitte wählen:\033[0m ")

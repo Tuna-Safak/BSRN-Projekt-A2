@@ -264,7 +264,7 @@ def sendIMG(sock, handle_sender, handle_empfaenger, bildpfad):
 
     img_header = f"IMG {handle_empfaenger} {groesse}\n".encode()
     sock.sendto(img_header, (ip, int(port)))
-    print("[INFO] Header gesendet:", img_header.decode().strip())
+    print(img_header.decode().strip(), "Bytes")
 
     # Erste Nachricht senden: den IMG-Befehl mit Empfängername und Bildgröße    
     sent = sock.sendto(bilddaten, (ip, int(port)))

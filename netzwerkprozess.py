@@ -256,8 +256,7 @@ def sendIMG(sock, handle_sender, handle_empfaenger, bildpfad):
     ip, port = gebe_nutzerliste_zurück()[handle_empfaenger]
     port = int(port)
 
-    print("[DEBUG] Sende Header:", img_header.strip())
-    print("[DEBUG] Sende Bilddaten:", len(bilddaten), "Bytes")
+    print("Sende Header:", img_header.strip())
 
     # Erste Nachricht senden: den IMG-Befehl mit Empfängername und Bildgröße
     # encode() wandelt den Text in Bytes um, damit er über das Netzwerk geschickt werden kann

@@ -82,6 +82,11 @@ def send_leave(sock, handle_nutzername, DISCOVERY_PORT):
             continue  # Nicht an sich selbst senden
         sock.sendto(nachricht.encode('utf-8'), (ip, int(port)))
         print(f"[LEAVE] Gesendet (Unicast) an {anderer_handle} @ {ip}:{port}")
+    
+    eigener_handle = handle_nutzername
+    if eigener_handle in gebe_nutzerliste_zurück():
+        del gebe_nutzerliste_zurück()[eigener_handle]
+    
 
 
 # -------------LEAVE verarbeiten-----------------
@@ -410,11 +415,11 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
                  # Lokalen Nutzer selbst eintragen
                 eigene_ip = finde_lokale_ip()
                 gebe_nutzerliste_zurück()[handle] = (eigene_ip, int(port))
-          
+                  
 
             elif teile[0] == "LEAVE": 
                 send_leave(sock, config["client"]["handle"],config["network"]["whoisdiscoveryport"] )
-
+                
             ## @brief Behandelt den WHO-Befehl vom UI-Prozess über TCP.
             #  @details Führt einen UDP-Broadcast mit "WHO" an alle Peers im LAN durch. 
             #           Sammelt die eingehenden KNOWNUSERS-Antworten, nimmt alle Nutzereinträge,

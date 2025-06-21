@@ -202,6 +202,10 @@ def main():
             continue    
         elif auswahl == "7":
                 sende_befehl_an_netzwerkprozess(f"LEAVE {handle}", tcp_port) # main
+                time.sleep(1)  # Optional, um die Nachricht sehen zu können
+    
+                os._exit(0)  # Beende das Programm
+
                 break
 
             

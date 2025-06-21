@@ -55,7 +55,7 @@ def discovery_main(konfig_pfad):
             continue
         ## teile = datentyp: list 
         ## split() = teilt text in Teilstrings 
-        teile = text.split()
+        teile = text.strip().split()
         ## SLCP-Regel: Nachricht muss mindestens 1 Teil enthalten
         ## wenn Liste leer ist, dann überspringe den Rest der Schleife
         ## und mache mit nächster empfangenen Nachricht weiter
@@ -67,7 +67,7 @@ def discovery_main(konfig_pfad):
 
         # JOIN-Verarbeitung
         if befehl == "JOIN" and len(teile) == 3:
-            handle = teile[1]
+            handle = teile[1].strip().lower()
             port = teile[2]
 
             ## IP-Adresse aus dem Datenpaket "absender" holen
@@ -92,6 +92,17 @@ def discovery_main(konfig_pfad):
             ## encode() = wandelt string in bytes um
             ## absender = IP-Adresse und Port an dem die Nachricht gehen soll
             sock.sendto(antwort.encode('utf-8'), absender)
+                # LEAVE-Verarbeitung
+        elif befehl == "LEAVE" and len(teile) == 2:
+            handle = teile[1].strip().lower()
+            nutzerliste = gebe_nutzerliste_zurück()
+
+            if handle in nutzerliste:
+                del nutzerliste[handle]
+                print(f"[LEAVE] {handle} hat den Chat verlassen (aus Discovery gelöscht).")
+            else:
+                print(f"[LEAVE] Unbekannter Nutzer '{handle}' wollte LEAVE senden.")
+
 
          
 #Löschen

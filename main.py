@@ -109,12 +109,12 @@ def main():
     # subprocess.Popen wird verwendet, damit dieser Prozess parallel zur UI läuft.
     # !Jetzt erst Netzwerkprozess starten
     config = lade_config(konfig_pfad)
-    port = registriere_neuen_nutzer(handle,config)
 
      # Discovery-Prozess nur einmal starten
     discovery_proc = Process(target=discovery_main, args=(konfig_pfad,))
     discovery_proc.start()
     time.sleep(1.5)  # Kleine Pause, damit Discovery bereit ist
+    port = registriere_neuen_nutzer(handle, config)
 
     tcp_port = finde_freien_tcp_port()
     netzwerk_prozess = Process(target=starte_netzwerkprozess, args=(konfig_pfad, tcp_port, port))
@@ -215,5 +215,5 @@ def main():
 #  @note Beim starten wird name durch main ersetzt, erst wenn es stimmt, wird die Main Funktion gestartet
 if __name__ == "__main__":
     import multiprocessing
-    multiprocessing.set_start_method("spawn")  # wichtig für Windows/macOS
+    multiprocessing.set_start_method("spawn", force=True) 
     main()

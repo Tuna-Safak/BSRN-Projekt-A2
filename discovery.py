@@ -7,8 +7,10 @@ import toml
 import os
 from nutzerliste import gebe_nutzerliste_zurück
 from interface import lade_config
+from nutzerliste import initialisiere_nutzerliste
 
-def discovery_main(konfig_pfad):
+def discovery_main(konfig_pfad, shared_dict):
+    initialisiere_nutzerliste(shared_dict)
     config = lade_config(konfig_pfad)
     DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
 

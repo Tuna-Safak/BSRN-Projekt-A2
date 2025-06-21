@@ -55,6 +55,8 @@ from netzwerkprozess import (
 
 )
 
+from multiprocessing import Manager
+from nutzerliste import initialisiere_nutzerliste
 # registriere_neuen_nutzer
 # @brief Registiert einen neuen Nutzer im Chatnetzwerk
     ## @details finde_freien_port: es wird ein freier Port gesucht und ein Socket dadurch erstellt
@@ -109,15 +111,17 @@ def main():
     # subprocess.Popen wird verwendet, damit dieser Prozess parallel zur UI läuft.
     # !Jetzt erst Netzwerkprozess starten
     config = lade_config(konfig_pfad)
-
+    manager = Manager()
+    shared_nutzerliste = manager.dict()
+    initialisiere_nutzerliste(shared_nutzerliste)
      # Discovery-Prozess nur einmal starten
-    discovery_proc = Process(target=discovery_main, args=(konfig_pfad,))
+    discovery_proc = Process(target=discovery_main, args=(konfig_pfad, shared_nutzerliste))
     discovery_proc.start()
     time.sleep(1.5)  # Kleine Pause, damit Discovery bereit ist
     port = registriere_neuen_nutzer(handle, config)
 
     tcp_port = finde_freien_tcp_port()
-    netzwerk_prozess = Process(target=starte_netzwerkprozess, args=(konfig_pfad, tcp_port, port))
+    netzwerk_prozess = Process(target=starte_netzwerkprozess, args=(konfig_pfad, tcp_port, port, shared_nutzerliste))
     netzwerk_prozess.start()
     # Kurze Wartezeit, um sicherzustellen, dass der Netzwerkprozess genügend Zeit zum Hochfahren hat.
     # Verhindert Race Conditions bei späterer Kommunikation (z. B. TCP-Verbindung).
@@ -146,36 +150,28 @@ def main():
         if auswahl == "1":
             print("→ WHO wird gesendet ...")
             try:
-                # Öffnet eine TCP-Verbindung zum lokalen Netzwerkprozess (TCPport) 
                 with socket.create_connection(("localhost", tcp_port)) as sock:
-                    # Sendet den WHO-Befehl (als Bytefolge)
-                    sock.sendall(b"WHO")
+                    sock.sendall(b"WHO")  # Nur WHO senden
+                    antwort = sock.recv(4096).decode('utf-8').strip()
 
-                    # Wartet auf Antwort (z. B. "KNOWNUSERS Alice 192.168.0.2 5000, Bob ...")
-                    antwort = sock.recv(4096).decode().strip()
-                    # löschen?
                     if antwort.startswith("KNOWNUSERS"):
-                        print("KNOWN USERS")
                         teile = antwort.split(" ", 1)
-
                         if len(teile) == 2:
                             eintraege = teile[1].split(", ")
-
-                            # Iteriert über alle bekannten Nutzer und gibt sie formatiert aus
+                            print("KNOWN USERS")
                             for eintrag in eintraege:
                                 try:
                                     handle, ip, port = eintrag.strip().split(" ")
                                     print(f"  {handle} → {ip}:{port}")
                                 except ValueError:
-                                    print(" Fehler beim Eintrag:", eintrag)
+                                    print("  [FEHLER] Ungültiger Eintrag:", eintrag)
+                        else:
+                            print("[INFO] Keine bekannten Nutzer.")
                     else:
-                        print("Unerwartete Antwort vom Netzwerkprozess:", antwort)
-
+                        print("Unerwartete Antwort:", antwort)
             except ConnectionRefusedError:
                 print("Netzwerkprozess läuft nicht!")
 
-
-        #NEU FÜR TCP
         elif auswahl == "2":
             empfaenger, text = eingabe_nachricht() # Interface
             befehl = f"MSG {empfaenger} {text}"

@@ -1,7 +1,8 @@
-# nutzerliste.py
-# Gemeinsame Nutzerliste für alle Module (Discovery, Netzwerkprozess, etc.)
+_shared_dict = None
 
-known_users = {}  # zentrales Dictionary
+def initialisiere_nutzerliste(shared_dict):
+    global _shared_dict
+    _shared_dict = shared_dict
 
 def gebe_nutzerliste_zurück():
-    return known_users
+    return _shared_dict

@@ -4,7 +4,7 @@
 #  @details Der Netzwerkprozess stellt die Verbindung zwischen der lokalen Benutzeroberfläche
 #           und der Peer-to-Peer-Kommunikation im LAN her. Er verarbeitet übermittelte Befehle
 #           und nutzt die Methoden aus `message_handler`, um SLCP-konforme Nachrichten zu versenden.
-
+from nutzerliste import initialisiere_nutzerliste, gebe_nutzerliste_zurück
 import socket
 import sys
 # ermöglicht den Zugriff aus Systemfunktionen
@@ -14,7 +14,6 @@ import threading
 import os
 from interface import lade_config
 from discovery import discovery_main
-from nutzerliste import gebe_nutzerliste_zurück
 # damit TCP und UDP seperat laufen können 
 import sys
 
@@ -403,7 +402,7 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
                 send_join(sock, handle, port, config["network"]["whoisdiscoveryport"])
                  # Lokalen Nutzer selbst eintragen
                 eigene_ip = finde_lokale_ip()
-                gebe_nutzerliste_zurück()[handle] = (eigene_ip, int(port))
+     
                   
 
             elif teile[0] == "LEAVE": 
@@ -473,7 +472,9 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
                     print(f"[Netzwerkprozess] Antwort an UI fehlgeschlagen")
 
 
-def starte_netzwerkprozess(konfig_pfad, tcp_port, port):
+def starte_netzwerkprozess(konfig_pfad, tcp_port, port, shared_dict):
+    initialisiere_nutzerliste(shared_dict)
+    
     config = lade_config(konfig_pfad)
     DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
     

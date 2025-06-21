@@ -127,7 +127,7 @@ def erstelle_neue_config(handle):
     # Standard-Konfigurationswerte für den Benutzer
     config = {
         "client": {
-            "name": handle,
+            "handle": handle,
             "port":5000,
             "whoisport": 4000,
             "autoreply": "Bin nicht da",  # Standardwert für autoreply

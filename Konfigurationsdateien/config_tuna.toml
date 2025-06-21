@@ -8,4 +8,4 @@ imagepath = "images/"
 [network]
 whoisdiscoveryport = 4000
 port_min = 5000
-port_max = 5100
+port_max = 5300

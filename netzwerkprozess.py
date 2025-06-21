@@ -428,7 +428,9 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
                 who_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
                 who_sock.settimeout(2) 
 
-                antwort_liste = []  # lokale Liste zum Rücksenden
+                
+                nutzerdict = gebe_nutzerliste_zurück()
+                antwort_liste = [f"{handle} {ip} {port}" for handle, (ip, port) in nutzerdict.items()]
 
                 try:
         # WHO-Nachricht senden

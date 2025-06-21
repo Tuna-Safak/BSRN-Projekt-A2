@@ -444,18 +444,25 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
                             teile = text.split(" ", 1)
                             if len(teile) == 2:
                                 eintraege = teile[1].split(", ")
+                                nutzerdict = gebe_nutzerliste_zurück()
+
                                 for eintrag in eintraege:
                                     try:
                                         handle, ip, port = eintrag.strip().split(" ")
                                         port = int(port)
 
                             # ✅ Zugriff direkt auf das zentrale Dictionary!
-                                        nutzerdict = gebe_nutzerliste_zurück()
                                         if handle in nutzerdict and nutzerdict[handle] == (ip, port):
                                             continue  # schon drin
+
+# Nutzer in Dictionary speichern
                                         nutzerdict[handle] = (ip, port)
-                                        antwort_liste.append(f"{handle} {ip} {port}")
-                                        print(f"[WHO] Bekannt: {handle} @ {ip}:{port}")
+
+# Nur hinzufügen, wenn NICHT schon in antwort_liste
+                                        eintrag_str = f"{handle} {ip} {port}"
+                                        if eintrag_str not in antwort_liste:
+                                            antwort_liste.append(eintrag_str)
+
 
                                     except ValueError:
                                         print(f"[WHO] Fehler beim Verarbeiten: {eintrag}")

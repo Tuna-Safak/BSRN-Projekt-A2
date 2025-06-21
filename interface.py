@@ -138,7 +138,7 @@ def erstelle_neue_config(handle):
     config = {
         "client": {
             "name": handle,
-            "port":port,
+            "port":5000,
             "whoisport": 4000,
             "autoreply": "Bin nicht da",  # Standardwert für autoreply
             "autoreply_aktiv": False,

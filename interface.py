@@ -27,6 +27,19 @@ def menue():
     print("7. Chat verlassen")
     return input("> Bitte wählen: ")
 
+def menue():
+    print("\n\033[1mMenü\033[0m\n")  # fette Überschrift
+
+    print("\033[93m1. Teilnehmer anzeigen\033[0m")               # Gelb
+    print("\033[96m2. Nachricht senden\033[0m")                   # Hellcyan
+    print("\033[95m3. Bild senden\033[0m")                        # Magenta
+    print("\033[92m4. Autoreply aktivieren/deaktivieren\033[0m") # Grün
+    print("\033[92m5. Autoreply ändern\033[0m")                   # Grün
+    print("\033[90m6. Konfiguration anzeigen/bearbeiten\033[0m") # Grau
+    print("\033[91m7. Chat verlassen\033[0m")                     # Rot
+
+    return input("\n> \033[1mBitte wählen:\033[0m ")
+
 
 ## Eingabe des Benutzernames
 # @return Benutzername (Handle) als String

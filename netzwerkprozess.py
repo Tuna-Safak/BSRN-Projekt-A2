@@ -223,19 +223,27 @@ def receive_MSG(sock, config):
 def sendIMG(sock, handle_sender, handle_empfaenger, bildpfad):
     nutzer = gebe_nutzerliste_zurück()
 
-    # 1) Empfänger bekannt?
+    # Prüfen, ob der Empfänger überhaupt im Nutzerverzeichnis bekannt ist
     if handle_empfaenger not in nutzer:
         print("[ERROR] Empfänger nicht bekannt:", handle_empfaenger)
         return
 
     # 2) Bild einlesen
     try:
+        # Bilddatei öffnen – "rb" bedeutet:
+        # r = read, b = binary (binär lesen, nicht als Text)
+        # wir brauchen das für Bilder, weil sie keine Textdateien sind
         with open(bildpfad, "rb") as b:
+        # Liest alle Bilddaten in binärer Form
             bilddaten = b.read()
+
     except FileNotFoundError:
+         # Wenn der Pfad falsch ist oder das Bild nicht existiert
         print("[ERROR] Bild nicht gefunden:", bildpfad)
         return
-
+    
+    # Bildgröße berechnen (Anzahl der Bytes)
+    # wichtig für den Empfänger damit er weiß wie viele Daten kommen
     groesse = len(bilddaten)
     if groesse == 0:
         print("[ERROR] Leere Bilddatei:", bildpfad)
@@ -243,11 +251,17 @@ def sendIMG(sock, handle_sender, handle_empfaenger, bildpfad):
 
     # 3) Header senden
     ip, port = nutzer[handle_empfaenger]
+    
+    # Nachricht im SLCP-Format vorbereiten: IMG <Empfänger> <Größe>
+    # das ist die Steuerzeile, die vor dem Bild gesendet wird
+    # f-String: setzt automatisch die Variablen ein
+    # \n = Zeilenumbruch, wie vom Protokoll gefordert
+
     img_header = f"IMG {handle_empfaenger} {groesse}\n".encode()
     sock.sendto(img_header, (ip, int(port)))
     print("[INFO] Header gesendet:", img_header.decode().strip())
 
-    # 4) Bild senden – EIN Datagramm
+    # Erste Nachricht senden: den IMG-Befehl mit Empfängername und Bildgröße    
     sent = sock.sendto(bilddaten, (ip, int(port)))
     if sent != groesse:
         # (kommt bei UDP normalerweise nicht vor)
@@ -257,19 +271,25 @@ def sendIMG(sock, handle_sender, handle_empfaenger, bildpfad):
 
 ###############################################################################
 # Bild empfangen
-###############################################################################
+# @brief Verarbeitet eine empfangene IMG-Nachricht und speichert das Bild
+# @param sock Der UDP-Socket, über den das Bild empfangen wird
+# @param teile Die Teile der empfangenen Textnachricht (z. B. ["IMG", "empfänger", "Größe"])
+# @param addr Die Adresse (IP, Port) des Absenders
+# @param config Die Konfiguration des Clients (z. B. mit Handle und Speicherpfad)
+
 def handle_IMG(sock, teile, addr, config):
     # Header-Format prüfen
+    # Prüfen, ob alle erforderliche Teile in der Nachricht sind
     if len(teile) != 3:
         print("[WARN] IMG-Header unvollständig:", " ".join(teile))
         return
-
+    # ist der name also an wen das Bild gesendet werden soll
     empfaenger = teile[1].strip().lower()
     eigener_handle = config["client"]["handle"].lower()
     if empfaenger != eigener_handle:
-        return  # Nicht für mich
+        return  # Bild ist nicht für mich bestimmt – ignorieren
 
-    # Bildgröße lesen
+    # Bildgröße lesen  und in Integer umwandeln
     try:
         groesse = int(teile[2])
     except ValueError:
@@ -290,19 +310,20 @@ def handle_IMG(sock, teile, addr, config):
         print("[ERROR] Timeout – Bilddatagramm nicht angekommen.")
         return
     finally:
-        sock.settimeout(None)
+        sock.settimeout(None) # Timeout wieder entfernen
 
+    ## Prüfen: Wurden wirklich alle Bytes empfangen?
     if len(bilddaten) != groesse:
         print(f"[ERROR] Bytezahl stimmt nicht ({len(bilddaten)} ≠ {groesse}) – Bild verworfen.")
         return
 
-    # Absendername aus IP ermitteln
+    ## Absendername aus IP ermitteln
     sender_name = next(
         (name for name, (ip, _) in gebe_nutzerliste_zurück().items() if ip == addr[0]),
         "Unbekannt"
     )
 
-    # Bild speichern
+    ## Speicherort festlegen (aus Config oder Standardverzeichnis)
     zielverzeichnis = config["client"].get("imagepath", "empfangene_bilder")
     os.makedirs(zielverzeichnis, exist_ok=True)
     dateiname = f"{sender_name}_bild.jpg"

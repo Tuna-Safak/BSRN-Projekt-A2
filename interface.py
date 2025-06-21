@@ -125,10 +125,14 @@ def erstelle_neue_config(handle):
     config = {
         "client": {
             "name": handle,
-            "autoreply": "",  # Standardwert für autoreply
-            "autoreply_aktiv": False
+            "port":port,
+            "whoisport": 4000,
+            "autoreply": "Bin nicht da",  # Standardwert für autoreply
+            "autoreply_aktiv": False,
+            "imagepath":"images/"
         },
         "network": {
+            "whoisdiscoveryport":4000,
             "port_min": 5000,
             "port_max": 5100
         }

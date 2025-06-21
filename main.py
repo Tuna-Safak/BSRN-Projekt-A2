@@ -119,6 +119,8 @@ def main():
     tcp_port = finde_freien_tcp_port()
     netzwerk_prozess = Process(target=starte_netzwerkprozess, args=(konfig_pfad, tcp_port, port))
     netzwerk_prozess.start()
+    # nachdem netzwerkprozess läuft:
+    sende_befehl_an_netzwerkprozess(f"JOIN {handle} {port}", tcp_port)
 
 
 

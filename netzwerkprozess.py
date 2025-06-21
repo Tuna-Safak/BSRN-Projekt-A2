@@ -403,6 +403,7 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
                  # Lokalen Nutzer selbst eintragen
                 eigene_ip = finde_lokale_ip()
                 gebe_nutzerliste_zurück()[handle] = (eigene_ip, int(port))
+          
 
             elif teile[0] == "LEAVE": 
                 send_leave(sock, config["client"]["handle"],config["network"]["whoisdiscoveryport"] )

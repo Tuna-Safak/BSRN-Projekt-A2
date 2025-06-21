@@ -226,133 +226,118 @@ def receive_MSG(sock, config):
 # @param handle_empfaenger Benutzername des Empfängers
 # @param bildpfad Pfad zur Bilddatei, die gesendet werden soll
 def sendIMG(sock, handle_sender, handle_empfaenger, bildpfad):
-    
-    # Prüfen, ob der Empfänger überhaupt im Nutzerverzeichnis bekannt ist
-    if handle_empfaenger not in gebe_nutzerliste_zurück():
-        print("Empfänger nicht bekannt.")
-        return  
+    nutzer = gebe_nutzerliste_zurück()
 
+    # Prüfen, ob der Empfänger überhaupt im Nutzerverzeichnis bekannt ist
+    if handle_empfaenger not in nutzer:
+        print("[ERROR] Empfänger nicht bekannt:", handle_empfaenger)
+        return
+
+    # 2) Bild einlesen
     try:
         # Bilddatei öffnen – "rb" bedeutet:
         # r = read, b = binary (binär lesen, nicht als Text)
         # wir brauchen das für Bilder, weil sie keine Textdateien sind
         with open(bildpfad, "rb") as b:
-            # Liest alle Bilddaten in binärer Form
+        # Liest alle Bilddaten in binärer Form
             bilddaten = b.read()
-    except FileNotFoundError:
-        # Wenn der Pfad falsch ist oder das Bild nicht existiert
-        print("Bild nicht gefunden:", bildpfad)
-        return  
 
+    except FileNotFoundError:
+         # Wenn der Pfad falsch ist oder das Bild nicht existiert
+        print("[ERROR] Bild nicht gefunden:", bildpfad)
+        return
+    
     # Bildgröße berechnen (Anzahl der Bytes)
     # wichtig für den Empfänger damit er weiß wie viele Daten kommen
     groesse = len(bilddaten)
+    if groesse == 0:
+        print("[ERROR] Leere Bilddatei:", bildpfad)
+        return
 
-    #if groesse > 1400:
-    #   print("Bild zu groß für eine UDP-Nachricht max 1400 Bytes")
-    #  return
-
+    # 3) Header senden
+    ip, port = nutzer[handle_empfaenger]
+    
     # Nachricht im SLCP-Format vorbereiten: IMG <Empfänger> <Größe>
     # das ist die Steuerzeile, die vor dem Bild gesendet wird
     # f-String: setzt automatisch die Variablen ein
     # \n = Zeilenumbruch, wie vom Protokoll gefordert
-    img_header = f"IMG {handle_empfaenger} {groesse}\n"
 
-    # IP-Adresse und port des Empfängers aus dem Nutzerverzeichnis holen
-    ip, port = gebe_nutzerliste_zurück()[handle_empfaenger]
-    port = int(port)
+    img_header = f"IMG {handle_empfaenger} {groesse}\n".encode()
+    sock.sendto(img_header, (ip, int(port)))
+    print("[INFO] Header gesendet:", img_header.decode().strip())
 
-    print("Sende Header:", img_header.strip())
+    # Erste Nachricht senden: den IMG-Befehl mit Empfängername und Bildgröße    
+    sent = sock.sendto(bilddaten, (ip, int(port)))
+    if sent != groesse:
+        # (kommt bei UDP normalerweise nicht vor)
+        print("[ERROR] sendto() hat weniger Bytes gesendet als erwartet.")
+    else:
+        print(f"[INFO] Bild an {handle_empfaenger} gesendet ({groesse} B).")
 
-    # Erste Nachricht senden: den IMG-Befehl mit Empfängername und Bildgröße
-    # encode() wandelt den Text in Bytes um, damit er über das Netzwerk geschickt werden kann
-    sock.sendto(img_header.encode(), (ip, port))
-
-    # Zweite Nachricht: das eigentliche Bild senden (als Binärdaten)
-    sock.sendto(bilddaten, (ip, port))
-
-    print(f"Bild an {handle_empfaenger} gesendet ({groesse} Bytes)")
-   
-   
-
-# -------------Bild empfangen-----------------
+###############################################################################
+# Bild empfangen
 # @brief Verarbeitet eine empfangene IMG-Nachricht und speichert das Bild
 # @param sock Der UDP-Socket, über den das Bild empfangen wird
 # @param teile Die Teile der empfangenen Textnachricht (z. B. ["IMG", "empfänger", "Größe"])
 # @param addr Die Adresse (IP, Port) des Absenders
 # @param config Die Konfiguration des Clients (z. B. mit Handle und Speicherpfad)
+
 def handle_IMG(sock, teile, addr, config):
-    
+    # Header-Format prüfen
     # Prüfen, ob alle erforderliche Teile in der Nachricht sind
     if len(teile) != 3:
-        print("Nachricht ist nicht vollständig.")
+        print("[WARN] IMG-Header unvollständig:", " ".join(teile))
         return
-
     # ist der name also an wen das Bild gesendet werden soll
-    empfaenger = teile[1].strip().lower()  
-    eigener_handle = config["client"]["handle"].lower()  
-    if empfaenger != eigener_handle:  
+    empfaenger = teile[1].strip().lower()
+    eigener_handle = config["client"]["handle"].lower()
+    if empfaenger != eigener_handle:
         return  # Bild ist nicht für mich bestimmt – ignorieren
 
-    # Bildgröße auslesen und in Integar umwandeln
+    # Bildgröße lesen  und in Integer umwandeln
     try:
         groesse = int(teile[2])
     except ValueError:
-        print("Ungültige Bildgröße.")
+        print("[WARN] Ungültige Size:", teile[2])
         return
 
-    print(f"[DEBUG] Erwartete Bildgröße: {groesse} Bytes") 
+    if groesse <= 0:
+        print("[WARN] Size muss > 0 sein")
+        return
 
-    #  Bilddaten in mehreren Chunks empfangen
-    bilddaten = b""
-    verbleibend = groesse
-
-    # Timeout setzen, damit kein langes Warten bei Problemen
-    sock.settimeout(3.0)
-
+    # EIN Datagramm mit Bilddaten empfangen
+    sock.settimeout(3.0)        # Timeout gegen Hänger
     try:
-        # Bilddaten in mehreren Paketen empfangen
-        while verbleibend > 0:
-            chunk, _ = sock.recvfrom(2048) # 2048 Bytes Puffergröße
-            bilddaten += chunk
-            verbleibend -= len(chunk)
-            print(f"[DEBUG] Chunk empfangen, verbleibend: {verbleibend} Bytes")  
+        print(f"[DEBUG] Warte auf Bilddaten: {groesse} Bytes …")
+        bilddaten, _ = sock.recvfrom(groesse)
+        print(f"[DEBUG] Empfangen: {len(bilddaten)} Bytes")
     except socket.timeout:
-        print("[ERROR] Bilddaten nicht empfangen - Timeout.")
+        print("[ERROR] Timeout – Bilddatagramm nicht angekommen.")
         return
     finally:
-        sock.settimeout(None)
+        sock.settimeout(None) # Timeout wieder entfernen
 
-    sender_ip = addr[0]
-    if len(bilddaten) == 0:
-        print("[FEHLER] Leere Bilddaten empfangen - kein Bild gespeichert!")  
+    ## Prüfen: Wurden wirklich alle Bytes empfangen?
+    if len(bilddaten) != groesse:
+        print(f"[ERROR] Bytezahl stimmt nicht ({len(bilddaten)} ≠ {groesse}) – Bild verworfen.")
         return
 
-    # Absendernamen aus der IP-Adresse ermitteln
-    sender_name = None
-    for name, (ip, _) in gebe_nutzerliste_zurück().items():
-        if ip == sender_ip:
-            sender_name = name
-            break
-    if sender_name is None:
-        sender_name = "Unbekannt"
-        print(f"[DEBUG] Sender-Name: {sender_name}, IP: {sender_ip}")  
+    ## Absendername aus IP ermitteln
+    sender_name = next(
+        (name for name, (ip, _) in gebe_nutzerliste_zurück().items() if ip == addr[0]),
+        "Unbekannt"
+    )
 
-    # Zielverzeichnis für das Bild
-    zielverzeichnis = config["client"].get("imagepath", "empfangene_bilder")  
+    ## Speicherort festlegen (aus Config oder Standardverzeichnis)
+    zielverzeichnis = config["client"].get("imagepath", "empfangene_bilder")
     os.makedirs(zielverzeichnis, exist_ok=True)
-
-    # Dateinamen erstellen und Bild speichern
     dateiname = f"{sender_name}_bild.jpg"
     pfad = os.path.join(zielverzeichnis, dateiname)
 
     with open(pfad, "wb") as f:
         f.write(bilddaten)
-        print(f"[DEBUG] Bild erfolgreich gespeichert: {pfad}")  
 
-    print(f"Bild von {sender_name} empfangen und gespeichert unter: {pfad}")
-
-
+    print(f"[INFO] Bild ({groesse} B) von {sender_name} gespeichert unter: {pfad}")
 
 ## @brief Startet den Netzwerkprozess und lauscht auf Befehle vom UI-Prozess.
 #  @details Stellt einen TCP-Server auf localhost:tcpPort bereit, über den der UI-Prozess Kommandos

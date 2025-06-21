@@ -17,25 +17,15 @@ import os
 # @return Auswahl des Benutzers als String
 #wird in der main aufgerufen
 def menue():
-    print("\nMenü\n")
-    print("1. Teilnehmer anzeigen")
-    print("2. Nachricht senden")
-    print("3. Bild senden")
-    print("4. Autoreply aktivieren/deaktivieren")
-    print("5. Autoreply ändern")
-    print("6. Konfiguration anzeigen/bearbeiten")
-    print("7. Chat verlassen")
-    return input("> Bitte wählen: ")
-
-def menue():
+    # Menü mit Farben und fettgedruckter Überschrift
     print("\n\033[1mMenü\033[0m\n")  # fette Überschrift
 
     print("\033[93m1. Teilnehmer anzeigen\033[0m")               # Gelb
     print("\033[96m2. Nachricht senden\033[0m")                   # Hellcyan
     print("\033[95m3. Bild senden\033[0m")                        # Magenta
-    print("\033[92m4. Autoreply aktivieren/deaktivieren\033[0m") # Grün
-    print("\033[92m5. Autoreply ändern\033[0m")                   # Grün
-    print("\033[90m6. Konfiguration anzeigen/bearbeiten\033[0m") # Grau
+    print("\033[97m4. Autoreply aktivieren/deaktivieren\033[0m") # Weiß
+    print("\033[97m5. Autoreply ändern\033[0m")                   # Weiß
+    print("\033[97m6. Konfiguration anzeigen/bearbeiten\033[0m") # Grau
     print("\033[91m7. Chat verlassen\033[0m")                     # Rot
 
     return input("\n> \033[1mBitte wählen:\033[0m ")
@@ -133,11 +123,11 @@ def lade_config(pfad=None):
 
 def erstelle_neue_config(handle):
     # @brief Erstellt eine neue Konfigurationsdatei für den Benutzer, falls sie noch nicht existiert.
-    # @param handle: Der Benutzername für den die Konfiguration erstellt wird.
+    # @param handle: Der Benutzername für pden die Konfiguration erstellt wird.
     # Standard-Konfigurationswerte für den Benutzer
     config = {
         "client": {
-            "handle": handle,
+            "name": handle,
             "port":5000,
             "whoisport": 4000,
             "autoreply": "Bin nicht da",  # Standardwert für autoreply

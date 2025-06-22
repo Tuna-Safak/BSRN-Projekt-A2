@@ -1,4 +1,7 @@
-#Argumente aus der Kommandozeile auslesen --handel
+# @file interface.py
+# @brief interface der Kommmandozeile für das Chat-Programm
+# @details Menüauswahl und Eingaben über das Terminal
+
 import sys
 #Modul zum Parsen von .toml-Dateien
 import toml
@@ -7,15 +10,9 @@ import socket
 #Für Datei- und Pfadprüfung (z. B. ob config.toml existiert)
 import os
 
-#from UI_utils import erstelle_neue_config
-## import questionary
-## @file interface.py
-# @brief interface der Kommmandozeile für das Chat-Programm
-# @details Menüauswahl und Eingaben über das Terminal
-
-## Fragte eine Auswahl ab
+# --------Auswahl abfrage--------
 # @return Auswahl des Benutzers als String
-#wird in der main aufgerufen
+# wird in der main aufgerufen
 def menue():
     # Menü mit Farben und fettgedruckter Überschrift
     print("\n\033[1mMenü\033[0m\n")  # fette Überschrift
@@ -31,18 +28,13 @@ def menue():
     return input("\n> \033[1mBitte wählen:\033[0m ")
 
 
-## Eingabe des Benutzernames
+# --------Eingabe Nutzername--------
 # @return Benutzername (Handle) als String
+# Fragt den Benutzernamen ab und erstellt bei Bedarf eine neue Konfigurationsdatei.
+# @return Der Benutzername
 def nutzernamen_abfragen():
-    """
-    Fragt den Benutzernamen ab und erstellt bei Bedarf eine neue Konfigurationsdatei.
-    
-    @return Der Benutzername
-    """
-  
     handle = input("Bitte Benutzernamen eingeben: ")
         
-
     # Pfad zur Konfigurationsdatei des Benutzers
     konfig_pfad = f"Konfigurationsdateien/config_{handle.lower()}.toml"
 
@@ -53,25 +45,25 @@ def nutzernamen_abfragen():
     
     return handle
 
-
+# --------Abfrage grundwerte für Nachricht/Bild--------
 ## Eingabe der zu versendend Nachricht an eine bestimmten Empfänger
-# @return 
+# @return empfänger und nachricht als String
 def eingabe_nachricht():
     empfaenger = input("Empfänger-Handle: ")
     nachricht = input("Nachricht: ")
     return empfaenger, nachricht
 
 ## Eingabe des Bildpfads und des Empfängers
-# @return 
+# @return empfänger und bildpfad als String
 def eingabe_bild():
     empfaenger = input("Empfänger-Handle: ")
     bildpfad = input("Pfad zum Bild: ")
     return empfaenger, bildpfad
 
-## Eingabe der Autoreply Nachricht
+# --------Eingabe Autoreply--------
+# Eingabe der Autoreply Nachricht
 # @return Die Config-Datei wird verändert
-#gibt erst die aktuelle nachricht aus und fragt dann nach einer neuen
-#nachricht in der Config einsehbar
+# gibt erst die aktuelle nachricht aus und fragt dann nach einer neuen
 
 def autoreply_umschalten(config, pfad):
     aktuell = config.get("client", {}).get("autoreply", "")  # Liest aktuellen Autoreply
@@ -82,12 +74,11 @@ def autoreply_umschalten(config, pfad):
     config["client"]["autoreply_aktiv"] = bool(neu.strip())  # Aktiv, wenn Text vorhanden
     print(f"Änderung wurde gespeichert in: {pfad}")
 
-    # >>> Änderung hier: benutze den tatsächlich geladenen Pfad statt festem Dateinamen
     with open(pfad, "w") as f:
         toml.dump(config, f)
-
     return config
 
+# --------autoreply umschalten--------
 def autoreply_einschalten(config, pfad):
     aktuell = config.get("client", {}).get("autoreply_aktiv", False)
     neu = not aktuell  # Umschalten
@@ -101,17 +92,11 @@ def autoreply_einschalten(config, pfad):
 
     return config
 
-
-import os          
-
-
-#: @brief Pfad zur standardmäßigen Konfigurationsdatei, wird großgeschrieben da Konstante 
-KONFIGURATIONSDATEI = "Konfigurationsdateien/config.toml"
-
-def lade_config(pfad=None):
-    # @brief lädt die TOML-Konfigurationsdatei und gibt sie als Dictionary zurück (Parsing).
+# --------Config Datei ersellen--------
+# @brief lädt die TOML-Konfigurationsdatei und gibt sie als Dictionary zurück (Parsing).
     # @return dict mit den Konfigurationswerten
     # @raises FileNotFoundError wenn die Datei nicht existiert
+def lade_config(pfad=None):
     if pfad is None:
         pfad = "Konfigurationsdateien/config.toml"
 
@@ -121,16 +106,16 @@ def lade_config(pfad=None):
     else:
         raise FileNotFoundError("config.toml nicht gefunden.") 
 
-def erstelle_neue_config(handle):
-    # @brief Erstellt eine neue Konfigurationsdatei für den Benutzer, falls sie noch nicht existiert.
-    # @param handle: Der Benutzername für pden die Konfiguration erstellt wird.
+ # @brief Erstellt eine neue Konfigurationsdatei für den Benutzer, falls sie noch nicht existiert.
+    # @param handle: Der Benutzername für den Benutzer, der eine neue datei braucht.
     # Standard-Konfigurationswerte für den Benutzer
+def erstelle_neue_config(handle):
     config = {
         "client": {
             "handle": handle,
             "port":5000,
             "whoisport": 4000,
-            "autoreply": "Bin nicht da",  # Standardwert für autoreply
+            "autoreply": "Bin nicht da", 
             "autoreply_aktiv": False,
             "imagepath":"images/"
         },
@@ -147,13 +132,14 @@ def erstelle_neue_config(handle):
     # Speichern der Konfigurationsdatei im TOML-Format
     with open(konfig_pfad, "w") as f:
         toml.dump(config, f)
-    
+
+# --------freie Ports finden--------
 ## @brief Findet einen freien TCP-Port auf dem lokalen System.
 #  Diese Funktion erstellt einen temporären TCP-Socket, der sich an Port 0 bindet.
 #  Die Angabe von Port 0 signalisiert dem Betriebssystem, dass ein beliebiger freier Port
-#  automatisch zugewiesen werden soll. Nachdem der Socket gebunden ist, wird der
-#  tatsächlich zugewiesene Port abgefragt und zurückgegeben.
-#  @return int Ein freier TCP-Port, der aktuell nicht verwendet wird.
+#  automatisch zugewiesen werden soll.
+#  Nachdem der Socket gebunden ist, wird der tatsächlich zugewiesene Port abgefragt und zurückgegeben.
+#  @return einen freieren TCP-Port (int), der aktuell nicht verwendet wird.
 def finde_freien_tcp_port():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.bind(('', 0))  # Port 0 = automatisch freien Port finden
@@ -162,6 +148,7 @@ def finde_freien_tcp_port():
 # @brief Durchsucht den in der Konfigurationsdatei angegebenen Portbereich nach einem freien UDP-Port.
 # @param config dict mit den Konfigurationswerten, erwartet Schlüssel 'port_min' und 'port_max'
 # @return int erster freier UDP-Port im Bereich
+# @return socket
 # @raises ValueError Wenn 'port_min' oder 'port_max' in der Konfiguration fehlen
 # @raises RuntimeError wenn kein freier Port im Bereich gefunden wird
 def finde_freien_port(config):
@@ -183,7 +170,6 @@ def finde_freien_port(config):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
-
         # Versucht, den Socket an einen bestimmten Port zu binden:
         # "" steht für „alle Netzwerk-Interfaces“ (z. B. localhost und LAN).
         # port ist der aktuell getestete Port.
@@ -197,10 +183,4 @@ def finde_freien_port(config):
         continue 
 
     # Wenn kein einziger Port im angegebenen Bereich verfügbar war, bricht die Funktion mit einem RuntimeError ab
-    raise RuntimeError("Kein freier UDP-Port im Bereich {} {} gefunden.".format(port_min, port_max))
- 
-
-
-
-
-
+    raise RuntimeError("Kein freier UDP-Port im Bereich {}-{} gefunden.".format(port_min, port_max))

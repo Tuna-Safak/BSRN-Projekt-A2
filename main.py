@@ -1,5 +1,5 @@
-## @file main.py
-## @brief Start des Programms und ruft die ganzen funktionien auf
+# @file main.py
+# @brief Start des Programms und ruft die ganzen funktionien auf
 import os
 # starten eines weiteren Prozesses durch ein bestehenden Prozess
 import subprocess
@@ -90,11 +90,7 @@ def main():
     handle = nutzernamen_abfragen()
     # Dateipfad zusammenbauen um die richtige config zu laden
     konfig_pfad = f"Konfigurationsdateien/config_{handle.lower()}.toml"
-    # Prüft, ob die Konfigurationsdatei für den angegebenen Benutzer bereits existiert.
-    # Wenn nicht, wird automatisch eine neue Konfiguration angelegt (z. B. config_tuna.toml)
-    if not os.path.exists(konfig_pfad):
-        erstelle_neue_config(handle)  # Konfig anlegen, falls nicht vorhanden
-
+    
     config = lade_config(konfig_pfad)
     
     # erstellt ein Objekt

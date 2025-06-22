@@ -6,7 +6,8 @@
 _shared_dict = None # Globale Variable für die geteilte Nutzerliste
 
 ## @brief Erstellt die globale Nutzerliste mit einem gemeinsam nutzbaren Dictionary.
-# @param shared_dict--> wird von multiprocessing.Manager() erzeugte
+# @param shared_dict Globale Variable für die geteilte Nutzerliste
+# @note wird von multiprocessing.Manager() erzeugt
 def initialisiere_nutzerliste(shared_dict):
     global _shared_dict
     _shared_dict = shared_dict

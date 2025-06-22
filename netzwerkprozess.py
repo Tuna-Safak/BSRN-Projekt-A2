@@ -1,6 +1,6 @@
 ## @file netzwerkprozess.py
-# @details Dieser Prozess empfängt IPC-Kommandos vom UI-Prozess über einen lokalen TCP-Socket
-#        und sendet SLCP-Nachrichten (MSG, IMG) per UDP an andere Peers im Netzwerk.
+# @brief empfängt und verarbeitet IPC-Kommandos vom UI-Prozess
+# @details sendet SLCP-Nachrichten (MSG, IMG) per UDP an andere Peers im Netzwerk.
 
 import socket
 
@@ -33,10 +33,10 @@ def finde_lokale_ip():
 
 # --------JOIN-Nachricht versenden--------
 ## @breif versendet eine Join-Nachricht
-# @param UDP-Socket
-# @param handel=Benutzername
-# @param eigener Port
-# @param Discovery_port = Broadcast-Port
+# @param sock UDP-Socket
+# @param handel Benutzername
+# @param port eigener Port
+# @param Discovery_port Broadcast-Port
 def send_join(sock, handle, port, DISCOVERY_PORT):
     # allen im Chat wird mitgeteilt, dass ich mich im Chat befinde
     nachricht = f"JOIN {handle} {port}\n"
@@ -45,9 +45,9 @@ def send_join(sock, handle, port, DISCOVERY_PORT):
 # --------JOIN verarbeiten--------
 ## @brief Verarbeitet eine empfangene Join nachricht
 # @param name des beitretenden Nutzers (handle)
-# @param port von Discovery dienst
-# @param die absender adresse
-# @param falls eine Ip adresse bekannt ist
+# @param Discovery_port port von Discovery dienst
+# @param addr die absender adresse
+# @param ip=None falls eine Ip adresse bekannt ist, sonst None
 def handle_join(name, DISCOVERY_PORT, addr, ip=None):
     if ip is None:
         ip = addr[0]
@@ -61,9 +61,9 @@ def handle_join(name, DISCOVERY_PORT, addr, ip=None):
 
 # --------Leave-Nachricht versenden--------
 ## @brief sendet eine leave nachricht an alle Nutzer
-# @param UDP socket
-# @param name des lokalen Nutzers
-# @param Discovery_port
+# @param sock UDP socket
+# @param handle_nutzername name des lokalen Nutzers
+# @param Discovery_Port Broadcast-Port
 def send_leave(sock, handle_nutzername, DISCOVERY_PORT):
     nachricht = f"LEAVE {handle_nutzername}\n"
     sock.sendto(nachricht.encode('utf-8'), ("255.255.255.255", DISCOVERY_PORT))
@@ -85,7 +85,7 @@ def send_leave(sock, handle_nutzername, DISCOVERY_PORT):
 
 # --------LEAVE verarbeiten--------
 ## @brief entfernt einen nutzer aus der Nutzerliste
-# @param nutzername
+# @param name nutzername
 def handle_leave(name):
     # Verarbeitung einer LEAVE-Nachricht, um Nutzer aus der Liste zu entfernen
     if name in gebe_nutzerliste_zurück():
@@ -97,10 +97,10 @@ def handle_leave(name):
 
 # --------Nachricht senden--------
 ## @brief sendet eine nachricht an einen nutzer
-# @param UDP-Soket
-# @param absender handle
-# @param empfänger handle
-# @param text 
+# @param sock UDP-Soket
+# @param handle absender handle
+# @param empfaenger_handle empfänger handle
+# @param text Nachricht
 def sendMSG(sock, handle, empfaenger_handle, text):
     nutzerliste = gebe_nutzerliste_zurück()
 
@@ -129,8 +129,8 @@ def sendMSG(sock, handle, empfaenger_handle, text):
 
 # --------Nachricht empfangen--------
 ## @brief Empfängt Nachrichten vom UDP-Socket und verarbeitet sie.
-# @param UDP-Socket
-# @param Konfiguartions Datei
+# @param sock UDP-Socket
+# @param config individuelle Konfiguartions Datei
 def receive_MSG(sock, config):
   
     while True:
@@ -199,7 +199,6 @@ def receive_MSG(sock, config):
 # --------Bild senden--------
 ## @brief Sendet ein Bild an einen anderen Nutzer über UDP
 # @param sock Der UDP-Socket zum Senden der Nachricht
-# @param handle_sender Benutzername des Absenders 
 # @param handle_empfaenger Benutzername des Empfängers
 # @param bildpfad Pfad zur Bilddatei, die gesendet werden soll
 def send_IMG(sock, handle_empfaenger, bildpfad):
@@ -322,7 +321,10 @@ def handle_IMG(sock, teile, addr, config):
 #  @details Stellt einen TCP-Server auf localhost:tcpPort bereit, über den der UI-Prozess Kommandos
 #           wie MSG und IMG senden kann. Diese werden analysiert und mit UDP an die Ziel-Peers
 #           gemäß SLCP-Protokoll weitergeleitet.
-#  @note Diese Funktion blockiert dauerhaft. Sie sollte in einem separaten Prozess ausgeführt werden.
+# @note Diese Funktion blockiert dauerhaft. Sie sollte in einem separaten Prozess ausgeführt werden.
+# @param sock UDP-Socket
+# @param konfig_pfad Pfad der aktuellen Config
+# @tcp_port verbindung zwischen Main und Netzwerkprozess
 def netzwerkprozess(sock, konfig_pfad, tcp_port):
  
     #print("[DEBUG] netzwerkprozess(konfig_pfad) wurde aufgerufen")

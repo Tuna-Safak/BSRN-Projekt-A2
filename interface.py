@@ -2,7 +2,6 @@
 # @brief interface der Kommmandozeile für das Chat-Programm
 # @details Menüauswahl und Eingaben über das Terminal
 
-#import sys
 #Modul zum Parsen von .toml-Dateien
 import toml
 # Für Prüfung freier Ports per UDP-Socket
@@ -13,7 +12,7 @@ import os
 # --------Auswahl abfrage--------
 ## @brief Auswahl
 # @return Auswahl des Benutzers als String
-# wird in der main aufgerufen
+# @note wird in der main aufgerufen
 def menue():
     # Menü mit Farben und fettgedruckter Überschrift
     print("\n\033[1mMenü\033[0m\n")  # fette Überschrift
@@ -32,8 +31,7 @@ def menue():
 # --------Eingabe Nutzername--------
 ## @brief Nutzername eingeben
 # @return Benutzername (Handle) als String
-# Fragt den Benutzernamen ab und erstellt bei Bedarf eine neue Konfigurationsdatei.
-# @return Der Benutzername
+# @note Fragt den Benutzernamen ab und erstellt bei Bedarf eine neue Konfigurationsdatei.
 def nutzernamen_abfragen():
     handle = input("Bitte Benutzernamen eingeben: ")
         
@@ -64,8 +62,10 @@ def eingabe_bild():
 
 # --------Eingabe Autoreply--------
 ## @brief Eingabe der Autoreply Nachricht
+# @param config indiviuelle config
+# @param pfad speicherort der Config-Datei
 # @return Die Config-Datei wird verändert
-# gibt erst die aktuelle nachricht aus und fragt dann nach einer neuen
+# @note gibt erst die aktuelle nachricht aus und fragt dann nach einer neuen
 
 def autoreply_umschalten(config, pfad):
     aktuell = config.get("client", {}).get("autoreply", "")  # Liest aktuellen Autoreply
@@ -82,8 +82,10 @@ def autoreply_umschalten(config, pfad):
 
 # --------autoreply umschalten--------
 ## @brief umschalten der autoreply
+# @param config indiviuelle config
+# @param pfad speicherort der Config-Datei
 # @return Die Config-Datei wird verändert
-# schaut, welcher wert in Config steht und verändert ihn
+# @note schaut, welcher wert in Config steht und verändert ihn
 def autoreply_einschalten(config, pfad):
     aktuell = config.get("client", {}).get("autoreply_aktiv", False)
     neu = not aktuell  # Umschalten
@@ -99,8 +101,9 @@ def autoreply_einschalten(config, pfad):
 
 # --------Config Datei ersellen--------
 ## @brief lädt die TOML-Konfigurationsdatei und gibt sie als Dictionary zurück (Parsing).
-    # @return dict mit den Konfigurationswerten
-    # @raises FileNotFoundError wenn die Datei nicht existiert
+# @param pfad=None Pfad überschreiben oder pfad nicht übergeben, dann nimmt er standard Config Datei
+# @return dict mit den Konfigurationswerten
+# @note FileNotFoundError wenn die Datei nicht existiert
 def lade_config(pfad=None):
     if pfad is None:
         pfad = "Konfigurationsdateien/config.toml"
@@ -109,9 +112,9 @@ def lade_config(pfad=None):
        
         return toml.load(pfad)
 
- ## @brief Erstellt eine neue Konfigurationsdatei für den Benutzer, falls sie noch nicht existiert.
-    # @param handle: Der Benutzername für den Benutzer, der eine neue datei braucht.
-    # Standard-Konfigurationswerte für den Benutzer
+## @brief Erstellt eine neue Konfigurationsdatei für den Benutzer, falls sie noch nicht existiert.
+# @param handle: Der Benutzername für den Benutzer, der eine neue datei braucht.
+# @note Standard-Konfigurationswerte für den Benutzer
 def erstelle_neue_config(handle):
     config = {
         "client": {
@@ -137,7 +140,7 @@ def erstelle_neue_config(handle):
 
 # --------freie Ports finden--------
 ## @brief Findet einen freien TCP-Port auf dem lokalen System.
-#  Diese Funktion erstellt einen temporären TCP-Socket, der sich an Port 0 bindet.
+#  @details Diese Funktion erstellt einen temporären TCP-Socket, der sich an Port 0 bindet.
 #  Die Angabe von Port 0 signalisiert dem Betriebssystem, dass ein beliebiger freier Port
 #  automatisch zugewiesen werden soll.
 #  Nachdem der Socket gebunden ist, wird der tatsächlich zugewiesene Port abgefragt und zurückgegeben.
@@ -151,8 +154,8 @@ def finde_freien_tcp_port():
 # @param config dict mit den Konfigurationswerten, erwartet Schlüssel 'port_min' und 'port_max'
 # @return int erster freier UDP-Port im Bereich
 # @return socket
-# @raises ValueError Wenn 'port_min' oder 'port_max' in der Konfiguration fehlen
-# @raises RuntimeError wenn kein freier Port im Bereich gefunden wird
+# @note ValueError Wenn 'port_min' oder 'port_max' in der Konfiguration fehlen
+# @note RuntimeError wenn kein freier Port im Bereich gefunden wird
 def finde_freien_port(config):
     #Holt die Konfigurationswerte port_min und port_max aus dem config-Dictionary
     port_min = config["network"].get("port_min")

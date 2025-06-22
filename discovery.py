@@ -15,6 +15,9 @@ from nutzerliste import (
     initialisiere_nutzerliste
 )
 # --------Funktion von Discovery--------
+## @breif verwaltet alle Discovery funktionen
+# @param konfig_pfad Pfad der individuellen Config
+# @param shared_dict Nutzerliste
 def discovery_main(konfig_pfad, shared_dict):
     initialisiere_nutzerliste(shared_dict)
     config = lade_config(konfig_pfad)

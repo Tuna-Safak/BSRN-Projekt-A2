@@ -65,6 +65,7 @@ def registriere_neuen_nutzer(handle, config):
 #           Der Netzwerkprozess übernimmt dann das eigentliche Senden per UDP an andere Chat-Teilnehmer.
 #           Die Kommunikation erfolgt über eine TCP-Verbindung zu localhost:6001
 # @param befehl Der SLCP-kompatible Befehl, z. B. "MSG Bob Hallo" oder "IMG Bob pfad/zum/bild.jpg".
+# @param tcp_port verbindet netzwerkprozess mit Main
 # @note Wenn der Netzwerkprozess nicht läuft oder der Socket nicht erreichbar ist, wird eine Fehlermeldung ausgegeben.
 def sende_befehl_an_netzwerkprozess(befehl: str, tcp_port: int):
     try:
@@ -175,8 +176,8 @@ def main():
             break
 
 # --------Programmeinstiegspunkt--------
-## beginnt das Programm
-#  @note Beim starten wird name durch main ersetzt, erst wenn es stimmt, wird die Main Funktion gestartet
+# beginnt das Programm
+# Beim starten wird name durch main ersetzt, erst wenn es stimmt, wird die Main Funktion gestartet
 if __name__ == "__main__":
     multiprocessing.set_start_method("spawn", force=True) 
     main()

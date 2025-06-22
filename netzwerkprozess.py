@@ -177,7 +177,6 @@ def receive_MSG(sock, config):
                 else:
                     print(f"[LEAVE] Unbekannter Nutzer '{absender_name}' wollte LEAVE senden.")
 
-
             # Verarbeitung von MSG-Nachrichten
             elif befehl == "MSG" and len(teile) >= 3:
                 absender_handle = teile[1]
@@ -188,13 +187,6 @@ def receive_MSG(sock, config):
                     autoreply_text = config.get("autoreply", "Ich bin gerade nicht da.")
                     handle = config["client"]["handle"]
                     sendMSG(sock, handle, absender_handle, autoreply_text)
-            '''elif befehl == "WHO":
-                nutzerliste = gebe_nutzerliste_zurück()
-                antwort = "KNOWNUSERS " + ", ".join(
-                    f"{h} {ip} {port}" for h, (ip, port) in nutzerliste.items()
-                )
-                sock.sendto(antwort.encode("utf-8"), addr)
-                print(f"[WHO-ANTWORT] Gesendet an {addr}: {antwort}")'''
 
             # Verarbeitung von IMG-Nachrichten
             elif befehl == "IMG" and len(teile) == 3:
@@ -203,28 +195,7 @@ def receive_MSG(sock, config):
                     handle_IMG(sock, teile, addr, config)
                 except Exception as e:
                     print(f"Fehler beim Bildempfang: {e}")
-
-           ''' # Verarbeitung von KNOWNUSERS-Nachrichten
-            elif befehl == "KNOWNUSERS":
             
-                if rest:
-                    eintraege = rest.split(", ")
-                    nutzerlist = gebe_nutzerliste_zurück()
-                   # eigener_handle = config["client"]["handle"]
-                   
-                    for eintrag in eintraege:
-                        try:
-                            handle, ip, port = eintrag.strip().split(" ")
-                            nutzerlist[handle] = (ip, int(port)) 
-
-        
-                            #if handle == eigener_handle:
-                               # continue
-                        except ValueError:
-                            print(f"[WARNUNG] Konnte Nutzer nicht verarbeiten: {eintrag}")
-                else:
-                     print("[INFO] Keine Nutzer in KNOWNUSERS-Antwort.")
-            '''
         except Exception as e:
             print(f"Fehler: {e}")
 

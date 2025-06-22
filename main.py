@@ -1,4 +1,4 @@
-# @file main.py
+## @file main.py
 # @brief Start des Programms und ruft die ganzen funktionien auf
 import os
 # starten eines weiteren Prozesses durch ein bestehenden Prozess
@@ -51,7 +51,7 @@ from nutzerliste import (
     initialisiere_nutzerliste
 )
 # --------Regiestiere neunen Nutzer--------
-# @brief Registiert einen neuen Nutzer im Chatnetzwerk
+## @brief Registiert einen neuen Nutzer im Chatnetzwerk
     # @details finde_freien_port: es wird ein freier Port gesucht und ein Socket dadurch erstellt
     # @details send_join: verschickt eine Join Nachricht an alle
 # @param handle: der Benutzername des Teilnehmers
@@ -67,7 +67,7 @@ def registriere_neuen_nutzer(handle, config):
     return port
 
 # --------Befehl an Netzwerkprozess--------
-# @brief Sendet einen Steuerbefehl über einen lokalen TCP-Socket an den Netzwerkprozess
+## @brief Sendet einen Steuerbefehl über einen lokalen TCP-Socket an den Netzwerkprozess
 # @details Diese Funktion wird vom UI-Prozess verwendet, um Nachrichten- oder Bildbefehle
 #           (z. B. MSG oder IMG) an den Netzwerkprozess weiterzuleiten.
 #           Der Netzwerkprozess übernimmt dann das eigentliche Senden per UDP an andere Chat-Teilnehmer.
@@ -82,7 +82,7 @@ def sende_befehl_an_netzwerkprozess(befehl: str, tcp_port: int):
         print("Netzwerkprozess läuft nicht!")
 
 # --------Hauptfunktionen--------
-#  @brief startet alle funktionienen nach eingabe durch eingabe im Terminal
+##  @brief startet alle funktionienen nach eingabe durch eingabe im Terminal
 #  @details lädt das Menü und verwaltet den Ablauf
 def main():
 

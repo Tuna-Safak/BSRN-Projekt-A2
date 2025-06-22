@@ -1,4 +1,4 @@
-# @file discovery.py
+## @file discovery.py
 # @brief Discovery-Dienst für SLCP – empfängt JOIN, WHO, LEAVE
 # @details Verwaltet bekannte Nutzer und antwortet auf WHO-Anfragen
 

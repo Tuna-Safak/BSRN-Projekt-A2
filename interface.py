@@ -1,4 +1,4 @@
-# @file interface.py
+## @file interface.py
 # @brief interface der Kommmandozeile für das Chat-Programm
 # @details Menüauswahl und Eingaben über das Terminal
 
@@ -11,6 +11,7 @@ import socket
 import os
 
 # --------Auswahl abfrage--------
+## @brief Auswahl
 # @return Auswahl des Benutzers als String
 # wird in der main aufgerufen
 def menue():
@@ -29,6 +30,7 @@ def menue():
 
 
 # --------Eingabe Nutzername--------
+## @brief Nutzername eingeben
 # @return Benutzername (Handle) als String
 # Fragt den Benutzernamen ab und erstellt bei Bedarf eine neue Konfigurationsdatei.
 # @return Der Benutzername
@@ -61,7 +63,7 @@ def eingabe_bild():
     return empfaenger, bildpfad
 
 # --------Eingabe Autoreply--------
-# Eingabe der Autoreply Nachricht
+## @brief Eingabe der Autoreply Nachricht
 # @return Die Config-Datei wird verändert
 # gibt erst die aktuelle nachricht aus und fragt dann nach einer neuen
 
@@ -79,6 +81,9 @@ def autoreply_umschalten(config, pfad):
     return config
 
 # --------autoreply umschalten--------
+## @brief umschalten der autoreply
+# @return Die Config-Datei wird verändert
+# schaut, welcher wert in Config steht und verändert ihn
 def autoreply_einschalten(config, pfad):
     aktuell = config.get("client", {}).get("autoreply_aktiv", False)
     neu = not aktuell  # Umschalten
@@ -93,7 +98,7 @@ def autoreply_einschalten(config, pfad):
     return config
 
 # --------Config Datei ersellen--------
-# @brief lädt die TOML-Konfigurationsdatei und gibt sie als Dictionary zurück (Parsing).
+## @brief lädt die TOML-Konfigurationsdatei und gibt sie als Dictionary zurück (Parsing).
     # @return dict mit den Konfigurationswerten
     # @raises FileNotFoundError wenn die Datei nicht existiert
 def lade_config(pfad=None):
@@ -106,7 +111,7 @@ def lade_config(pfad=None):
     else:
         raise FileNotFoundError("config.toml nicht gefunden.") 
 
- # @brief Erstellt eine neue Konfigurationsdatei für den Benutzer, falls sie noch nicht existiert.
+ ## @brief Erstellt eine neue Konfigurationsdatei für den Benutzer, falls sie noch nicht existiert.
     # @param handle: Der Benutzername für den Benutzer, der eine neue datei braucht.
     # Standard-Konfigurationswerte für den Benutzer
 def erstelle_neue_config(handle):
@@ -145,7 +150,7 @@ def finde_freien_tcp_port():
         s.bind(('', 0))  # Port 0 = automatisch freien Port finden
         return s.getsockname()[1]
 
-# @brief Durchsucht den in der Konfigurationsdatei angegebenen Portbereich nach einem freien UDP-Port.
+## @brief Durchsucht den in der Konfigurationsdatei angegebenen Portbereich nach einem freien UDP-Port.
 # @param config dict mit den Konfigurationswerten, erwartet Schlüssel 'port_min' und 'port_max'
 # @return int erster freier UDP-Port im Bereich
 # @return socket

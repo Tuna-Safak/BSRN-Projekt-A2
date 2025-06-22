@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['initialisiere_5fnutzerliste_46',['initialisiere_nutzerliste',['../nutzerliste_8py.html#a7929e13780212704817df07fc327d63b',1,'nutzerliste']]]
+  ['handle_5fimg_46',['handle_IMG',['../netzwerkprozess_8py.html#a4a10d27228b70a7490da23a53e92cdeb',1,'netzwerkprozess']]],
+  ['handle_5fjoin_47',['handle_join',['../netzwerkprozess_8py.html#ad90f30772a665e727443a2f318aa2267',1,'netzwerkprozess']]],
+  ['handle_5fleave_48',['handle_leave',['../netzwerkprozess_8py.html#aeca1abd570ed2d6cc4d22c98ac14bdb3',1,'netzwerkprozess']]]
 ];

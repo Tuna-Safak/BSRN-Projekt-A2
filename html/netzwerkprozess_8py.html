@@ -67,6 +67,9 @@ $(function() {
 <div class="title">netzwerkprozess.py File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>empfängt und verarbeitet IPC-Kommandos vom UI-Prozess  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -105,7 +108,8 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>netzwerkprozess.starte
 <tr class="separator:a0523b4868060b99c5f110f8a6b11f954"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Dieser Prozess empfängt IPC-Kommandos vom UI-Prozess über einen lokalen TCP-Socket und sendet SLCP-Nachrichten (MSG, IMG) per UDP an andere Peers im Netzwerk. </p>
+<div class="textblock"><p>empfängt und verarbeitet IPC-Kommandos vom UI-Prozess </p>
+<p>sendet SLCP-Nachrichten (MSG, IMG) per UDP an andere Peers im Netzwerk. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
 <a id="af2fb6efb1fe5f232e694506b5331a0b0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af2fb6efb1fe5f232e694506b5331a0b0">&#9670;&nbsp;</a></span>finde_lokale_ip()</h2>
@@ -220,9 +224,9 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>netzwerkprozess.starte
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">name</td><td>des beitretenden Nutzers (handle) </td></tr>
-    <tr><td class="paramname">port</td><td>von Discovery dienst </td></tr>
-    <tr><td class="paramname">die</td><td>absender adresse </td></tr>
-    <tr><td class="paramname">falls</td><td>eine Ip adresse bekannt ist </td></tr>
+    <tr><td class="paramname">Discovery_port</td><td>port von Discovery dienst </td></tr>
+    <tr><td class="paramname">addr</td><td>die absender adresse </td></tr>
+    <tr><td class="paramname">ip=None</td><td>falls eine Ip adresse bekannt ist, sonst None </td></tr>
   </table>
   </dd>
 </dl>
@@ -248,7 +252,7 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>netzwerkprozess.starte
 <p>entfernt einen nutzer aus der Nutzerliste </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">nutzername</td><td></td></tr>
+    <tr><td class="paramname">name</td><td>nutzername </td></tr>
   </table>
   </dd>
 </dl>
@@ -289,6 +293,13 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>netzwerkprozess.starte
 
 <p>Startet den Netzwerkprozess und lauscht auf Befehle vom UI-Prozess. </p>
 <p>Stellt einen TCP-Server auf localhost:tcpPort bereit, über den der UI-Prozess Kommandos wie MSG und IMG senden kann. Diese werden analysiert und mit UDP an die Ziel-Peers gemäß SLCP-Protokoll weitergeleitet. </p><dl class="section note"><dt>Note</dt><dd>Diese Funktion blockiert dauerhaft. Sie sollte in einem separaten Prozess ausgeführt werden. </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sock</td><td>UDP-Socket </td></tr>
+    <tr><td class="paramname">konfig_pfad</td><td>Pfad der aktuellen Config @tcp_port verbindung zwischen Main und Netzwerkprozess </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -321,8 +332,8 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>netzwerkprozess.starte
 <p>Empfängt Nachrichten vom UDP-Socket und verarbeitet sie. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">UDP-Socket</td><td></td></tr>
-    <tr><td class="paramname">Konfiguartions</td><td>Datei </td></tr>
+    <tr><td class="paramname">sock</td><td>UDP-Socket </td></tr>
+    <tr><td class="paramname">config</td><td>individuelle Konfiguartions Datei </td></tr>
   </table>
   </dd>
 </dl>
@@ -365,7 +376,6 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>netzwerkprozess.starte
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sock</td><td>Der UDP-Socket zum Senden der Nachricht </td></tr>
-    <tr><td class="paramname">handle_sender</td><td>Benutzername des Absenders </td></tr>
     <tr><td class="paramname">handle_empfaenger</td><td>Benutzername des Empfängers </td></tr>
     <tr><td class="paramname">bildpfad</td><td>Pfad zur Bilddatei, die gesendet werden soll </td></tr>
   </table>
@@ -415,10 +425,10 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>netzwerkprozess.starte
 <p>@breif versendet eine Join-Nachricht </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">UDP-Socket</td><td></td></tr>
-    <tr><td class="paramname">handel=Benutzername</td><td></td></tr>
-    <tr><td class="paramname">eigener</td><td>Port </td></tr>
-    <tr><td class="paramname">Discovery_port</td><td>= Broadcast-Port </td></tr>
+    <tr><td class="paramname">sock</td><td>UDP-Socket </td></tr>
+    <tr><td class="paramname">handel</td><td>Benutzername </td></tr>
+    <tr><td class="paramname">port</td><td>eigener Port </td></tr>
+    <tr><td class="paramname">Discovery_port</td><td>Broadcast-Port </td></tr>
   </table>
   </dd>
 </dl>
@@ -460,9 +470,9 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>netzwerkprozess.starte
 <p>sendet eine leave nachricht an alle Nutzer </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">UDP</td><td>socket </td></tr>
-    <tr><td class="paramname">name</td><td>des lokalen Nutzers </td></tr>
-    <tr><td class="paramname">Discovery_port</td><td></td></tr>
+    <tr><td class="paramname">sock</td><td>UDP socket </td></tr>
+    <tr><td class="paramname">handle_nutzername</td><td>name des lokalen Nutzers </td></tr>
+    <tr><td class="paramname">Discovery_Port</td><td>Broadcast-Port </td></tr>
   </table>
   </dd>
 </dl>
@@ -510,10 +520,10 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>netzwerkprozess.starte
 <p>sendet eine nachricht an einen nutzer </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">UDP-Soket</td><td></td></tr>
-    <tr><td class="paramname">absender</td><td>handle </td></tr>
-    <tr><td class="paramname">empfänger</td><td>handle </td></tr>
-    <tr><td class="paramname">text</td><td></td></tr>
+    <tr><td class="paramname">sock</td><td>UDP-Soket </td></tr>
+    <tr><td class="paramname">handle</td><td>absender handle </td></tr>
+    <tr><td class="paramname">empfaenger_handle</td><td>empfänger handle </td></tr>
+    <tr><td class="paramname">text</td><td>Nachricht </td></tr>
   </table>
   </dd>
 </dl>

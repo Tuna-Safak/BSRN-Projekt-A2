@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['gebe_5fnutzerliste_5fzurück_42',['gebe_nutzerliste_zurück',['../nutzerliste_8py.html#ab08fafb1127478465f00b9a904c630d3',1,'nutzerliste']]]
+  ['finde_5ffreien_5fport_42',['finde_freien_port',['../interface_8py.html#a8d064e703857411a955b4fee74867747',1,'interface']]],
+  ['finde_5ffreien_5ftcp_5fport_43',['finde_freien_tcp_port',['../interface_8py.html#ab2ba94f92b20fe072625b2a978d28c71',1,'interface']]],
+  ['finde_5flokale_5fip_44',['finde_lokale_ip',['../netzwerkprozess_8py.html#af2fb6efb1fe5f232e694506b5331a0b0',1,'netzwerkprozess']]]
 ];

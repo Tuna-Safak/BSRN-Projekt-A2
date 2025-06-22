@@ -1,0 +1,82 @@
+\hypertarget{main_8py}{}\doxysection{main.\+py File Reference}
+\label{main_8py}\index{main.py@{main.py}}
+
+
+Start des Programms und ruft die ganzen funktionien auf.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{main_8py_a48e8430ff5744724a5eca962e44b676b}{main.\+registriere\+\_\+neuen\+\_\+nutzer}} (handle, config)
+\begin{DoxyCompactList}\small\item\em Registiert einen neuen Nutzer im Chatnetzwerk. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{main_8py_ac1d3744cacdf93ad3d5bfe28faf360e4}{main.\+sende\+\_\+befehl\+\_\+an\+\_\+netzwerkprozess}} (str befehl, int tcp\+\_\+port)
+\begin{DoxyCompactList}\small\item\em Sendet einen Steuerbefehl über einen lokalen TCP-\/\+Socket an den Netzwerkprozess. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{main_8py_af613cea4cba4fb7de8e40896b3368945}{main.\+main}} ()
+\begin{DoxyCompactList}\small\item\em startet alle funktionienen nach eingabe durch eingabe im Terminal \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{main_8py_a6545afe365912084bd4525d726b9d4d3}\label{main_8py_a6545afe365912084bd4525d726b9d4d3}} 
+{\bfseries main.\+force}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Start des Programms und ruft die ganzen funktionien auf. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{main_8py_af613cea4cba4fb7de8e40896b3368945}\label{main_8py_af613cea4cba4fb7de8e40896b3368945}} 
+\index{main.py@{main.py}!main@{main}}
+\index{main@{main}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily def main.\+main (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+startet alle funktionienen nach eingabe durch eingabe im Terminal 
+
+lädt das Menü und verwaltet den Ablauf \mbox{\Hypertarget{main_8py_a48e8430ff5744724a5eca962e44b676b}\label{main_8py_a48e8430ff5744724a5eca962e44b676b}} 
+\index{main.py@{main.py}!registriere\_neuen\_nutzer@{registriere\_neuen\_nutzer}}
+\index{registriere\_neuen\_nutzer@{registriere\_neuen\_nutzer}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{registriere\_neuen\_nutzer()}{registriere\_neuen\_nutzer()}}
+{\footnotesize\ttfamily def main.\+registriere\+\_\+neuen\+\_\+nutzer (\begin{DoxyParamCaption}\item[{}]{handle,  }\item[{}]{config }\end{DoxyParamCaption})}
+
+
+
+Registiert einen neuen Nutzer im Chatnetzwerk. 
+
+finde\+\_\+freien\+\_\+port\+: es wird ein freier Port gesucht und ein Socket dadurch erstellt
+
+send\+\_\+join\+: verschickt eine Join Nachricht an alle 
+\begin{DoxyParams}{Parameters}
+{\em handle} & der Benutzername des Teilnehmers \\
+\hline
+{\em config} & die config Datei wird geldaden \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+port\+: verwendeter UDP-\/\+Port des Nutzers nutzer\+\_\+sock\+: der UDP-\/\+Socket, der an den Port gebunden ist 
+\end{DoxyReturn}
+\mbox{\Hypertarget{main_8py_ac1d3744cacdf93ad3d5bfe28faf360e4}\label{main_8py_ac1d3744cacdf93ad3d5bfe28faf360e4}} 
+\index{main.py@{main.py}!sende\_befehl\_an\_netzwerkprozess@{sende\_befehl\_an\_netzwerkprozess}}
+\index{sende\_befehl\_an\_netzwerkprozess@{sende\_befehl\_an\_netzwerkprozess}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{sende\_befehl\_an\_netzwerkprozess()}{sende\_befehl\_an\_netzwerkprozess()}}
+{\footnotesize\ttfamily def main.\+sende\+\_\+befehl\+\_\+an\+\_\+netzwerkprozess (\begin{DoxyParamCaption}\item[{str}]{befehl,  }\item[{int}]{tcp\+\_\+port }\end{DoxyParamCaption})}
+
+
+
+Sendet einen Steuerbefehl über einen lokalen TCP-\/\+Socket an den Netzwerkprozess. 
+
+Diese Funktion wird vom UI-\/\+Prozess verwendet, um Nachrichten-\/ oder Bildbefehle (z.\+ B. MSG oder IMG) an den Netzwerkprozess weiterzuleiten. Der Netzwerkprozess übernimmt dann das eigentliche Senden per UDP an andere Chat-\/\+Teilnehmer. Die Kommunikation erfolgt über eine TCP-\/\+Verbindung zu localhost\+:6001 
+\begin{DoxyParams}{Parameters}
+{\em befehl} & Der SLCP-\/kompatible Befehl, z.\+ B. \char`\"{}\+MSG Bob Hallo\char`\"{} oder \char`\"{}\+IMG Bob pfad/zum/bild.\+jpg\char`\"{}. \\
+\hline
+{\em tcp\+\_\+port} & verbindet netzwerkprozess mit Main \\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+Wenn der Netzwerkprozess nicht läuft oder der Socket nicht erreichbar ist, wird eine Fehlermeldung ausgegeben. 
+\end{DoxyNote}

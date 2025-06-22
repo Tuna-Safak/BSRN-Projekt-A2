@@ -86,8 +86,6 @@ def discovery_main(konfig_pfad, shared_dict):
 
             if handle not in gebe_nutzerliste_zurück():
                 print(f"JOIN {handle} {port}")
-            else:
-                print(f"JOIN {handle} aktualisiert → {port}")
 
             gebe_nutzerliste_zurück()[handle] = (ip, port)
 

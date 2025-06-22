@@ -10,13 +10,12 @@ import threading
 # importiert socket
 # kommunikation zwischen zwei Programmen(Prozessen)
 import socket
-# hat eigenen Speicher für jeden einzelnen Prozess des Projektes: e.g Netzwerkprozess und Discovery gleichzeitig laufen lassen
+# hat eigenen Speicher für jeden einzelnen Prozess des Projektes: z.B. Netzwerkprozess und Discovery gleichzeitig laufen lassen
 # pyhton Modul
 import multiprocessing
 # importiert die Klasse Process vom gesamten mulitprocessing Modul
 from multiprocessing import Process
-
-# Importiert Methoden aus dem interface, discovery, UI_utils und netzwerkprozess 
+# Importiert Methoden aus dem interface, discovery, netzwerkprozess und nutzerliste
 from interface import (
     menue,
     nutzernamen_abfragen,
@@ -34,16 +33,6 @@ from discovery import (
     discovery_main
 )
 
- 
-'''from UI_utils import (
-    lade_config, 
-    finde_freien_port,
-    erstelle_neue_config,
-    finde_freien_tcp_port
-)'''
-
-from multiprocessing import Process
-
 from netzwerkprozess import (
     send_join, 
     netzwerkprozess,
@@ -52,35 +41,39 @@ from netzwerkprozess import (
     sendIMG, 
     receive_MSG, 
     starte_netzwerkprozess
-
 )
-
-from multiprocessing import Manager
-from nutzerliste import initialisiere_nutzerliste
-# registriere_neuen_nutzer
+# verwendet, um gemeinsam nutzbares Objekte zwischen Prozessen zu erzeugen
+from multiprocessing import(
+    Manager
+)
+# Nutzerverzeichnis
+from nutzerliste import (
+    initialisiere_nutzerliste
+)
+# --------Regiestiere neunen Nutzer--------
 # @brief Registiert einen neuen Nutzer im Chatnetzwerk
-    ## @details finde_freien_port: es wird ein freier Port gesucht und ein Socket dadurch erstellt
-    ## @details send_join: verschickt eine Join Nachricht an alle
-## @param handle: der Benutzername des Teilnehmers
-## @param config: die config Datei wird geldaden
-## @return port: verwendeter UDP-Port des Nutzers
-## @return nutzer_sock: der UDP-Socket, der an den Port gebunden ist
+    # @details finde_freien_port: es wird ein freier Port gesucht und ein Socket dadurch erstellt
+    # @details send_join: verschickt eine Join Nachricht an alle
+# @param handle: der Benutzername des Teilnehmers
+# @param config: die config Datei wird geldaden
+# @return port: verwendeter UDP-Port des Nutzers
+# nutzer_sock: der UDP-Socket, der an den Port gebunden ist
 
 def registriere_neuen_nutzer(handle, config):
     port, nutzer_sock = finde_freien_port(config)
     DISCOVERY_PORT = config["network"]["whoisdiscoveryport"]
     send_join(nutzer_sock, handle,port, DISCOVERY_PORT)
     nutzer_sock.close()  # Port bleibt "reserviert" bis zum neuen Binden im Netzwerkprozess
-    return port  # Kein Socket mehr zurückgeben
+    return port
 
-## @brief Sendet einen Steuerbefehl über einen lokalen TCP-Socket an den Netzwerkprozess.
-#  @details Diese Funktion wird vom UI-Prozess verwendet, um Nachrichten- oder Bildbefehle
-#           (z. B. MSG oder IMG) an den Netzwerkprozess weiterzuleiten. Der Netzwerkprozess
-#           übernimmt dann das eigentliche Senden per UDP an andere Chat-Teilnehmer.
-#           Die Kommunikation erfolgt über eine TCP-Verbindung zu localhost:6001 FALSCH
-#  @param befehl Der SLCP-kompatible Befehl, z. B. "MSG Bob Hallo" oder "IMG Bob pfad/zum/bild.jpg".
-#  @note Wenn der Netzwerkprozess nicht läuft oder der Socket nicht erreichbar ist,
-#        wird eine Fehlermeldung ausgegeben.
+# --------Befehl an Netzwerkprozess--------
+# @brief Sendet einen Steuerbefehl über einen lokalen TCP-Socket an den Netzwerkprozess
+# @details Diese Funktion wird vom UI-Prozess verwendet, um Nachrichten- oder Bildbefehle
+#           (z. B. MSG oder IMG) an den Netzwerkprozess weiterzuleiten.
+#           Der Netzwerkprozess übernimmt dann das eigentliche Senden per UDP an andere Chat-Teilnehmer.
+#           Die Kommunikation erfolgt über eine TCP-Verbindung zu localhost:6001
+# @param befehl Der SLCP-kompatible Befehl, z. B. "MSG Bob Hallo" oder "IMG Bob pfad/zum/bild.jpg".
+# @note Wenn der Netzwerkprozess nicht läuft oder der Socket nicht erreichbar ist, wird eine Fehlermeldung ausgegeben.
 def sende_befehl_an_netzwerkprozess(befehl: str, tcp_port: int):
     try:
         with socket.create_connection(("localhost", tcp_port)) as sock:
@@ -88,11 +81,7 @@ def sende_befehl_an_netzwerkprozess(befehl: str, tcp_port: int):
     except ConnectionRefusedError:
         print("Netzwerkprozess läuft nicht!")
 
-
-
-
-
-## Hauptfunktion
+# --------Hauptfunktionen--------
 #  @brief startet alle funktionienen nach eingabe durch eingabe im Terminal
 #  @details lädt das Menü und verwaltet den Ablauf
 def main():
@@ -104,22 +93,25 @@ def main():
     # Prüft, ob die Konfigurationsdatei für den angegebenen Benutzer bereits existiert.
     # Wenn nicht, wird automatisch eine neue Konfiguration angelegt (z. B. config_tuna.toml)
     if not os.path.exists(konfig_pfad):
-        erstelle_neue_config(handle)  # Konfig anlegen, falls nicht vorhanden, WIRD SCHON IN ZEILE 93 GEMACHT
+        erstelle_neue_config(handle)  # Konfig anlegen, falls nicht vorhanden
 
-    # Startet den Netzwerkprozess als separaten Hintergrundprozess.
-    # Übergeben werden: Pfad zur Benutzer-Konfigurationsdatei und der dynamisch gewählte TCP-Port.
-    # subprocess.Popen wird verwendet, damit dieser Prozess parallel zur UI läuft.
-    # !Jetzt erst Netzwerkprozess starten
     config = lade_config(konfig_pfad)
+    
+    # erstellt ein Objekt
     manager = Manager()
+    # erstellt eine nutzerliste, auf die zwei Prozesse zugreifen können
     shared_nutzerliste = manager.dict()
+    # ruft funktion auf und übergibt die nutzerliste
     initialisiere_nutzerliste(shared_nutzerliste)
-     # Discovery-Prozess nur einmal starten
+    # Discovery-Prozess nur einmal starten
     discovery_proc = Process(target=discovery_main, args=(konfig_pfad, shared_nutzerliste))
     discovery_proc.start()
     time.sleep(1.5)  # Kleine Pause, damit Discovery bereit ist
     port = registriere_neuen_nutzer(handle, config)
 
+    # Startet den Netzwerkprozess als separaten Hintergrundprozess.
+    # Übergeben werden: Pfad zur Benutzer-Konfigurationsdatei und der dynamisch gewählte TCP-Port.
+    # Netzwerkprozess wird zuerst gestartet
     tcp_port = finde_freien_tcp_port()
     netzwerk_prozess = Process(target=starte_netzwerkprozess, args=(konfig_pfad, tcp_port, port, shared_nutzerliste))
     netzwerk_prozess.start()
@@ -129,25 +121,13 @@ def main():
     # nachdem netzwerkprozess läuft:
     sende_befehl_an_netzwerkprozess(f"JOIN {handle} {port}", tcp_port)
 
-
-
-    
-    # nutzernamen abfragen
-   
-   
-    #ui_utils
- 
-    #interface
-    #netzwerkprozess(konfig_pfad)
-    #threading.Thread(target=receive_MSG, args=(get_socket(), config), daemon=True).start()
-    #main
-   
-
-    #print(f"Willkommen, {handle}! Dein Port: {port}")
-
     while True:
         auswahl = menue() # interface
         if auswahl == "1":
+            # @details Sendet WHO per TCP an den Netzwerkprozess (localhost:tcp_port),
+            #       empfängt die KNOWNUSERS-Antwort und gibt bekannte Nutzer aus.
+            #       Erwartet Antwortformat: "KNOWNUSERS <handle1> <ip1> <port1>, ..."
+            # @param tcp_port TCP-Port, auf dem der Netzwerkprozess auf WHO hört
             print("→ WHO wird gesendet ...")
             try:
                 with socket.create_connection(("localhost", tcp_port)) as sock:
@@ -189,7 +169,7 @@ def main():
             config = autoreply_umschalten(config, konfig_pfad) # interface
             continue
         elif auswahl == "6":
-            print("→ Aktuelle Konfiguration:")
+            print("Aktuelle Konfiguration:")
             # config hat schlüssel und wert paare
             # k=kex(schlüssel) --> autoreply
             # v=(value)Wert --> text
@@ -204,16 +184,11 @@ def main():
             discovery_proc.terminate()
             netzwerk_prozess.join()
             discovery_proc.join()
-            #os._exit(0)  # Beende das Programm
-
             break
 
-            
-       
-
+# --------Programmeinstiegspunkt--------
 ## beginnt das Programm
 #  @note Beim starten wird name durch main ersetzt, erst wenn es stimmt, wird die Main Funktion gestartet
 if __name__ == "__main__":
-    import multiprocessing
     multiprocessing.set_start_method("spawn", force=True) 
     main()

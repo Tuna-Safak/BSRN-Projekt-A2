@@ -173,7 +173,7 @@ def receive_MSG(sock, config):
 
                 if absender_name in nutzerliste:
                     handle_leave(absender_name)
-                    print(f"[LEAVE] {absender_name} hat den Chat verlassen (aus Discovery gelöscht).")
+                    print(f"[LEAVE] {absender_name}")
                 else:
                     print(f"[LEAVE] Unbekannter Nutzer '{absender_name}' wollte LEAVE senden.")
 
@@ -190,7 +190,7 @@ def receive_MSG(sock, config):
 
             # Verarbeitung von IMG-Nachrichten
             elif befehl == "IMG" and len(teile) == 3:
-                print(f"[DEBUG] IMG-Befehl empfangen: {teile} von {addr}")
+                # print(f"[DEBUG] IMG-Befehl empfangen: {teile} von {addr}")
                 try:
                     handle_IMG(sock, teile, addr, config)
                 except Exception as e:
@@ -289,7 +289,7 @@ def handle_IMG(sock, teile, addr, config):
     # EIN Datagramm mit Bilddaten empfangen
     sock.settimeout(3.0)        # Timeout gegen Hänger
     try:
-        print(f"[DEBUG] Warte auf Bilddaten: {groesse} Bytes …")
+        #print(f"[DEBUG] Warte auf Bilddaten: {groesse} Bytes …")
         bilddaten, _ = sock.recvfrom(groesse)
         print(f"[DEBUG] Empfangen: {len(bilddaten)} Bytes")
     except socket.timeout:
@@ -327,12 +327,12 @@ def handle_IMG(sock, teile, addr, config):
 #  @note Diese Funktion blockiert dauerhaft. Sie sollte in einem separaten Prozess ausgeführt werden.
 def netzwerkprozess(sock, konfig_pfad, tcp_port):
  
-    print("[DEBUG] netzwerkprozess(konfig_pfad) wurde aufgerufen")
+    #print("[DEBUG] netzwerkprozess(konfig_pfad) wurde aufgerufen")
 
     ## @var config
     #  @brief Lädt Konfigurationsparameter wie Handle und Netzwerkports aus config.toml.
     config = lade_config(konfig_pfad)
-    print("[DEBUG] Netzwerkprozess gestartet")
+    print("[INFO] Netzwerkprozess gestartet")
 
     ## @var tcp_server
     #  @brief Lokaler TCP-Server-Socket für IPC zwischen UI und Netzwerkprozess.
@@ -340,7 +340,7 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
     tcp_server.bind(("localhost", tcp_port))
     tcp_server.listen(1)
 
-    print("f[INFO] (Netzwerkprozess) TCP-IPC bereit auf Port {tcp_port}" )
+    #print("f[INFO] (Netzwerkprozess) TCP-IPC bereit auf Port {tcp_port}" )
 
     while True:
         ## @var conn

@@ -134,7 +134,7 @@ def main():
                         teile = antwort.split(" ", 1)
                         if len(teile) == 2:
                             eintraege = teile[1].split(", ")
-                            print("KNOWN USERS")
+                            print("KNOWNUSERS")
                             for eintrag in eintraege:
                                 try:
                                     handle, ip, port = eintrag.strip().split(" ")

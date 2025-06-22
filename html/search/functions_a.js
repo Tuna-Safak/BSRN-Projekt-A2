@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['send_5fimg_54',['send_IMG',['../netzwerkprozess_8py.html#afb6da766d90984fdb1ad5a2f08a08799',1,'netzwerkprozess']]],
-  ['send_5fjoin_55',['send_join',['../netzwerkprozess_8py.html#a6ef115532f033b62e5010b8a5d516fad',1,'netzwerkprozess']]],
-  ['send_5fleave_56',['send_leave',['../netzwerkprozess_8py.html#a7f1a29d70df5fb674c3e54321536bda6',1,'netzwerkprozess']]],
-  ['sende_5fbefehl_5fan_5fnetzwerkprozess_57',['sende_befehl_an_netzwerkprozess',['../main_8py.html#ac1d3744cacdf93ad3d5bfe28faf360e4',1,'main']]],
-  ['sendmsg_58',['sendMSG',['../netzwerkprozess_8py.html#a75e74c2cd6365b69174c9468127f5362',1,'netzwerkprozess']]]
+  ['receive_5fmsg_55',['receive_MSG',['../netzwerkprozess_8py.html#a46b45653695f5c3d12db75801b08d7bb',1,'netzwerkprozess']]],
+  ['registriere_5fneuen_5fnutzer_56',['registriere_neuen_nutzer',['../main_8py.html#a48e8430ff5744724a5eca962e44b676b',1,'main']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lade_5fconfig_47',['lade_config',['../interface_8py.html#a0ac11efb67c19374a125cf3f2b7c0993',1,'interface']]]
+  ['initialisiere_5fnutzerliste_49',['initialisiere_nutzerliste',['../nutzerliste_8py.html#a7929e13780212704817df07fc327d63b',1,'nutzerliste']]]
 ];

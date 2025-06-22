@@ -22,9 +22,8 @@ def \mbox{\hyperlink{interface_8py_a4d45ff392c5f3cffe599e6e440a3b71e}{interface.
 \begin{DoxyCompactList}\small\item\em umschalten der autoreply \end{DoxyCompactList}\item 
 def \mbox{\hyperlink{interface_8py_a0ac11efb67c19374a125cf3f2b7c0993}{interface.\+lade\+\_\+config}} (pfad=None)
 \begin{DoxyCompactList}\small\item\em lädt die TOML-\/\+Konfigurationsdatei und gibt sie als Dictionary zurück (Parsing). \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{interface_8py_a51f44fe5b6eb54f3ce89ed98e8d5b93e}\label{interface_8py_a51f44fe5b6eb54f3ce89ed98e8d5b93e}} 
-def {\bfseries interface.\+erstelle\+\_\+neue\+\_\+config} (handle)
-\item 
+def \mbox{\hyperlink{interface_8py_a51f44fe5b6eb54f3ce89ed98e8d5b93e}{interface.\+erstelle\+\_\+neue\+\_\+config}} (handle)
+\begin{DoxyCompactList}\small\item\em Erstellt eine neue Konfigurationsdatei für den Benutzer, falls sie noch nicht existiert. \end{DoxyCompactList}\item 
 def \mbox{\hyperlink{interface_8py_ab2ba94f92b20fe072625b2a978d28c71}{interface.\+finde\+\_\+freien\+\_\+tcp\+\_\+port}} ()
 \begin{DoxyCompactList}\small\item\em Findet einen freien TCP-\/\+Port auf dem lokalen System. \end{DoxyCompactList}\item 
 def \mbox{\hyperlink{interface_8py_a8d064e703857411a955b4fee74867747}{interface.\+finde\+\_\+freien\+\_\+port}} (config)
@@ -47,9 +46,19 @@ Menüauswahl und Eingaben über das Terminal
 
 umschalten der autoreply 
 
+
+\begin{DoxyParams}{Parameters}
+{\em config} & indiviuelle config \\
+\hline
+{\em pfad} & speicherort der Config-\/\+Datei \\
+\hline
+\end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Die Config-\/\+Datei wird verändert schaut, welcher wert in Config steht und verändert ihn 
+Die Config-\/\+Datei wird verändert 
 \end{DoxyReturn}
+\begin{DoxyNote}{Note}
+schaut, welcher wert in Config steht und verändert ihn 
+\end{DoxyNote}
 \mbox{\Hypertarget{interface_8py_af7f75ea7a98d1cc400ffca0e79c86fe6}\label{interface_8py_af7f75ea7a98d1cc400ffca0e79c86fe6}} 
 \index{interface.py@{interface.py}!autoreply\_umschalten@{autoreply\_umschalten}}
 \index{autoreply\_umschalten@{autoreply\_umschalten}!interface.py@{interface.py}}
@@ -60,9 +69,19 @@ Die Config-\/\+Datei wird verändert schaut, welcher wert in Config steht und ve
 
 Eingabe der Autoreply Nachricht. 
 
+
+\begin{DoxyParams}{Parameters}
+{\em config} & indiviuelle config \\
+\hline
+{\em pfad} & speicherort der Config-\/\+Datei \\
+\hline
+\end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-Die Config-\/\+Datei wird verändert gibt erst die aktuelle nachricht aus und fragt dann nach einer neuen 
+Die Config-\/\+Datei wird verändert 
 \end{DoxyReturn}
+\begin{DoxyNote}{Note}
+gibt erst die aktuelle nachricht aus und fragt dann nach einer neuen 
+\end{DoxyNote}
 \mbox{\Hypertarget{interface_8py_a5051f9fa5dc461f59b37e6bfa0bf9a5b}\label{interface_8py_a5051f9fa5dc461f59b37e6bfa0bf9a5b}} 
 \index{interface.py@{interface.py}!eingabe\_bild@{eingabe\_bild}}
 \index{eingabe\_bild@{eingabe\_bild}!interface.py@{interface.py}}
@@ -89,6 +108,24 @@ Eingabe der zu versendend Nachricht an eine bestimmten Empfänger.
 \begin{DoxyReturn}{Returns}
 empfänger und nachricht als String 
 \end{DoxyReturn}
+\mbox{\Hypertarget{interface_8py_a51f44fe5b6eb54f3ce89ed98e8d5b93e}\label{interface_8py_a51f44fe5b6eb54f3ce89ed98e8d5b93e}} 
+\index{interface.py@{interface.py}!erstelle\_neue\_config@{erstelle\_neue\_config}}
+\index{erstelle\_neue\_config@{erstelle\_neue\_config}!interface.py@{interface.py}}
+\doxysubsubsection{\texorpdfstring{erstelle\_neue\_config()}{erstelle\_neue\_config()}}
+{\footnotesize\ttfamily def interface.\+erstelle\+\_\+neue\+\_\+config (\begin{DoxyParamCaption}\item[{}]{handle }\end{DoxyParamCaption})}
+
+
+
+Erstellt eine neue Konfigurationsdatei für den Benutzer, falls sie noch nicht existiert. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em handle} & Der Benutzername für den Benutzer, der eine neue datei braucht. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+Standard-\/\+Konfigurationswerte für den Benutzer 
+\end{DoxyNote}
 \mbox{\Hypertarget{interface_8py_a8d064e703857411a955b4fee74867747}\label{interface_8py_a8d064e703857411a955b4fee74867747}} 
 \index{interface.py@{interface.py}!finde\_freien\_port@{finde\_freien\_port}}
 \index{finde\_freien\_port@{finde\_freien\_port}!interface.py@{interface.py}}
@@ -107,8 +144,13 @@ Durchsucht den in der Konfigurationsdatei angegebenen Portbereich nach einem fre
 \begin{DoxyReturn}{Returns}
 int erster freier UDP-\/\+Port im Bereich 
 
-socket @raises Value\+Error Wenn \textquotesingle{}port\+\_\+min\textquotesingle{} oder \textquotesingle{}port\+\_\+max\textquotesingle{} in der Konfiguration fehlen @raises Runtime\+Error wenn kein freier Port im Bereich gefunden wird 
+socket 
 \end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Value\+Error Wenn \textquotesingle{}port\+\_\+min\textquotesingle{} oder \textquotesingle{}port\+\_\+max\textquotesingle{} in der Konfiguration fehlen 
+
+Runtime\+Error wenn kein freier Port im Bereich gefunden wird 
+\end{DoxyNote}
 \mbox{\Hypertarget{interface_8py_ab2ba94f92b20fe072625b2a978d28c71}\label{interface_8py_ab2ba94f92b20fe072625b2a978d28c71}} 
 \index{interface.py@{interface.py}!finde\_freien\_tcp\_port@{finde\_freien\_tcp\_port}}
 \index{finde\_freien\_tcp\_port@{finde\_freien\_tcp\_port}!interface.py@{interface.py}}
@@ -132,9 +174,17 @@ einen freieren TCP-\/\+Port (int), der aktuell nicht verwendet wird.
 
 lädt die TOML-\/\+Konfigurationsdatei und gibt sie als Dictionary zurück (Parsing). 
 
+
+\begin{DoxyParams}{Parameters}
+{\em pfad=\+None} & Pfad überschreiben oder pfad nicht übergeben, dann nimmt er standard Config Datei \\
+\hline
+\end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-dict mit den Konfigurationswerten @raises File\+Not\+Found\+Error wenn die Datei nicht existiert 
+dict mit den Konfigurationswerten 
 \end{DoxyReturn}
+\begin{DoxyNote}{Note}
+File\+Not\+Found\+Error wenn die Datei nicht existiert 
+\end{DoxyNote}
 \mbox{\Hypertarget{interface_8py_aadc2da88bac778eb833ce8e2f5047fa8}\label{interface_8py_aadc2da88bac778eb833ce8e2f5047fa8}} 
 \index{interface.py@{interface.py}!menue@{menue}}
 \index{menue@{menue}!interface.py@{interface.py}}
@@ -146,8 +196,11 @@ dict mit den Konfigurationswerten @raises File\+Not\+Found\+Error wenn die Datei
 Auswahl. 
 
 \begin{DoxyReturn}{Returns}
-Auswahl des Benutzers als String wird in der main aufgerufen 
+Auswahl des Benutzers als String 
 \end{DoxyReturn}
+\begin{DoxyNote}{Note}
+wird in der main aufgerufen 
+\end{DoxyNote}
 \mbox{\Hypertarget{interface_8py_a433f997babe6246bb48c1193c96148db}\label{interface_8py_a433f997babe6246bb48c1193c96148db}} 
 \index{interface.py@{interface.py}!nutzernamen\_abfragen@{nutzernamen\_abfragen}}
 \index{nutzernamen\_abfragen@{nutzernamen\_abfragen}!interface.py@{interface.py}}
@@ -159,7 +212,8 @@ Auswahl des Benutzers als String wird in der main aufgerufen
 Nutzername eingeben. 
 
 \begin{DoxyReturn}{Returns}
-Benutzername (Handle) als String Fragt den Benutzernamen ab und erstellt bei Bedarf eine neue Konfigurationsdatei. 
-
-Der Benutzername 
+Benutzername (Handle) als String 
 \end{DoxyReturn}
+\begin{DoxyNote}{Note}
+Fragt den Benutzernamen ab und erstellt bei Bedarf eine neue Konfigurationsdatei. 
+\end{DoxyNote}

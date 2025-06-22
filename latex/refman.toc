@@ -4,41 +4,42 @@
 \contentsline {chapter}{\numberline {2}File Documentation}{3}{chapter.2}%
 \contentsline {section}{\numberline {2.1}discovery.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}py File Reference}{3}{section.2.1}%
 \contentsline {subsection}{\numberline {2.1.1}Detailed Description}{3}{subsection.2.1.1}%
-\contentsline {section}{\numberline {2.2}interface.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}py File Reference}{3}{section.2.2}%
+\contentsline {subsection}{\numberline {2.1.2}Function Documentation}{3}{subsection.2.1.2}%
+\contentsline {subsubsection}{\numberline {2.1.2.1}discovery\_main()}{3}{subsubsection.2.1.2.1}%
+\contentsline {section}{\numberline {2.2}interface.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}py File Reference}{4}{section.2.2}%
 \contentsline {subsection}{\numberline {2.2.1}Detailed Description}{4}{subsection.2.2.1}%
 \contentsline {subsection}{\numberline {2.2.2}Function Documentation}{4}{subsection.2.2.2}%
 \contentsline {subsubsection}{\numberline {2.2.2.1}autoreply\_einschalten()}{4}{subsubsection.2.2.2.1}%
-\contentsline {subsubsection}{\numberline {2.2.2.2}autoreply\_umschalten()}{4}{subsubsection.2.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.2.2}autoreply\_umschalten()}{5}{subsubsection.2.2.2.2}%
 \contentsline {subsubsection}{\numberline {2.2.2.3}eingabe\_bild()}{5}{subsubsection.2.2.2.3}%
-\contentsline {subsubsection}{\numberline {2.2.2.4}eingabe\_nachricht()}{5}{subsubsection.2.2.2.4}%
-\contentsline {subsubsection}{\numberline {2.2.2.5}finde\_freien\_port()}{5}{subsubsection.2.2.2.5}%
-\contentsline {subsubsection}{\numberline {2.2.2.6}finde\_freien\_tcp\_port()}{5}{subsubsection.2.2.2.6}%
-\contentsline {subsubsection}{\numberline {2.2.2.7}lade\_config()}{6}{subsubsection.2.2.2.7}%
-\contentsline {subsubsection}{\numberline {2.2.2.8}menue()}{6}{subsubsection.2.2.2.8}%
-\contentsline {subsubsection}{\numberline {2.2.2.9}nutzernamen\_abfragen()}{6}{subsubsection.2.2.2.9}%
-\contentsline {section}{\numberline {2.3}main.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}py File Reference}{6}{section.2.3}%
-\contentsline {subsection}{\numberline {2.3.1}Detailed Description}{7}{subsection.2.3.1}%
-\contentsline {subsection}{\numberline {2.3.2}Function Documentation}{7}{subsection.2.3.2}%
-\contentsline {subsubsection}{\numberline {2.3.2.1}main()}{7}{subsubsection.2.3.2.1}%
-\contentsline {subsubsection}{\numberline {2.3.2.2}registriere\_neuen\_nutzer()}{7}{subsubsection.2.3.2.2}%
-\contentsline {subsubsection}{\numberline {2.3.2.3}sende\_befehl\_an\_netzwerkprozess()}{8}{subsubsection.2.3.2.3}%
-\contentsline {subsection}{\numberline {2.3.3}Variable Documentation}{8}{subsection.2.3.3}%
-\contentsline {subsubsection}{\numberline {2.3.3.1}force}{8}{subsubsection.2.3.3.1}%
-\contentsline {section}{\numberline {2.4}netzwerkprozess.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}py File Reference}{8}{section.2.4}%
-\contentsline {subsection}{\numberline {2.4.1}Detailed Description}{9}{subsection.2.4.1}%
-\contentsline {subsection}{\numberline {2.4.2}Function Documentation}{9}{subsection.2.4.2}%
-\contentsline {subsubsection}{\numberline {2.4.2.1}finde\_lokale\_ip()}{9}{subsubsection.2.4.2.1}%
-\contentsline {subsubsection}{\numberline {2.4.2.2}handle\_IMG()}{9}{subsubsection.2.4.2.2}%
-\contentsline {subsubsection}{\numberline {2.4.2.3}handle\_join()}{10}{subsubsection.2.4.2.3}%
-\contentsline {subsubsection}{\numberline {2.4.2.4}handle\_leave()}{10}{subsubsection.2.4.2.4}%
-\contentsline {subsubsection}{\numberline {2.4.2.5}netzwerkprozess()}{10}{subsubsection.2.4.2.5}%
-\contentsline {subsubsection}{\numberline {2.4.2.6}receive\_MSG()}{11}{subsubsection.2.4.2.6}%
-\contentsline {subsubsection}{\numberline {2.4.2.7}send\_IMG()}{11}{subsubsection.2.4.2.7}%
-\contentsline {subsubsection}{\numberline {2.4.2.8}send\_join()}{11}{subsubsection.2.4.2.8}%
-\contentsline {subsubsection}{\numberline {2.4.2.9}send\_leave()}{12}{subsubsection.2.4.2.9}%
-\contentsline {subsubsection}{\numberline {2.4.2.10}sendMSG()}{12}{subsubsection.2.4.2.10}%
-\contentsline {section}{\numberline {2.5}nutzerliste.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}py File Reference}{13}{section.2.5}%
-\contentsline {subsection}{\numberline {2.5.1}Detailed Description}{13}{subsection.2.5.1}%
-\contentsline {subsection}{\numberline {2.5.2}Function Documentation}{13}{subsection.2.5.2}%
-\contentsline {subsubsection}{\numberline {2.5.2.1}gebe\_nutzerliste\_zurück()}{13}{subsubsection.2.5.2.1}%
-\contentsline {subsubsection}{\numberline {2.5.2.2}initialisiere\_nutzerliste()}{13}{subsubsection.2.5.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.2.4}eingabe\_nachricht()}{6}{subsubsection.2.2.2.4}%
+\contentsline {subsubsection}{\numberline {2.2.2.5}erstelle\_neue\_config()}{6}{subsubsection.2.2.2.5}%
+\contentsline {subsubsection}{\numberline {2.2.2.6}finde\_freien\_port()}{6}{subsubsection.2.2.2.6}%
+\contentsline {subsubsection}{\numberline {2.2.2.7}finde\_freien\_tcp\_port()}{7}{subsubsection.2.2.2.7}%
+\contentsline {subsubsection}{\numberline {2.2.2.8}lade\_config()}{7}{subsubsection.2.2.2.8}%
+\contentsline {subsubsection}{\numberline {2.2.2.9}menue()}{7}{subsubsection.2.2.2.9}%
+\contentsline {subsubsection}{\numberline {2.2.2.10}nutzernamen\_abfragen()}{8}{subsubsection.2.2.2.10}%
+\contentsline {section}{\numberline {2.3}main.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}py File Reference}{8}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Detailed Description}{8}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Function Documentation}{9}{subsection.2.3.2}%
+\contentsline {subsubsection}{\numberline {2.3.2.1}main()}{9}{subsubsection.2.3.2.1}%
+\contentsline {subsubsection}{\numberline {2.3.2.2}registriere\_neuen\_nutzer()}{9}{subsubsection.2.3.2.2}%
+\contentsline {subsubsection}{\numberline {2.3.2.3}sende\_befehl\_an\_netzwerkprozess()}{9}{subsubsection.2.3.2.3}%
+\contentsline {section}{\numberline {2.4}netzwerkprozess.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}py File Reference}{10}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Detailed Description}{10}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Function Documentation}{10}{subsection.2.4.2}%
+\contentsline {subsubsection}{\numberline {2.4.2.1}finde\_lokale\_ip()}{10}{subsubsection.2.4.2.1}%
+\contentsline {subsubsection}{\numberline {2.4.2.2}handle\_IMG()}{11}{subsubsection.2.4.2.2}%
+\contentsline {subsubsection}{\numberline {2.4.2.3}handle\_join()}{11}{subsubsection.2.4.2.3}%
+\contentsline {subsubsection}{\numberline {2.4.2.4}handle\_leave()}{11}{subsubsection.2.4.2.4}%
+\contentsline {subsubsection}{\numberline {2.4.2.5}netzwerkprozess()}{12}{subsubsection.2.4.2.5}%
+\contentsline {subsubsection}{\numberline {2.4.2.6}receive\_MSG()}{12}{subsubsection.2.4.2.6}%
+\contentsline {subsubsection}{\numberline {2.4.2.7}send\_IMG()}{12}{subsubsection.2.4.2.7}%
+\contentsline {subsubsection}{\numberline {2.4.2.8}send\_join()}{13}{subsubsection.2.4.2.8}%
+\contentsline {subsubsection}{\numberline {2.4.2.9}send\_leave()}{13}{subsubsection.2.4.2.9}%
+\contentsline {subsubsection}{\numberline {2.4.2.10}sendMSG()}{13}{subsubsection.2.4.2.10}%
+\contentsline {section}{\numberline {2.5}nutzerliste.\discretionary {\mbox {\scriptsize $\hookleftarrow $}}{}{}py File Reference}{14}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Detailed Description}{14}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Function Documentation}{14}{subsection.2.5.2}%
+\contentsline {subsubsection}{\numberline {2.5.2.1}gebe\_nutzerliste\_zurück()}{14}{subsubsection.2.5.2.1}%
+\contentsline {subsubsection}{\numberline {2.5.2.2}initialisiere\_nutzerliste()}{14}{subsubsection.2.5.2.2}%

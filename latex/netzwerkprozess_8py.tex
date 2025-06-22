@@ -1,5 +1,10 @@
 \hypertarget{netzwerkprozess_8py}{}\doxysection{netzwerkprozess.\+py File Reference}
 \label{netzwerkprozess_8py}\index{netzwerkprozess.py@{netzwerkprozess.py}}
+
+
+empfängt und verarbeitet IPC-\/\+Kommandos vom UI-\/\+Prozess  
+
+
 \doxysubsection*{Functions}
 \begin{DoxyCompactItemize}
 \item 
@@ -29,7 +34,9 @@ def {\bfseries netzwerkprozess.\+starte\+\_\+netzwerkprozess} (konfig\+\_\+pfad,
 
 
 \doxysubsection{Detailed Description}
-Dieser Prozess empfängt IPC-\/\+Kommandos vom UI-\/\+Prozess über einen lokalen TCP-\/\+Socket und sendet SLCP-\/\+Nachrichten (MSG, IMG) per UDP an andere Peers im Netzwerk. 
+empfängt und verarbeitet IPC-\/\+Kommandos vom UI-\/\+Prozess 
+
+sendet SLCP-\/\+Nachrichten (MSG, IMG) per UDP an andere Peers im Netzwerk. 
 
 \doxysubsection{Function Documentation}
 \mbox{\Hypertarget{netzwerkprozess_8py_af2fb6efb1fe5f232e694506b5331a0b0}\label{netzwerkprozess_8py_af2fb6efb1fe5f232e694506b5331a0b0}} 
@@ -77,11 +84,11 @@ Verarbeitet eine empfangene Join nachricht.
 \begin{DoxyParams}{Parameters}
 {\em name} & des beitretenden Nutzers (handle) \\
 \hline
-{\em port} & von Discovery dienst \\
+{\em Discovery\+\_\+port} & port von Discovery dienst \\
 \hline
-{\em die} & absender adresse \\
+{\em addr} & die absender adresse \\
 \hline
-{\em falls} & eine Ip adresse bekannt ist \\
+{\em ip=\+None} & falls eine Ip adresse bekannt ist, sonst None \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{netzwerkprozess_8py_aeca1abd570ed2d6cc4d22c98ac14bdb3}\label{netzwerkprozess_8py_aeca1abd570ed2d6cc4d22c98ac14bdb3}} 
@@ -96,7 +103,7 @@ entfernt einen nutzer aus der Nutzerliste
 
 
 \begin{DoxyParams}{Parameters}
-{\em nutzername} & \\
+{\em name} & nutzername \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{netzwerkprozess_8py_aa0ab4596a50b795139a7fa7cab271261}\label{netzwerkprozess_8py_aa0ab4596a50b795139a7fa7cab271261}} 
@@ -112,6 +119,13 @@ Startet den Netzwerkprozess und lauscht auf Befehle vom UI-\/\+Prozess.
 Stellt einen TCP-\/\+Server auf localhost\+:tcp\+Port bereit, über den der UI-\/\+Prozess Kommandos wie MSG und IMG senden kann. Diese werden analysiert und mit UDP an die Ziel-\/\+Peers gemäß SLCP-\/\+Protokoll weitergeleitet. \begin{DoxyNote}{Note}
 Diese Funktion blockiert dauerhaft. Sie sollte in einem separaten Prozess ausgeführt werden. 
 \end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em sock} & UDP-\/\+Socket \\
+\hline
+{\em konfig\+\_\+pfad} & Pfad der aktuellen Config @tcp\+\_\+port verbindung zwischen Main und Netzwerkprozess \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{netzwerkprozess_8py_a46b45653695f5c3d12db75801b08d7bb}\label{netzwerkprozess_8py_a46b45653695f5c3d12db75801b08d7bb}} 
 \index{netzwerkprozess.py@{netzwerkprozess.py}!receive\_MSG@{receive\_MSG}}
 \index{receive\_MSG@{receive\_MSG}!netzwerkprozess.py@{netzwerkprozess.py}}
@@ -124,9 +138,9 @@ Empfängt Nachrichten vom UDP-\/\+Socket und verarbeitet sie.
 
 
 \begin{DoxyParams}{Parameters}
-{\em UDP-\/\+Socket} & \\
+{\em sock} & UDP-\/\+Socket \\
 \hline
-{\em Konfiguartions} & Datei \\
+{\em config} & individuelle Konfiguartions Datei \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{netzwerkprozess_8py_afb6da766d90984fdb1ad5a2f08a08799}\label{netzwerkprozess_8py_afb6da766d90984fdb1ad5a2f08a08799}} 
@@ -142,8 +156,6 @@ Sendet ein Bild an einen anderen Nutzer über UDP.
 
 \begin{DoxyParams}{Parameters}
 {\em sock} & Der UDP-\/\+Socket zum Senden der Nachricht \\
-\hline
-{\em handle\+\_\+sender} & Benutzername des Absenders \\
 \hline
 {\em handle\+\_\+empfaenger} & Benutzername des Empfängers \\
 \hline
@@ -162,13 +174,13 @@ Sendet ein Bild an einen anderen Nutzer über UDP.
 
 
 \begin{DoxyParams}{Parameters}
-{\em UDP-\/\+Socket} & \\
+{\em sock} & UDP-\/\+Socket \\
 \hline
-{\em handel=\+Benutzername} & \\
+{\em handel} & Benutzername \\
 \hline
-{\em eigener} & Port \\
+{\em port} & eigener Port \\
 \hline
-{\em Discovery\+\_\+port} & = Broadcast-\/\+Port \\
+{\em Discovery\+\_\+port} & Broadcast-\/\+Port \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{netzwerkprozess_8py_a7f1a29d70df5fb674c3e54321536bda6}\label{netzwerkprozess_8py_a7f1a29d70df5fb674c3e54321536bda6}} 
@@ -183,11 +195,11 @@ sendet eine leave nachricht an alle Nutzer
 
 
 \begin{DoxyParams}{Parameters}
-{\em UDP} & socket \\
+{\em sock} & UDP socket \\
 \hline
-{\em name} & des lokalen Nutzers \\
+{\em handle\+\_\+nutzername} & name des lokalen Nutzers \\
 \hline
-{\em Discovery\+\_\+port} & \\
+{\em Discovery\+\_\+\+Port} & Broadcast-\/\+Port \\
 \hline
 \end{DoxyParams}
 \mbox{\Hypertarget{netzwerkprozess_8py_a75e74c2cd6365b69174c9468127f5362}\label{netzwerkprozess_8py_a75e74c2cd6365b69174c9468127f5362}} 
@@ -202,12 +214,12 @@ sendet eine nachricht an einen nutzer
 
 
 \begin{DoxyParams}{Parameters}
-{\em UDP-\/\+Soket} & \\
+{\em sock} & UDP-\/\+Soket \\
 \hline
-{\em absender} & handle \\
+{\em handle} & absender handle \\
 \hline
-{\em empfänger} & handle \\
+{\em empfaenger\+\_\+handle} & empfänger handle \\
 \hline
-{\em text} & \\
+{\em text} & Nachricht \\
 \hline
 \end{DoxyParams}

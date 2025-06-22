@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.6.22)  22 JUN 2025 16:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.6.22)  22 JUN 2025 19:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -914,91 +914,143 @@ File: ts1phv.fd 2020/03/25 scalable font definitions for TS1/phv.
 )
 LaTeX Font Info:    Font shape `TS1/phv/m/n' will be
 (Font)              scaled to size 8.99994pt on input line 11.
-) (./interface_8py.tex
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 8.09995pt on input line 12.
 LaTeX Font Info:    Font shape `T1/phv/m/it' in size <9> not available
 (Font)              Font shape `T1/phv/m/sl' tried instead on input line 12.
 LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
 (Font)              scaled to size 8.09995pt on input line 12.
-LaTeX Font Info:    Font shape `T1/phv/m/it' in size <7> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 24.
-LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 6.29996pt on input line 24.
- [3]
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 7.19995pt on input line 44.
-LaTeX Font Info:    Trying to load font information for T1+pcr on input line 44
+(Font)              scaled to size 7.19995pt on input line 25.
+LaTeX Font Info:    Trying to load font information for T1+pcr on input line 25
 .
-
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <8> not available
-(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 44.
-LaTeX Font Info:    Font shape `T1/phv/bc/n' will be
-(Font)              scaled to size 8.99994pt on input line 50.
-
-Underfull \hbox (badness 10000) detected at line 50
-[][][]
- []
-
-
-Underfull \hbox (badness 10000) detected at line 63
-[][][]
- []
-
-
-Underfull \hbox (badness 10000) detected at line 76
-[][][]
- []
-
-[4]
-Underfull \hbox (badness 10000) detected at line 89
-[][][]
- []
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 25.
+LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <7> not available
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 25.
 
 
 Package longtable Warning: Column widths have changed
-(longtable)                in table 2.1 on input line 106.
+(longtable)                in table 2.1 on input line 37.
 
 
-Underfull \hbox (badness 10000) detected at line 107
-[][][]
- []
-
-[5]
-Underfull \hbox (badness 10000) detected at line 122
-[][][]
- []
+Overfull \vbox (1.31729pt too high) has occurred while \output is active []
 
 
-Underfull \hbox (badness 10000) detected at line 135
-[][][]
- []
-
-
-Underfull \hbox (badness 10000) detected at line 148
-[][][]
- []
-
-
-Underfull \hbox (badness 10000) detected at line 161
-[][][]
- []
-
-) (./main_8py.tex [6]
+[3]) (./interface_8py.tex [4]
 
 Package longtable Warning: Column widths have changed
-(longtable)                in table 2.2 on input line 58.
+(longtable)                in table 2.2 on input line 55.
 
-[7]
+
+Underfull \hbox (badness 10000) detected at line 56
+[][][]
+ []
+
+
 Underfull \hbox (badness 10000) detected at line 59
 [][][]
  []
 
-LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <7> not available
-(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 66.
+
+Package longtable Warning: Column widths have changed
+(longtable)                in table 2.3 on input line 78.
+
+
+Underfull \hbox (badness 10000) detected at line 79
+[][][]
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 82
+[][][]
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 95
+[][][]
+ []
+
+[5]
+Underfull \hbox (badness 10000) detected at line 108
+[][][]
+ []
+
+
+Package longtable Warning: Column widths have changed
+(longtable)                in table 2.4 on input line 125.
+
+
+Underfull \hbox (badness 10000) detected at line 126
+[][][]
+ []
+
+
+Package longtable Warning: Column widths have changed
+(longtable)                in table 2.5 on input line 143.
+
+
+Underfull \hbox (badness 10000) detected at line 144
+[][][]
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 149
+[][][]
+ []
+
+[6]
+Underfull \hbox (badness 10000) detected at line 164
+[][][]
+ []
+
+
+Package longtable Warning: Column widths have changed
+(longtable)                in table 2.6 on input line 181.
+
+
+Underfull \hbox (badness 10000) detected at line 182
+[][][]
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 185
+[][][]
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 198
+[][][]
+ []
+
+[7]
+Underfull \hbox (badness 10000) detected at line 201
+[][][]
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 214
+[][][]
+ []
+
+
+Underfull \hbox (badness 10000) detected at line 217
+[][][]
+ []
+
+) (./main_8py.tex [8]
+
+Package longtable Warning: Column widths have changed
+(longtable)                in table 2.7 on input line 59.
+
+
+Underfull \hbox (badness 10000) detected at line 60
+[][][]
+ []
+
 
 ! LaTeX Error: Unicode character   (U+202F)
                not set up for use with LaTeX.
@@ -1007,7 +1059,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.72 ...m Nachrichten-\/ oder Bildbefehle (z.\+ 
+l.73 ...m Nachrichten-\/ oder Bildbefehle (z.\+ 
                                                   B. MSG oder IMG) an den Ne...
 
 ? 
@@ -1019,7 +1071,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76 \end{DoxyParams}
+l.79 \end{DoxyParams}
                      
 
 ? 
@@ -1031,7 +1083,7 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76 \end{DoxyParams}
+l.79 \end{DoxyParams}
                      
 
 ? 
@@ -1043,25 +1095,24 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.76 \end{DoxyParams}
+l.79 \end{DoxyParams}
                      
 
 ? 
 
 Package longtable Warning: Column widths have changed
-(longtable)                in table 2.3 on input line 76.
+(longtable)                in table 2.8 on input line 79.
 
 
-Underfull \hbox (badness 10000) detected at line 77
+Overfull \vbox (24.2767pt too high) has occurred while \output is active []
+
+
+[9]
+Underfull \hbox (badness 10000) detected at line 80
 [][][]
  []
 
-
-Underfull \hbox (badness 10000) detected at line 93
-[][][]
- []
-
-) (./netzwerkprozess_8py.tex [8]
+) (./netzwerkprozess_8py.tex
 
 ! LaTeX Error: Unicode character   (U+202F)
                not set up for use with LaTeX.
@@ -1070,131 +1121,142 @@ See the LaTeX manual or LaTeX Companion for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.45 ...t die echte lokale IP-\/\+Adresse (z.\+ 
+l.52 ...t die echte lokale IP-\/\+Adresse (z.\+ 
                                                   B. WLAN) durch Verbindung ...
 
 ? 
-
-! LaTeX Error: Unicode character   (U+202F)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.65 \end{DoxyParams}
-                     
-
-? 
-
-! LaTeX Error: Unicode character   (U+202F)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.65 \end{DoxyParams}
-                     
-
-? 
-
-! LaTeX Error: Unicode character   (U+202F)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.65 \end{DoxyParams}
-                     
-
-? 
-
-! LaTeX Error: Unicode character   (U+202F)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.65 \end{DoxyParams}
-                     
-
-? 
-
-! LaTeX Error: Unicode character   (U+202F)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.65 \end{DoxyParams}
-                     
-
-? 
-
-! LaTeX Error: Unicode character   (U+202F)
-               not set up for use with LaTeX.
-
-See the LaTeX manual or LaTeX Companion for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.65 \end{DoxyParams}
-                     
-
-? 
-[9]
-
-Package longtable Warning: Column widths have changed
-(longtable)                in table 2.4 on input line 65.
-
-
-Package longtable Warning: Column widths have changed
-(longtable)                in table 2.5 on input line 86.
-
-
-Package longtable Warning: Column widths have changed
-(longtable)                in table 2.6 on input line 101.
-
 [10]
-Underfull \hbox (badness 10000) detected at line 112
+
+! LaTeX Error: Unicode character   (U+202F)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.72 \end{DoxyParams}
+                     
+
+? 
+
+! LaTeX Error: Unicode character   (U+202F)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.72 \end{DoxyParams}
+                     
+
+? 
+
+! LaTeX Error: Unicode character   (U+202F)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.72 \end{DoxyParams}
+                     
+
+? 
+
+! LaTeX Error: Unicode character   (U+202F)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.72 \end{DoxyParams}
+                     
+
+? 
+
+! LaTeX Error: Unicode character   (U+202F)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.72 \end{DoxyParams}
+                     
+
+? 
+
+! LaTeX Error: Unicode character   (U+202F)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.72 \end{DoxyParams}
+                     
+
+? 
+
+Package longtable Warning: Column widths have changed
+(longtable)                in table 2.9 on input line 72.
+
+
+Package longtable Warning: Column widths have changed
+(longtable)                in table 2.10 on input line 93.
+
+
+Package longtable Warning: Column widths have changed
+(longtable)                in table 2.11 on input line 108.
+
+[11]
+Underfull \hbox (badness 10000) detected at line 119
 [][][]
  []
 
 
 Package longtable Warning: Column widths have changed
-(longtable)                in table 2.7 on input line 131.
+(longtable)                in table 2.12 on input line 128.
 
 
 Package longtable Warning: Column widths have changed
-(longtable)                in table 2.8 on input line 152.
+(longtable)                in table 2.13 on input line 145.
 
-[11]
-
-Package longtable Warning: Column widths have changed
-(longtable)                in table 2.9 on input line 173.
-
+[12]
 
 Package longtable Warning: Column widths have changed
-(longtable)                in table 2.10 on input line 192.
+(longtable)                in table 2.14 on input line 164.
 
 
 Package longtable Warning: Column widths have changed
-(longtable)                in table 2.11 on input line 213.
+(longtable)                in table 2.15 on input line 185.
 
-) (./nutzerliste_8py.tex [12]
+
+Package longtable Warning: Column widths have changed
+(longtable)                in table 2.16 on input line 204.
+
+[13]
+
+Package longtable Warning: Column widths have changed
+(longtable)                in table 2.17 on input line 225.
+
+) (./nutzerliste_8py.tex
 Underfull \hbox (badness 10000) detected at line 33
 [][][]
  []
 
+[14]
 
 Package longtable Warning: Column widths have changed
-(longtable)                in table 2.12 on input line 50.
+(longtable)                in table 2.18 on input line 50.
 
-) [13] [14
+
+Underfull \hbox (badness 10000) detected at line 51
+[][][]
+ []
+
+) [15] [16
 
 ]
 No file refman.ind.
@@ -1215,29 +1277,26 @@ Package rerunfilecheck Warning: File `refman.out' has changed.
 
 Package rerunfilecheck Info: Checksums for `refman.out':
 (rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  700317BE0E5B22620A515D8FE8CF9B73;8689.
+(rerunfilecheck)             After:  C8760912D2029D46C0ED62395326194A;8996.
  ) 
 Here is how much of TeX's memory you used:
- 17353 strings out of 480247
- 278727 string characters out of 5896151
- 583090 words of memory out of 5000000
- 34876 multiletter control sequences out of 15000+600000
+ 17368 strings out of 478287
+ 278862 string characters out of 5849289
+ 588136 words of memory out of 5000000
+ 35135 multiletter control sequences out of 15000+600000
  522413 words of font info for 80 fonts, out of 8000000 for 9000
- 14 hyphenation exceptions out of 8191
+ 1141 hyphenation exceptions out of 8191
  99i,16n,117p,536b,634s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/cour
-ier/ucrro8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.
-pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvb8ac.pfb></usr/s
-hare/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive
-/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb>
-Output written on refman.pdf (16 pages, 115486 bytes).
+e/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/urw/courier/ucrro8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/
+urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic
+/uhvb8ac.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb
+></usr/share/texlive/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb>
+Output written on refman.pdf (18 pages, 93861 bytes).
 PDF statistics:
- 270 PDF objects out of 1000 (max. 8388607)
- 231 compressed objects within 3 object streams
- 110 named destinations out of 1000 (max. 500000)
+ 272 PDF objects out of 1000 (max. 8388607)
+ 237 compressed objects within 3 object streams
+ 119 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

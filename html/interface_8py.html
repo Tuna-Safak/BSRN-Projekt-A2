@@ -94,8 +94,8 @@ Functions</h2></td></tr>
 <tr class="memitem:a0ac11efb67c19374a125cf3f2b7c0993"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_8py.html#a0ac11efb67c19374a125cf3f2b7c0993">interface.lade_config</a> (pfad=None)</td></tr>
 <tr class="memdesc:a0ac11efb67c19374a125cf3f2b7c0993"><td class="mdescLeft">&#160;</td><td class="mdescRight">lädt die TOML-Konfigurationsdatei und gibt sie als Dictionary zurück (Parsing).  <a href="interface_8py.html#a0ac11efb67c19374a125cf3f2b7c0993">More...</a><br /></td></tr>
 <tr class="separator:a0ac11efb67c19374a125cf3f2b7c0993"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51f44fe5b6eb54f3ce89ed98e8d5b93e"><td class="memItemLeft" align="right" valign="top"><a id="a51f44fe5b6eb54f3ce89ed98e8d5b93e"></a>
-def&#160;</td><td class="memItemRight" valign="bottom"><b>interface.erstelle_neue_config</b> (handle)</td></tr>
+<tr class="memitem:a51f44fe5b6eb54f3ce89ed98e8d5b93e"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_8py.html#a51f44fe5b6eb54f3ce89ed98e8d5b93e">interface.erstelle_neue_config</a> (handle)</td></tr>
+<tr class="memdesc:a51f44fe5b6eb54f3ce89ed98e8d5b93e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Erstellt eine neue Konfigurationsdatei für den Benutzer, falls sie noch nicht existiert.  <a href="interface_8py.html#a51f44fe5b6eb54f3ce89ed98e8d5b93e">More...</a><br /></td></tr>
 <tr class="separator:a51f44fe5b6eb54f3ce89ed98e8d5b93e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2ba94f92b20fe072625b2a978d28c71"><td class="memItemLeft" align="right" valign="top">def&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interface_8py.html#ab2ba94f92b20fe072625b2a978d28c71">interface.finde_freien_tcp_port</a> ()</td></tr>
 <tr class="memdesc:ab2ba94f92b20fe072625b2a978d28c71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Findet einen freien TCP-Port auf dem lokalen System.  <a href="interface_8py.html#ab2ba94f92b20fe072625b2a978d28c71">More...</a><br /></td></tr>
@@ -135,7 +135,15 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>interface.erstelle_neu
 </div><div class="memdoc">
 
 <p>umschalten der autoreply </p>
-<dl class="section return"><dt>Returns</dt><dd>Die Config-Datei wird verändert schaut, welcher wert in Config steht und verändert ihn </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">config</td><td>indiviuelle config </td></tr>
+    <tr><td class="paramname">pfad</td><td>speicherort der Config-Datei </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Die Config-Datei wird verändert </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>schaut, welcher wert in Config steht und verändert ihn </dd></dl>
 
 </div>
 </div>
@@ -166,7 +174,15 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>interface.erstelle_neu
 </div><div class="memdoc">
 
 <p>Eingabe der Autoreply Nachricht. </p>
-<dl class="section return"><dt>Returns</dt><dd>Die Config-Datei wird verändert gibt erst die aktuelle nachricht aus und fragt dann nach einer neuen </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">config</td><td>indiviuelle config </td></tr>
+    <tr><td class="paramname">pfad</td><td>speicherort der Config-Datei </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Die Config-Datei wird verändert </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>gibt erst die aktuelle nachricht aus und fragt dann nach einer neuen </dd></dl>
 
 </div>
 </div>
@@ -210,6 +226,33 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>interface.erstelle_neu
 
 </div>
 </div>
+<a id="a51f44fe5b6eb54f3ce89ed98e8d5b93e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51f44fe5b6eb54f3ce89ed98e8d5b93e">&#9670;&nbsp;</a></span>erstelle_neue_config()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">def interface.erstelle_neue_config </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>handle</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Erstellt eine neue Konfigurationsdatei für den Benutzer, falls sie noch nicht existiert. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handle</td><td>Der Benutzername für den Benutzer, der eine neue datei braucht. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>Standard-Konfigurationswerte für den Benutzer </dd></dl>
+
+</div>
+</div>
 <a id="a8d064e703857411a955b4fee74867747"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8d064e703857411a955b4fee74867747">&#9670;&nbsp;</a></span>finde_freien_port()</h2>
 
@@ -235,7 +278,10 @@ def&#160;</td><td class="memItemRight" valign="bottom"><b>interface.erstelle_neu
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>int erster freier UDP-Port im Bereich </dd>
 <dd>
-socket @raises ValueError Wenn 'port_min' oder 'port_max' in der Konfiguration fehlen @raises RuntimeError wenn kein freier Port im Bereich gefunden wird </dd></dl>
+socket </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>ValueError Wenn 'port_min' oder 'port_max' in der Konfiguration fehlen </dd>
+<dd>
+RuntimeError wenn kein freier Port im Bereich gefunden wird </dd></dl>
 
 </div>
 </div>
@@ -276,7 +322,14 @@ socket @raises ValueError Wenn 'port_min' oder 'port_max' in der Konfiguration f
 </div><div class="memdoc">
 
 <p>lädt die TOML-Konfigurationsdatei und gibt sie als Dictionary zurück (Parsing). </p>
-<dl class="section return"><dt>Returns</dt><dd>dict mit den Konfigurationswerten @raises FileNotFoundError wenn die Datei nicht existiert </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pfad=None</td><td>Pfad überschreiben oder pfad nicht übergeben, dann nimmt er standard Config Datei </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>dict mit den Konfigurationswerten </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>FileNotFoundError wenn die Datei nicht existiert </dd></dl>
 
 </div>
 </div>
@@ -296,7 +349,8 @@ socket @raises ValueError Wenn 'port_min' oder 'port_max' in der Konfiguration f
 </div><div class="memdoc">
 
 <p>Auswahl. </p>
-<dl class="section return"><dt>Returns</dt><dd>Auswahl des Benutzers als String wird in der main aufgerufen </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Auswahl des Benutzers als String </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>wird in der main aufgerufen </dd></dl>
 
 </div>
 </div>
@@ -316,9 +370,8 @@ socket @raises ValueError Wenn 'port_min' oder 'port_max' in der Konfiguration f
 </div><div class="memdoc">
 
 <p>Nutzername eingeben. </p>
-<dl class="section return"><dt>Returns</dt><dd>Benutzername (Handle) als String Fragt den Benutzernamen ab und erstellt bei Bedarf eine neue Konfigurationsdatei. </dd>
-<dd>
-Der Benutzername </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Benutzername (Handle) als String </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Fragt den Benutzernamen ab und erstellt bei Bedarf eine neue Konfigurationsdatei. </dd></dl>
 
 </div>
 </div>

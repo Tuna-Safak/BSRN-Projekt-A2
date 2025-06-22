@@ -86,8 +86,8 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a6545afe365912084bd4525d726b9d4d3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="main_8py.html#a6545afe365912084bd4525d726b9d4d3">main.force</a></td></tr>
-<tr class="memdesc:a6545afe365912084bd4525d726b9d4d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">beginnt das Programm  <a href="main_8py.html#a6545afe365912084bd4525d726b9d4d3">More...</a><br /></td></tr>
+<tr class="memitem:a6545afe365912084bd4525d726b9d4d3"><td class="memItemLeft" align="right" valign="top"><a id="a6545afe365912084bd4525d726b9d4d3"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>main.force</b></td></tr>
 <tr class="separator:a6545afe365912084bd4525d726b9d4d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -182,28 +182,11 @@ Variables</h2></td></tr>
 <p>Diese Funktion wird vom UI-Prozess verwendet, um Nachrichten- oder Bildbefehle (z. B. MSG oder IMG) an den Netzwerkprozess weiterzuleiten. Der Netzwerkprozess übernimmt dann das eigentliche Senden per UDP an andere Chat-Teilnehmer. Die Kommunikation erfolgt über eine TCP-Verbindung zu localhost:6001 </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">befehl</td><td>Der SLCP-kompatible Befehl, z. B. "MSG Bob Hallo" oder "IMG Bob pfad/zum/bild.jpg". </td></tr>
+    <tr><td class="paramname">tcp_port</td><td>verbindet netzwerkprozess mit Main </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Wenn der Netzwerkprozess nicht läuft oder der Socket nicht erreichbar ist, wird eine Fehlermeldung ausgegeben. </dd></dl>
-
-</div>
-</div>
-<h2 class="groupheader">Variable Documentation</h2>
-<a id="a6545afe365912084bd4525d726b9d4d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6545afe365912084bd4525d726b9d4d3">&#9670;&nbsp;</a></span>force</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">main.force</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>beginnt das Programm </p>
-<dl class="section note"><dt>Note</dt><dd>Beim starten wird name durch main ersetzt, erst wenn es stimmt, wird die Main Funktion gestartet </dd></dl>
 
 </div>
 </div>

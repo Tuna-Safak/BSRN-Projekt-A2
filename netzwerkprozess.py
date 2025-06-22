@@ -366,7 +366,7 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
             # Behandelt den IMG-Befehl und leitet das Bild weiter
             elif teile[0] == "IMG":
                 _, empfaenger, pfad = teile
-                send_IMG(sock, config["client"]["handle"], empfaenger, pfad)
+                send_IMG(sock, empfaenger, pfad)
                 
             # behandelt den JOIN-Befehl und leitet es Broadcast per UDP weiter 
             # wird von Discovery-Dienst empfangen

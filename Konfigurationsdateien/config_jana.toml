@@ -1,12 +1,11 @@
 [client]
 handle = "Jana"
 port = 5000
-whoisport = 4000
 autoreply = "Bin nicht mehr da"
 autoreply_aktiv = true
 imagepath = "images/"
 
 [network]
-whoisdiscoveryport = 4000
+whoisdiscoveryport = 4000   # Port für Broadcasts vom Discovery-Dienst
 port_min = 5000
 port_max = 5300

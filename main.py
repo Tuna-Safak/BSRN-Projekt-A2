@@ -1,20 +1,14 @@
 ## @file main.py
 # @brief Start des Programms und ruft die ganzen funktionien auf
-import os
-# starten eines weiteren Prozesses durch ein bestehenden Prozess
-import subprocess
+
 # erlaubt eine verzögerung beim starten
 import time
-# mehrere Aufgaben gleichzeitig im selben Prozess: eigehende Nachrichten, senden von Nachrichten ermöglichen 
-import threading
+# hat eigenen Speicher für jeden einzelnen Prozess des Projektes: z.B. Netzwerkprozess und Discovery gleichzeitig laufen lassen
+import multiprocessing
 # importiert socket
 # kommunikation zwischen zwei Programmen(Prozessen)
 import socket
-# hat eigenen Speicher für jeden einzelnen Prozess des Projektes: z.B. Netzwerkprozess und Discovery gleichzeitig laufen lassen
-# pyhton Modul
-import multiprocessing
-# importiert die Klasse Process vom gesamten mulitprocessing Modul
-from multiprocessing import Process
+
 # Importiert Methoden aus dem interface, discovery, netzwerkprozess und nutzerliste
 from interface import (
     menue,
@@ -25,7 +19,6 @@ from interface import (
     autoreply_einschalten,
     lade_config, 
     finde_freien_port,
-    erstelle_neue_config,
     finde_freien_tcp_port
 )
 
@@ -34,23 +27,22 @@ from discovery import (
 )
 
 from netzwerkprozess import (
-    send_join, 
-    netzwerkprozess,
-    send_leave, 
-    sendMSG, 
-    sendIMG, 
-    receive_MSG, 
+    send_join,  
     starte_netzwerkprozess
 )
 # verwendet, um gemeinsam nutzbares Objekte zwischen Prozessen zu erzeugen
+# hat eigenen Speicher für jeden einzelnen Prozess des Projektes: z.B. Netzwerkprozess und Discovery gleichzeitig laufen lassen
+# importiert die Klasse Process vom gesamten mulitprocessing Modul
 from multiprocessing import(
-    Manager
+    Manager,
+    Process
 )
 # Nutzerverzeichnis
 from nutzerliste import (
     initialisiere_nutzerliste
 )
-# --------Regiestiere neunen Nutzer--------
+
+# --------Regiestiere neuen Nutzer--------
 ## @brief Registiert einen neuen Nutzer im Chatnetzwerk
     # @details finde_freien_port: es wird ein freier Port gesucht und ein Socket dadurch erstellt
     # @details send_join: verschickt eine Join Nachricht an alle

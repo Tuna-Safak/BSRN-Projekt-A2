@@ -109,6 +109,6 @@ def discovery_main(konfig_pfad, shared_dict):
 
             if handle in nutzerliste:
                 del nutzerliste[handle]
-                print(f"[LEAVE] {handle} hat den Chat verlassen (aus Discovery gelöscht).")
+                print(f"[LEAVE] {handle} hat den Chat verlassen.")
             else:
                 print(f"[LEAVE] Unbekannter Nutzer '{handle}' wollte LEAVE senden.")

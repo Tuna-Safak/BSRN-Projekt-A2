@@ -1,7 +1,6 @@
 [client]
 handle = ""
 port = 5000
-whoisport = 4000
 autoreply = "Bin arbeiten."
 imagepath = "images/"
 

@@ -2,7 +2,7 @@
 # @brief interface der Kommmandozeile für das Chat-Programm
 # @details Menüauswahl und Eingaben über das Terminal
 
-import sys
+#import sys
 #Modul zum Parsen von .toml-Dateien
 import toml
 # Für Prüfung freier Ports per UDP-Socket
@@ -108,8 +108,6 @@ def lade_config(pfad=None):
     if os.path.exists(pfad):
        
         return toml.load(pfad)
-    else:
-        raise FileNotFoundError("config.toml nicht gefunden.") 
 
  ## @brief Erstellt eine neue Konfigurationsdatei für den Benutzer, falls sie noch nicht existiert.
     # @param handle: Der Benutzername für den Benutzer, der eine neue datei braucht.
@@ -119,7 +117,6 @@ def erstelle_neue_config(handle):
         "client": {
             "handle": handle,
             "port":5000,
-            "whoisport": 4000,
             "autoreply": "Bin nicht da", 
             "autoreply_aktiv": False,
             "imagepath":"images/"

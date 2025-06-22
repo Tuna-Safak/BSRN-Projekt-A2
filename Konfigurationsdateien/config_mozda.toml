@@ -1,11 +1,11 @@
 [client]
 handle = "Mozda"              # Benutzername im Chat
-port = 5000                       # Portbereich, auf dem der Client Nachrichten empfängt
-whoisport = 4000                  # Port für Broadcasts vom Discovery-Dienst
+port = 5000                       # Portbereich, auf dem der Client Nachrichten empfängt             
 autoreply = "Bin nicht da."  # Automatische Antwort im Abwesenheitsmodus
 autoreply_aktiv = true
 imagepath = "images/" 
+
 [network]
-whoisdiscoveryport = 4000
+whoisdiscoveryport = 4000   # Port für Broadcasts vom Discovery-Dienst
 port_min = 5000
 port_max = 5300

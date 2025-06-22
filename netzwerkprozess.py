@@ -3,8 +3,7 @@
 #        und sendet SLCP-Nachrichten (MSG, IMG) per UDP an andere Peers im Netzwerk.
 
 import socket
-# ermöglicht den Zugriff aus Systemfunktionen
-import sys
+
 # ermöglicht das gleichzeitige Ausführen von mehreren Threads
 # damit TCP und UDP seperat laufen können 
 import threading 
@@ -19,9 +18,6 @@ from interface import (
     lade_config
 )
 
-from discovery import (
-    discovery_main
-)
 ## @brief lokale IP-Adresse wird gesucht
 # @details Ermittelt die echte lokale IP-Adresse (z. B. WLAN) durch Verbindung zu 8.8.8.8.
 def finde_lokale_ip():
@@ -206,7 +202,7 @@ def receive_MSG(sock, config):
 # @param handle_sender Benutzername des Absenders 
 # @param handle_empfaenger Benutzername des Empfängers
 # @param bildpfad Pfad zur Bilddatei, die gesendet werden soll
-def sendIMG(sock, handle_sender, handle_empfaenger, bildpfad):
+def send_IMG(sock, handle_empfaenger, bildpfad):
     nutzer = gebe_nutzerliste_zurück()
 
     # Prüfen, ob der Empfänger überhaupt im Nutzerverzeichnis bekannt ist
@@ -269,7 +265,9 @@ def handle_IMG(sock, teile, addr, config):
     if len(teile) != 3:
         print("[WARN] IMG-Header unvollständig:", " ".join(teile))
         return
+    
     # ist der name also an wen das Bild gesendet werden soll
+    # Groß-, Kleinschreibung ignorieren
     empfaenger = teile[1].strip().lower()
     eigener_handle = config["client"]["handle"].lower()
     if empfaenger != eigener_handle:
@@ -279,11 +277,11 @@ def handle_IMG(sock, teile, addr, config):
     try:
         groesse = int(teile[2])
     except ValueError:
-        print("[WARN] Ungültige Size:", teile[2])
+        print("[WARN] Ungültige Groesse:", teile[2])
         return
 
     if groesse <= 0:
-        print("[WARN] Size muss > 0 sein")
+        print("[WARN] Groesse muss > 0 sein")
         return
 
     # EIN Datagramm mit Bilddaten empfangen
@@ -291,7 +289,7 @@ def handle_IMG(sock, teile, addr, config):
     try:
         #print(f"[DEBUG] Warte auf Bilddaten: {groesse} Bytes …")
         bilddaten, _ = sock.recvfrom(groesse)
-        print(f"[DEBUG] Empfangen: {len(bilddaten)} Bytes")
+        #print(f"[DEBUG] Empfangen: {len(bilddaten)} Bytes")
     except socket.timeout:
         print("[ERROR] Timeout – Bilddatagramm nicht angekommen.")
         return
@@ -347,7 +345,7 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
         #  @brief Socket-Objekt für eine eingehende UI-Verbindung.
         ## @var addr
         #  @brief Adresse des UI-Clients (normalerweise localhost).
-        conn, addr = tcp_server.accept()
+        conn, _ = tcp_server.accept()
         with conn:
             ## @var daten
             #  @brief Empfangener Befehl als Zeichenkette.
@@ -366,7 +364,7 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
             # Behandelt den IMG-Befehl und leitet das Bild weiter
             elif teile[0] == "IMG":
                 _, empfaenger, pfad = teile
-                sendIMG(sock, config["client"]["handle"], empfaenger, pfad)
+                send_IMG(sock, config["client"]["handle"], empfaenger, pfad)
                 
             # behandelt den JOIN-Befehl und leitet es Broadcast per UDP weiter 
             # wird von Discovery-Dienst empfangen

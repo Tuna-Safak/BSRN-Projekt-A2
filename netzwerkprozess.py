@@ -398,14 +398,14 @@ def netzwerkprozess(sock, konfig_pfad, tcp_port):
                     who_sock.sendto(b"WHO", ("255.255.255.255", DISCOVERY_PORT))
 
                     while True:
-                        daten, addr = who_sock.recvfrom(1024)
+                        daten, _ = who_sock.recvfrom(1024)
                         text = daten.decode('utf-8').strip()
 
                         if text.startswith("KNOWNUSERS"):
                             teile = text.split(" ", 1)
                             if len(teile) == 2:
                                 eintraege = teile[1].split(", ")
-                                nutzerdict = gebe_nutzerliste_zurück()
+                              #  nutzerdict = gebe_nutzerliste_zurück()
 
                                 for eintrag in eintraege:
                                     try:

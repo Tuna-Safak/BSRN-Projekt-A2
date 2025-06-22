@@ -3,8 +3,6 @@
 # @details Verwaltet bekannte Nutzer und antwortet auf WHO-Anfragen
 
 import socket
-import toml
-import os
 from nutzerliste import(
  gebe_nutzerliste_zurück 
 ) 

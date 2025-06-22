@@ -116,7 +116,7 @@ def main():
             #       empfängt die KNOWNUSERS-Antwort und gibt bekannte Nutzer aus.
             #       Erwartet Antwortformat: "KNOWNUSERS <handle1> <ip1> <port1>, ..."
             # @param tcp_port TCP-Port, auf dem der Netzwerkprozess auf WHO hört
-            print("→ WHO wird gesendet ...")
+            print("WHO wird gesendet")
             try:
                 with socket.create_connection(("localhost", tcp_port)) as sock:
                     sock.sendall(b"WHO")  # Nur WHO senden
